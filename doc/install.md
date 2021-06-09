@@ -43,6 +43,9 @@ sudo apt-get update
 sudo apt-get install curl
 sudo apt install python 3.7
 sudo apt install python 3.8
+mkdir repo
+cd repo
+wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
 ```
 
 Run the following code snippets on all machines that run one of the services for AIDE (_LabelUI_, _AIController_, _AIWorker_, etc.).
