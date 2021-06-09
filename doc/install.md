@@ -1,5 +1,12 @@
 # Installation
 
+## Pre-installation
+
+```bash
+sudo apt install Python3.7
+```
+
+
 ## Requirements
 
 The AIDE label interface requires the following libraries:
