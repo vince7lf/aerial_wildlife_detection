@@ -46,6 +46,9 @@ sudo apt install python 3.8
 mkdir repo
 cd repo
 wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
+sudo bash Anaconda3-2021.05-Linux-x86_64.sh
+# installed in /opt/anaconda3
+# reference: https://docs.anaconda.com/anaconda/install/linux/
 ```
 
 Run the following code snippets on all machines that run one of the services for AIDE (_LabelUI_, _AIController_, _AIWorker_, etc.).
