@@ -37,10 +37,12 @@ The following installation routine had been tested on Ubuntu >= 16.04. AIDE will
 
 Update the system 
 ```bash
+# Welcome to Ubuntu 18.04.5 LTS (GNU/Linux 4.15.0-144-generic x86_64)
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade
-sudo do-release-upgrade 
+# sudo do-release-upgrade  not done as there is a scary warning message "This session appears to be running under ssh. It is not recommended
+to perform a upgrade over ssh currently because in case of failure it is harder to recover."
 ```
 
 Install Python 3.7
