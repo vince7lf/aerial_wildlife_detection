@@ -1,13 +1,9 @@
 # Installation
 
-## Pre-installation
-
-```bash
-sudo apt install Python3.7
-```
-
-
 ## Requirements
+
+* Python = 3.7 (specified in the command line below `conda create -y -n aide python=3.7`)
+* conda ? miniconda ?
 
 The AIDE label interface requires the following libraries:
 
