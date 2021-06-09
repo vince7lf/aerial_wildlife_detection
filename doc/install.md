@@ -37,12 +37,24 @@ The following installation routine had been tested on Ubuntu >= 16.04. AIDE will
 
 ### Prepare environment
 
-Install Python 3.7
+Update the system 
 ```bash
 sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade
+sudo do-release-upgrade
+```
+
+Install Python 3.7
+```bash
 sudo apt-get install curl
 sudo apt install python 3.7
 sudo apt install python 3.8
+Install Python 3.7
+```
+
+Install anaconda
+```bash
 mkdir repo
 cd repo
 wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
