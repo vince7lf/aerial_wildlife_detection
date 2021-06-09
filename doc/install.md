@@ -77,7 +77,8 @@ It is strongly recommended to run AIDE in a self-contained Python environment, s
     # download AIDE source code
     sudo apt-get update && sudo apt-get install -y git
     cd $targetDir
-    git clone -b multiProject https://github.com/microsoft/aerial_wildlife_detection.git
+    # git clone -b multiProject https://github.com/microsoft/aerial_wildlife_detection.git
+    git clone -b AIDE+MELCC https://github.com/vince7lf/aerial_wildlife_detection.git
 
     # install required libraries
     sudo apt-get install -y build-essential libpq-dev python-dev ffmpeg libsm6 libxext6 python3-opencv
