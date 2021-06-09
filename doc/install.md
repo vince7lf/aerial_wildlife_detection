@@ -37,6 +37,14 @@ The following installation routine had been tested on Ubuntu >= 16.04. AIDE will
 
 ### Prepare environment
 
+Install Python 3.7
+```bash
+sudo apt-get update
+sudo apt-get install curl
+sudo apt install python 3.7
+sudo apt install python 3.8
+```
+
 Run the following code snippets on all machines that run one of the services for AIDE (_LabelUI_, _AIController_, _AIWorker_, etc.).
 It is strongly recommended to run AIDE in a self-contained Python environment, such as [Conda](https://conda.io/) (recommended and used below) or [Virtualenv](https://virtualenv.pypa.io).
 
