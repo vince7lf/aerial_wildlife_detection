@@ -33,8 +33,6 @@ If you have a CUDA-capable GPU it is highly recommended to install PyTorch with 
 
 The following installation routine had been tested on Ubuntu >= 16.04. AIDE will likely run on different OS as well, with instructions requiring corresponding adaptations.
 
-
-
 ### Prepare environment
 
 Update the system 
@@ -43,6 +41,7 @@ sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get dist-upgrade
 sudo do-release-upgrade
+sudo do-release-upgrade 
 ```
 
 Install Python 3.7
