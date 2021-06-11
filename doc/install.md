@@ -99,14 +99,18 @@ Note that in the latest version of AIDE, the .ini file does not contain any proj
 **Important: NEVER, EVER make the configuration file accessible to the outside web.**
 
 1. Create a *.ini file for your general AIDE setup. See the provided file under `config/settings.ini` for an example. To view all possible parameters, see [here](configure_settings.md).
-2. Copy the *.ini file to each server instance.
-3. On each instance, set the `AIDE_CONFIG_PATH` environment variable to point to your *.ini file:
+
+images are located in /app/images
+adminPassword is Aide!234
+3. Copy the *.ini file to each server instance.
+4. On each instance, set the `AIDE_CONFIG_PATH` environment variable to point to your *.ini file:
 ```bash
     # temporarily:
     export AIDE_CONFIG_PATH=/path/to/settings.ini
 
     # permanently (requires re-login):
     echo "export AIDE_CONFIG_PATH=path/to/settings.ini" | tee ~/.profile
+    (aide) root@tes2:/app/aerial_wildlife_detection# echo "export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini" | tee ~/.profile
 ```
 
 
