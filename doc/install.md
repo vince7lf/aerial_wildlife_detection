@@ -58,9 +58,13 @@ Install anaconda
 mkdir repo
 cd repo
 wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
-sudo bash Anaconda3-2021.05-Linux-x86_64.sh
-# installed in /opt/anaconda3
+sudo su - root # install everything as root so no permissions issues
+bash Anaconda3-2021.05-Linux-x86_64.sh
+# anaconda requires +3Gb; makes sure mount drive disk space free > 10Gb (df -lh)
+# installed in /app/anaconda3
 # reference: https://docs.anaconda.com/anaconda/install/linux/
+# to avoid conda venv starts when shell starts
+conda config --set auto_activate_base false
 ```
 
 Run the following code snippets on all machines that run one of the services for AIDE (_LabelUI_, _AIController_, _AIWorker_, etc.).
@@ -71,7 +75,7 @@ It is strongly recommended to run AIDE in a self-contained Python environment, s
     targetDir=/path/to/desired/source/folder
 
     # create environment (requires conda or miniconda)
-    conda create -y -n aide python=3.8.8 (was 3.7)
+    conda create -y -n aide python=3.7 (with 3.8.8 does not work)
     conda activate aide
 
     # download AIDE source code
