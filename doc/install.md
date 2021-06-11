@@ -106,8 +106,11 @@ Note that in the latest version of AIDE, the .ini file does not contain any proj
 3. Copy the *.ini file to each server instance.
 4. On each instance, set the `AIDE_CONFIG_PATH` environment variable to point to your *.ini file:
 ```bash
+    # run both commands
+    
     # temporarily:
     export AIDE_CONFIG_PATH=/path/to/settings.ini
+    export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
 
     # permanently (requires re-login):
     echo "export AIDE_CONFIG_PATH=path/to/settings.ini" | tee ~/.profile
