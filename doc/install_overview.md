@@ -11,7 +11,15 @@ If you have [AIDE v1](https://github.com/microsoft/aerial_wildlife_detection/tre
 Here's how to install and launch AIDE with Docker on the current machine:
 
 1. Download and install [Docker](https://docs.docker.com/engine/install) as well as [Docker Compose](https://docs.docker.com/compose/install)
-2. If you want to use a GPU (and only then), you have to install the NVIDIA container toolkit:
+```
+  snap install docker
+  sudo apt-get remove docker-compose
+  sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  sudo chmod +x /usr/local/bin/docker-compose
+  sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+```
+3. If you want to use a GPU (and only then), you have to install the NVIDIA container toolkit:
 ```bash
     distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
     curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
