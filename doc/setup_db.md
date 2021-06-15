@@ -12,6 +12,10 @@ The instructions below assume you have [installed the AIDE project](install.md) 
 However, for the database operation, this is not required. If you wish to skip these steps you will have to manually provide the four parameters below (replace `$(python util/configDef.py ...)` with the respective values).
 
 ```bash
+    # Run these command
+    # Need to have AIDE_CONFIG_PATH setup before
+    export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
+    
     export PYTHONPATH=.     # run this line if you get import error messages
 
     dbName=$(python util/configDef.py --section=Database --parameter=name)

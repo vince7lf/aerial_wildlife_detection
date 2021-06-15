@@ -154,6 +154,10 @@ As a last step, the appropriate settings need to be added to the [configuration 
 
     broker_url = amqp://<rabbitmq_user>:<rabbitmq_password>@<rabbitmq_host>:<rabbitmq_port>/aide_vhost
     result_backend = redis://<redis_host>:<redis_port>/0
+    
+    broker_URL = amqp://aide:password@localhost:6379/aide_vhost
+    result_backend = redis://localhost:6379/0
+
 ```
 
 Notes:

@@ -58,9 +58,13 @@ Install anaconda
 mkdir repo
 cd repo
 wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
-sudo bash Anaconda3-2021.05-Linux-x86_64.sh
-# installed in /opt/anaconda3
+sudo su - root # install everything as root so no permissions issues
+bash Anaconda3-2021.05-Linux-x86_64.sh
+# anaconda requires +3Gb; makes sure mount drive disk space free > 10Gb (df -lh)
+# installed in /app/anaconda3
 # reference: https://docs.anaconda.com/anaconda/install/linux/
+# to avoid conda venv starts when shell starts
+conda config --set auto_activate_base false
 ```
 
 Run the following code snippets on all machines that run one of the services for AIDE (_LabelUI_, _AIController_, _AIWorker_, etc.).
@@ -71,7 +75,7 @@ It is strongly recommended to run AIDE in a self-contained Python environment, s
     targetDir=/path/to/desired/source/folder
 
     # create environment (requires conda or miniconda)
-    conda create -y -n aide python=3.8.8 (was 3.7)
+    conda create -y -n aide python=3.7 (with 3.8.8 does not work)
     conda activate aide
 
     # download AIDE source code
@@ -95,14 +99,22 @@ Note that in the latest version of AIDE, the .ini file does not contain any proj
 **Important: NEVER, EVER make the configuration file accessible to the outside web.**
 
 1. Create a *.ini file for your general AIDE setup. See the provided file under `config/settings.ini` for an example. To view all possible parameters, see [here](configure_settings.md).
-2. Copy the *.ini file to each server instance.
-3. On each instance, set the `AIDE_CONFIG_PATH` environment variable to point to your *.ini file:
+
+* images are located in /app/images
+* adminPassword is Aide!234
+
+3. Copy the *.ini file to each server instance.
+4. On each instance, set the `AIDE_CONFIG_PATH` environment variable to point to your *.ini file:
 ```bash
+    # run both commands
+    
     # temporarily:
     export AIDE_CONFIG_PATH=/path/to/settings.ini
+    export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
 
     # permanently (requires re-login):
     echo "export AIDE_CONFIG_PATH=path/to/settings.ini" | tee ~/.profile
+    (aide) root@tes2:/app/aerial_wildlife_detection# echo "export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini" | tee ~/.profile
 ```
 
 

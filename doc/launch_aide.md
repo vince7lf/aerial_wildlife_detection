@@ -44,6 +44,16 @@ To launch AIDE (or parts of it, depending on the environment variables set) on t
     export PYTHONPATH=.     # might be required depending on your Python setup
 
     ./AIDE.sh start
+    
+    suro
+    . .bashrc
+    conda info
+    cd /app/aerial_wildlife_detection
+    conda activate aide
+    export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
+    export AIDE_MODULES=LabelUI,AIController,FileServer,AIWorker
+    export PYTHONPATH=.
+    ./AIDE.sh start
 ```
 
 This launches the Gunicorn HTTP web server, and/or a Celery message broker consumer, depending on the `AIDE_MODULES` environment variable set:
