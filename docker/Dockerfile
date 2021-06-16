@@ -19,7 +19,7 @@ RUN apt-get update \
     && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release \
     #
     # TBC if all of this is required (from AIDE scripts)
-    && apt-get -y install libpq-dev python-dev wget systemd \
+    && apt-get -y install libpq-dev python3.7-dev wget systemd \
     #
     # Install pylint
     && /opt/conda/bin/pip install pylint \
