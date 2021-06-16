@@ -17,6 +17,17 @@ Here's how to install and launch AIDE with Docker on the current machine:
   sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  
+  # move docker to another drive if missing sapce in / mount
+  sudo service docker stop
+  sudo vi /etc/docker/daemon.json
+  {
+   "data-root": "/app/var/lib/docker"
+  }
+  sudo mkdir -p /app/var/lib/docker
+  sudo rsync -aP /var/lib/docker/ /app/var/lib/docker
+  sudo mv /var/lib/docker /var/lib/docker.old
+  sudo service docker start
 
 ```
 3. If you want to use a GPU (and only then), you have to install the NVIDIA container toolkit:
