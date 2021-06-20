@@ -18,7 +18,7 @@ Here's how to install and launch AIDE with Docker on the current machine:
   sudo chmod +x /usr/local/bin/docker-compose
   sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
   
-  # move docker to another drive if missing sapce in / mount
+  # move docker to another drive if missing space in / mount
   sudo service docker stop
   sudo vi /etc/docker/daemon.json
   {
