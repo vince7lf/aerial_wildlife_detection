@@ -244,7 +244,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     try:
-        app = assemble_server(args.verbose, args.check_v1, args.migrate_db, args.force_migrate, not bool(args.launch))
+        app = assemble_server(args.verbose, args.check_v1, args.migrate_db, args.force_migrate, True)
+        # app = assemble_server(args.verbose, args.check_v1, args.migrate_db, args.force_migrate, not bool(args.launch))
     except Exception as e:
         print(e)
         sys.exit(1)
@@ -255,7 +256,8 @@ if __name__ == '__main__':
         config = Config(False)
         host = config.getProperty('Server', 'host')
         port = config.getProperty('Server', 'port')
-        app.run(host=host, port=port)
-    
+        # app.run(host=host, port=port, workers=8, server='gunicorn')
+        app.run(host=host, port=port, workers=8)
+
     else:
         sys.exit(0)
