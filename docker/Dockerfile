@@ -18,6 +18,7 @@ RUN apt-get update \
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
     && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release \
     #
+    && conda install python=3.7 \
     # TBC if all of this is required (from AIDE scripts)
     && apt-get -y install libpq-dev python3.7-dev wget systemd \
     #
@@ -49,7 +50,7 @@ WORKDIR /home/$USERNAME/app
 COPY docker/requirements.txt docker/requirements.txt
 # COPY docker/lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
-RUN pip install -U -r docker/requirements.txt
+RUN pip install --no-cache-dir -U -r docker/requirements.txt
 # RUN pip install lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
 # Detectron2: we can now install it directly through the requirements.txt file
