@@ -26,6 +26,9 @@ The required libraries for the message broker can be installed e.g. using pip:
 ```bash
     conda activate aide
     pip install celery[librabbitmq,redis,auth,msgpack]
+    # do not install librabbitmq; triggers TypeError: can't pickle memoryview objects #4693
+    # refer to https://github.com/celery/celery/issues/4693
+    pip install celery[pyamqp,redis,auth,msgpack]
 ```
 
 
