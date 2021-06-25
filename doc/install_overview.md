@@ -58,6 +58,12 @@ Here's how to install and launch AIDE with Docker on the current machine:
         sudo docker-compose up
     ```
 
+7. To export as tar file
+    ```bash
+        sudo docker save -o aide_melcc.tar aide_app:latest
+    ```
+
+
 ### Manual installation
 
 See [here](install.md) for instructions on configuring an instance of AIDE.
