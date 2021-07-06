@@ -534,6 +534,18 @@ class DBMiddleware():
         return response
 
 
+    def submitAnnotationsExt(self, project, id_image, id_annotation):
+        '''
+            Update image-annotation mapping in the database
+        '''
+
+        queryStr = sql.SQL('''
+            INSERT INTO {id_img_anno} (image, annotation) VALUES (%s,%s) 
+        ''').format(
+            id_img_anno=sql.Identifier(project, 'image_annotation')
+        )
+
+        self.dbConnector.insert(queryStr, id_image, id_annotation)
 
     def submitAnnotations(self, project, username, submissions):
         '''

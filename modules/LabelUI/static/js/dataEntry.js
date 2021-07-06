@@ -433,14 +433,14 @@ class AbstractDataEntry {
         this.markup.append(imageFooterDiv);
     }
 
-        getImageURI() {
-            if(this.fileName.startsWith('/')) {
-                // static image; don't prepend data server URI & Co.
-                return this.fileName;
-            } else {
-                return window.dataServerURI + window.projectShortname + '/files/' + this.fileName;
-            }
+    getImageURI() {
+        if(this.fileName.startsWith('/')) {
+            // static image; don't prepend data server URI & Co.
+            return this.fileName;
+        } else {
+            return window.dataServerURI + window.projectShortname + '/files/' + this.fileName;
         }
+    }
 
     getProperties(minimal, onlyUserAnnotations) {
         var timeCreated = this.getTimeCreated();
@@ -591,6 +591,264 @@ class AbstractDataEntry {
 }
 
 
+class ClassificationMLEntry extends AbstractDataEntry {
+    /*
+       Implementation for image classification with multilabel.
+       Expected keys in 'properties' input:
+       - entryID: identifier for the data entry
+       - fileName: name of the image file to retrieve from data server
+       - predictedLabel: optional, array of label ID strings for model predictions
+       - predictedConfidence: optional, float for model prediction confidence
+
+       If predictedLabel is provided, a thin border tinted according to the
+       arg max (i.e., the predicted label) is drawn around the image.
+
+       As soon as the user clicks into the image, a thick border is drawn,
+       colored w.r.t. the user-selected class. A second click removes the user
+       label again.
+    */
+    constructor(entryID, properties, disableInteractions) {
+        super(entryID, properties, disableInteractions);
+
+        this._setup_markup();
+        this.loadingPromise.then(response => {
+            if(this.labelInstance ===null) {
+                // add a default, blank instance if nothing has been predicted or annotated yet
+                var label = (window.enableEmptyClass ? null : window.labelClassHandler.getActiveClassID());
+                this._addElement(new Annotation(window.getRandomID(), {'label':label}, 'labels', 'annotation'));
+            }
+        });
+    }
+
+    getAnnotationType() {
+        return 'label';
+    }
+
+    _addElement(element) {
+        if(typeof(this.annotations) !== 'object') {
+            // not yet initialized; abort
+            return;
+        }
+
+        // allow multiple label for classification entry
+        var key = element['annotationID'];
+        if(element['type'] ==='annotation') {
+
+            // find the annotation
+            // TODO VLF
+            // append the new label
+            // TODO VLF
+
+            // if(Object.keys(this.annotations).length > 0) {
+            //     // replace current annotation
+            //     var currentKey = Object.keys(this.annotations)[0];
+            //     this.viewport.removeRenderElement(this.annotations[currentKey]);
+            //     delete this.annotations[currentKey];
+            // }
+            //
+            // // add new annotation from existing
+            // var unsure = element['geometry']['unsure'];
+            // var anno = new Annotation(key, {'label':element['label'], 'unsure':unsure}, 'labels', element['type']);
+            // this.annotations[key] = anno;
+            // this.viewport.addRenderElement(anno.getRenderElement());
+            // this.labelInstance = anno;
+
+        } else if(element['type'] ==='prediction' && window.showPredictions) {
+            this.predictions[key] = element;
+            this.viewport.addRenderElement(element.getRenderElement());
+        }
+
+        window.dataHandler.updatePresentClasses();
+    }
+
+    _setup_markup() {
+        var self = this;
+        super._setup_markup();
+        $(this.canvas).css('cursor', window.uiControlHandler.getDefaultCursor());
+
+        var htStyle = {
+            fillColor: window.styles.hoverText.box.fill,
+            textColor: window.styles.hoverText.text.color,
+            strokeColor: window.styles.hoverText.box.stroke.color,
+            lineWidth: window.styles.hoverText.box.stroke.lineWidth
+        };
+        this.hoverTextElement = new HoverTextElement(this.entryID + '_hoverText', null, null, 'validArea',
+            htStyle,
+            5);
+        this.viewport.addRenderElement(this.hoverTextElement);
+
+        if(!this.disableInteractions) {
+            // click handler
+            this.viewport.addCallback(this.entryID, 'mouseup', (function(event) {
+                if(window.uiBlocked) return;
+                else if(window.uiControlHandler.getAction() === ACTIONS.DO_NOTHING) {
+                    if(window.unsureButtonActive) {
+                        this.labelInstance.setProperty('unsure', !this.labelInstance.getProperty('unsure'));
+                        window.unsureButtonActive = false;
+                        this.render();
+                    } else {
+                        this.toggleUserLabel(event.altKey);
+                    }
+                }
+                this.numInteractions++;
+                window.dataHandler.updatePresentClasses();
+            }).bind(this));
+
+            // tooltip for label change
+            this.viewport.addCallback(this.entryID, 'mousemove', (function(event) {
+                if(window.uiBlocked) return;
+                var pos = this.viewport.getRelativeCoordinates(event, 'validArea');
+
+                // offset tooltip position if loupe is active
+                if(window.uiControlHandler.showLoupe) {
+                    pos[0] += 0.2;  //TODO: does not account for zooming in
+                }
+
+                this.hoverTextElement.position = pos;
+                if(window.uiControlHandler.getAction() in [ACTIONS.DO_NOTHING,
+                    ACTIONS.ADD_ANNOTATION,
+                    ACTIONS.REMOVE_ANNOTATIONS]) {
+                    if(event.altKey) {
+                        this.hoverTextElement.setProperty('text', 'mark as unlabeled');
+                        this.hoverTextElement.setProperty('fillColor', window.styles.hoverText.box.fill);
+                    } else if(window.unsureButtonActive) {
+                        this.hoverTextElement.setProperty('text', 'toggle unsure');
+                        this.hoverTextElement.setProperty('fillColor', window.styles.hoverText.box.fill);
+                    } else if(typeof(this.labelInstance) !== 'object') {
+                        this.hoverTextElement.setProperty('text', 'set label to "' + window.labelClassHandler.getActiveClassName() + '"');
+                        this.hoverTextElement.setProperty('fillColor', window.labelClassHandler.getActiveColor());
+                    } else if(this.labelInstance.label != window.labelClassHandler.getActiveClassID()) {
+                        this.hoverTextElement.setProperty('text', 'change label to "' + window.labelClassHandler.getActiveClassName() + '"');
+                        this.hoverTextElement.setProperty('fillColor', window.labelClassHandler.getActiveColor());
+                    } else {
+                        this.hoverTextElement.setProperty('text', null);
+                    }
+                } else {
+                    this.hoverTextElement.setProperty('text', null);
+                }
+
+                // flip text color if needed
+                var htFill = this.hoverTextElement.getProperty('fillColor');
+                if(htFill != null && window.getBrightness(htFill) >= 92) {
+                    this.hoverTextElement.setProperty('textColor', '#000000');
+                } else {
+                    this.hoverTextElement.setProperty('textColor', '#FFFFFF');
+                }
+
+                // set active (for e.g. "unsure" functionality)
+                if(typeof(self.labelInstance) === 'object') {
+                    this.labelInstance.setActive(true);
+                }
+
+                this.render();
+            }).bind(this));
+            // this.canvas.mousemove(function(event) {
+
+            // });
+            this.markup.mouseout(function(event) {
+                if(window.uiBlocked) return;
+                self.hoverTextElement.setProperty('text', null);
+                if(typeof(self.labelInstance) === 'object') {
+                    self.labelInstance.setActive(false);
+                }
+                self.render();
+            });
+        }
+    }
+
+    getLabel() {
+        if(typeof(this.annotations) !== 'object') {
+            return null;
+        }
+        let entryKey = Object.keys(this.annotations);
+        if(entryKey.length === 0) return null;
+        return this.annotations[entryKey[0]].getProperty('label');
+    }
+
+    setLabel(label) {
+        if(typeof(this.labelInstance) !== 'object') {
+            // add new annotation
+            var anno = new Annotation(window.getRandomID(), {'label':label}, 'labels', 'annotation');
+            this._addElement(anno);
+
+        } else {
+            this.labelInstance.setProperty('label', label);
+            if(label === null) {
+                // re-enable auto-conversion of predictions
+                this.labelInstance.setProperty('autoConverted', true);
+            }
+        }
+        if(Object.keys(this.annotations).length === 0) {
+            // re-add label instance
+            this._addElement(this.labelInstance);
+        }
+
+        // flip text color of BorderStrokeElement if needed
+        var htFill = this.labelInstance.geometry.getProperty('fillColor');
+        if(htFill != null && window.getBrightness(htFill) >= 92) {
+            this.labelInstance.geometry.setProperty('textColor', '#000000');
+        } else {
+            this.labelInstance.geometry.setProperty('textColor', '#FFFFFF');
+        }
+        this.numInteractions++;
+
+        this.render();
+
+        window.dataHandler.updatePresentClasses();
+    }
+
+    toggleUserLabel(forceRemove) {
+        /*
+            Toggles the classification label as follows:
+            - if the annotation has no label, it is set to the user-specified class
+            - if it has the same label as specified, the label is removed if the background
+                class is enabled
+            - if it has a different label than specified, the label is changed
+            - if forceRemove is true, the label is removed (if background class is enabled)
+        */
+        if(forceRemove && window.enableEmptyClass) {
+            this.setLabel(null);
+
+        } else {
+            var activeLabel = window.labelClassHandler.getActiveClassID();
+            if(typeof(this.labelInstance) !== 'object') {
+                // add new annotation
+                var anno = new Annotation(window.getRandomID(), {'label':activeLabel}, 'labels', 'annotation');
+                this._addElement(anno);
+
+            } else {
+                if(this.labelInstance.label === activeLabel && window.enableEmptyClass) {
+                    // same label; disable
+                    this.setLabel(null);
+
+                } else {
+                    // different label; update
+                    this.setLabel(activeLabel);
+                }
+            }
+        }
+        this.labelInstance.setProperty('autoConverted', false);
+        this.render();
+
+        window.dataHandler.updatePresentClasses();
+    }
+
+    removeAllAnnotations() {
+        // this is technically not needed for classification; we do it nonetheless for completeness
+        for(var key in this.annotations) {
+            this.annotations[key].setActive(false, this.viewport);
+            this._removeElement(this.annotations[key]);
+        }
+        if(typeof(this.labelInstance) === 'object') {
+            this.labelInstance.setProperty('label', null);
+            // re-enable auto-conversion of predictions
+            this.labelInstance.setProperty('autoConverted', true);
+        }
+        this.render();
+
+        window.dataHandler.updatePresentClasses();
+    }
+}
 
 
 class ClassificationEntry extends AbstractDataEntry {
