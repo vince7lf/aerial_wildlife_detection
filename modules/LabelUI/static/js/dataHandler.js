@@ -234,8 +234,8 @@ class DataHandler {
                     // create new data entry
                     switch(String(window.annotationType)) {
                         case 'labels':
-                            // var entry = new ClassificationEntry(d, data['entries'][d]);
-                            var entry = new ClassificationMLEntry(d, data['entries'][d]);
+                            var entry = new ClassificationEntry(d, data['entries'][d]);
+                            // var entry = new ClassificationMLEntry(d, data['entries'][d]);
                             break;
                         case 'points':
                             var entry = new PointAnnotationEntry(d, data['entries'][d]);
@@ -337,7 +337,7 @@ class DataHandler {
                     // create new data entry
                     switch(String(window.annotationType)) {
                         case 'labels':
-                            var entry = new ClassificationEntry(d, data['entries'][d]);
+                            var entry = new ClassificationMLEntry(d, data['entries'][d]);
                             break;
                         case 'points':
                             var entry = new PointAnnotationEntry(d, data['entries'][d]);
@@ -496,7 +496,7 @@ class DataHandler {
 
                     switch(String(window.annotationType)) {
                         case 'labels':
-                            var entry = new ClassificationEntry(entryID, data['entries'][entryID]);
+                            var entry = new ClassificationMLEntry(entryID, data['entries'][entryID]);
                             break;
                         case 'points':
                             var entry = new PointAnnotationEntry(entryID, data['entries'][entryID]);

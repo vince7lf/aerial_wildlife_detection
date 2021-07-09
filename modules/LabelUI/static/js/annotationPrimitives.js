@@ -5,23 +5,24 @@ class Annotation {
         this.geometryType = geometryType;
         this.type = type;
         this.autoConverted = autoConverted;
+        this.label = new Set();
         this._parse_properties(properties);
     }
 
     _parse_properties(properties) {
         if(properties.hasOwnProperty('label')) {
-            this.label = properties['label'];
+            this.label.add(properties['label']);
         } else {
-            this.label = null;
+            this.label.clear();
         }
         
         var unsure = false;
         if(properties.hasOwnProperty('unsure')) {
             var unsure = (properties['unsure'] == null || properties['unsure'] == undefined ? false : properties['unsure']);    //TODO: should be property of "Annotation", but for drawing reasons we assign it to the geometry...
         }
-        if(!window.enableEmptyClass && this.label == null) {
+        if(!window.enableEmptyClass && this.label.size == 0) {
             // no empty class allowed; assign selected label
-            this.label = window.labelClassHandler.getActiveClassID();
+            this.label.add(window.labelClassHandler.getActiveClassID());
         }
 
         if(properties.hasOwnProperty('confidence')) {
@@ -31,7 +32,7 @@ class Annotation {
         }
 
         // drawing styles
-        var color = window.labelClassHandler.getColor(this.label);
+        var color = window.labelClassHandler.getColor(this.label.values().next().value);
         var style = JSON.parse(JSON.stringify(window.styles.annotations));  // copy default style
         if(this.type === 'prediction') {
             style = JSON.parse(JSON.stringify(window.styles.predictions));
@@ -76,7 +77,7 @@ class Annotation {
             );
         } else if(this.geometryType === 'labels') {
             // Classification label
-            var borderText = window.labelClassHandler.getName(this.label);
+            var borderText = window.labelClassHandler.getName(this.label.values().next().value);
             if(this.confidence != null) {
                 borderText += ' (' + 100*this.confidence + '%)';        //TODO: round to two decimals
             }
@@ -116,7 +117,7 @@ class Annotation {
         return {
             'id' : this.annotationID,
             'type' : (this.type.includes('annotation') ? 'annotation' : 'prediction'),
-            'label' : this.label,
+            'label' : [...this.label], // convert to an array as stringify do not work with Set
             'confidence' : this.confidence,
             'autoConverted': (this.autoConverted === null || this.autoConverted === undefined ? false : this.autoConverted),
             'geometry' : this.geometry.getGeometry()
@@ -131,10 +132,8 @@ class Annotation {
     }
 
     setProperty(propertyName, value) {
-        if(this.hasOwnProperty(propertyName)) {
-            this[propertyName] = value;
-        }
         if(propertyName == 'label') {
+            this.label.add(value);
             if(this.geometry instanceof BorderStrokeElement) {
                 // show label text
                 if(value == null) {
@@ -149,6 +148,9 @@ class Annotation {
             }
         } else if(this.geometry.hasOwnProperty(propertyName)) {
             this.geometry.setProperty(propertyName, value);
+        }
+        else if(this.hasOwnProperty(propertyName)) {
+            this[propertyName] = value;
         }
     }
 
@@ -176,7 +178,7 @@ class Annotation {
          * has been changed. Updates the new styles to all
          * entries and re-renders them.
          */
-        var color = window.labelClassHandler.getColor(this.label);
+        var color = window.labelClassHandler.getColor(this.label.values().next().value);
         var style = JSON.parse(JSON.stringify(window.styles.annotations));  // copy default style
         if(this.type === 'prediction') {
             style = JSON.parse(JSON.stringify(window.styles.predictions));

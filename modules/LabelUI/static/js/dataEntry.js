@@ -1,4 +1,5 @@
 /*
+/*
     Definition of a data entry, as shown on a grid on the screen.
 
     2019-21 Benjamin Kellenberger
@@ -630,28 +631,31 @@ class ClassificationMLEntry extends AbstractDataEntry {
             return;
         }
 
-        // allow multiple label for classification entry
+        // allow only one label for classification entry
         var key = element['annotationID'];
         if(element['type'] ==='annotation') {
+            if(Object.keys(this.annotations).length > 0) {
+                // replace current annotation
+                // var currentKey = Object.keys(this.annotations)[0];
+                // this.viewport.removeRenderElement(this.annotations[currentKey]);
+                // delete this.annotations[currentKey];
+                this.annotations[key].setProperty('label', label);
+            } else {
+                // add new annotation from existing
+                var unsure = element['geometry']['unsure'];
+                var anno = new Annotation(key, {'label':element['label'].values().next().value, 'unsure':unsure}, 'labels', element['type']);
+                this.annotations[key] = anno;
+                this.viewport.addRenderElement(anno.getRenderElement());
+                this.labelInstance = anno;
+            }
 
-            // find the annotation
-            // TODO VLF
-            // append the new label
-            // TODO VLF
-
-            // if(Object.keys(this.annotations).length > 0) {
-            //     // replace current annotation
-            //     var currentKey = Object.keys(this.annotations)[0];
-            //     this.viewport.removeRenderElement(this.annotations[currentKey]);
-            //     delete this.annotations[currentKey];
-            // }
-            //
-            // // add new annotation from existing
-            // var unsure = element['geometry']['unsure'];
-            // var anno = new Annotation(key, {'label':element['label'], 'unsure':unsure}, 'labels', element['type']);
-            // this.annotations[key] = anno;
-            // this.viewport.addRenderElement(anno.getRenderElement());
-            // this.labelInstance = anno;
+            // flip text color of BorderStrokeElement if needed
+            var htFill = this.labelInstance.geometry.getProperty('fillColor');
+            if(htFill != null && window.getBrightness(htFill) >= 92) {
+                this.labelInstance.geometry.setProperty('textColor', '#000000');
+            } else {
+                this.labelInstance.geometry.setProperty('textColor', '#FFFFFF');
+            }
 
         } else if(element['type'] ==='prediction' && window.showPredictions) {
             this.predictions[key] = element;
