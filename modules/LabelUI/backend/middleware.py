@@ -534,18 +534,37 @@ class DBMiddleware():
         return response
 
 
-    def submitAnnotationsExt(self, project, id_image, id_annotation):
+    def submitAnnotationsExt(self, submissions, annotation_ids):
         '''
-            Update image-annotation mapping in the database
+            Update annotation-labels mapping in the database
         '''
+        annoValues = []
+        for imageKey in submissions['entries']:
+            entry = submissions['entries'][imageKey]
 
+            if 'annotations' in entry and len(entry['annotations']):
+                for annotation in entry['annotations']:
+                    # assemble annotation values
+                    annotationTokens = self.annoParser.parseAnnotation(annotation)
+                    if annotationTokens['label'] is not None:
+                        annoValues = [UUID(label) for label in annotationTokens['label']]
+
+
+        # delete all associations annotation-label
         queryStr = sql.SQL('''
-            INSERT INTO {id_img_anno} (image, annotation) VALUES (%s,%s) 
+            DELETE FROM {id_anno_label} WHERE annotation in (%s)  
         ''').format(
-            id_img_anno=sql.Identifier(project, 'image_annotation')
+            id_anno_label=sql.Identifier('annotation_label')
         )
+        self.dbConnector.insert(queryStr, annotation_ids)
 
-        self.dbConnector.insert(queryStr, id_image, id_annotation)
+        # insert all associations annotation-label
+        queryStr = sql.SQL('''
+            INSERT INTO {id_anno_label} (annotation, label) VALUES %s 
+        ''').format(
+            id_anno_label=sql.Identifier('annotation_label')
+        )
+        self.dbConnector.insert(queryStr, annotation_ids, annoValues)
 
     def submitAnnotations(self, project, username, submissions):
         '''
@@ -596,7 +615,8 @@ class DBMiddleware():
                         elif cname == 'image':
                             annoValues.append(UUID(imageKey))
                         elif cname == 'label' and annotationTokens[cname] is not None:
-                            annoValues.append(UUID(annotationTokens[cname]))
+                            annoValues.append(None)
+                            # annoValues.append(UUID(annotationTokens[cname]))
                         elif cname == 'timeCreated':
                             try:
                                 annoValues.append(dateutil.parser.parse(annotationTokens[cname]))
@@ -653,15 +673,18 @@ class DBMiddleware():
                 self.dbConnector.execute(queryStr, (username, tuple(imageKeys),))
 
         # insert new annotations
+        new_ids = []
         if len(values_insert):
             queryStr = sql.SQL('''
                 INSERT INTO {id_anno} ({cols})
-                VALUES %s ;
+                VALUES %s
+                RETURNING id;
             ''').format(
                 id_anno=sql.Identifier(project, 'annotation'),
                 cols=sql.SQL(', ').join([sql.SQL(c) for c in colnames[1:]])     # skip 'id' column
             )
-            self.dbConnector.insert(queryStr, values_insert)
+            returning_id = self.dbConnector.insert(queryStr, values_insert, numReturn='all')
+            new_ids = [item[0] for item in returning_id]
 
         # update existing annotations
         if len(values_update):
@@ -704,6 +727,9 @@ class DBMiddleware():
             id_iu=sql.Identifier(project, 'image_user')
         )
         self.dbConnector.insert(queryStr, viewcountValues)
+
+        new_ids.append(ids)
+        self.submitAnnotationsExt(submissions, new_ids)
 
         return 0
 

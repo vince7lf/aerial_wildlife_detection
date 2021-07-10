@@ -631,7 +631,7 @@ class ClassificationMLEntry extends AbstractDataEntry {
             return;
         }
 
-        // allow only one label for classification entry
+        // allow multi label for classification entry
         var key = element['annotationID'];
         if(element['type'] ==='annotation') {
             if(Object.keys(this.annotations).length > 0) {
@@ -639,7 +639,7 @@ class ClassificationMLEntry extends AbstractDataEntry {
                 // var currentKey = Object.keys(this.annotations)[0];
                 // this.viewport.removeRenderElement(this.annotations[currentKey]);
                 // delete this.annotations[currentKey];
-                this.annotations[key].setProperty('label', label);
+                this.annotations[key].setProperty('label', element['label'].values().next().value);
             } else {
                 // add new annotation from existing
                 var unsure = element['geometry']['unsure'];
