@@ -10,7 +10,7 @@ class Annotation {
     }
 
     _parse_properties(properties) {
-        if(properties.hasOwnProperty('label') && properties['label'] !== null) {
+        if(properties.hasOwnProperty('label') && properties['label'] !== null && properties['label'] !== undefined) {
             this.label.add(properties['label']);
         } else {
             this.label.clear();

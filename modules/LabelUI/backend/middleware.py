@@ -534,7 +534,7 @@ class DBMiddleware():
         return response
 
 
-    def submitAnnotationsExt(self, submissions, annotation_ids):
+    def submitAnnotationsExt(self, project, submissions, annotation_ids):
         '''
             Update annotation-labels mapping in the database
         '''
@@ -547,14 +547,14 @@ class DBMiddleware():
                     # assemble annotation values
                     annotationTokens = self.annoParser.parseAnnotation(annotation)
                     if annotationTokens['label'] is not None:
-                        annoValues = [UUID(label) for label in annotationTokens['label']]
+                        annoValues = [(annotation_ids[0],UUID(label)) for label in annotationTokens['label']]
 
 
         # delete all associations annotation-label
         queryStr = sql.SQL('''
             DELETE FROM {id_anno_label} WHERE annotation in (%s)  
         ''').format(
-            id_anno_label=sql.Identifier('annotation_label')
+            id_anno_label=sql.Identifier(project, 'annotation_label')
         )
         self.dbConnector.insert(queryStr, annotation_ids)
 
@@ -562,9 +562,9 @@ class DBMiddleware():
         queryStr = sql.SQL('''
             INSERT INTO {id_anno_label} (annotation, label) VALUES %s 
         ''').format(
-            id_anno_label=sql.Identifier('annotation_label')
+            id_anno_label=sql.Identifier(project, 'annotation_label')
         )
-        self.dbConnector.insert(queryStr, annotation_ids, annoValues)
+        self.dbConnector.insert(queryStr, tuple(annoValues))
 
     def submitAnnotations(self, project, username, submissions):
         '''
@@ -728,8 +728,7 @@ class DBMiddleware():
         )
         self.dbConnector.insert(queryStr, viewcountValues)
 
-        new_ids.append(ids)
-        self.submitAnnotationsExt(submissions, new_ids)
+        self.submitAnnotationsExt(project, submissions, tuple(new_ids + ids))
 
         return 0
 
