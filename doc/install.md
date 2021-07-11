@@ -44,6 +44,17 @@ sudo apt-get dist-upgrade
 # sudo do-release-upgrade  not done as there is a scary warning message "This session appears to be running under ssh. It is not recommended
 to perform a upgrade over ssh currently because in case of failure it is harder to recover."
 ```
+update vim to have the system clipboard enabled
+```
+sudo apt-get install -y vim-gtk3
+# check if clipboard enabled in vim
+:echo has('clipboard') # returns 0 or 1
+
+to use clipboard directly in vim
+* v mode
+* "*y to put the block into the system clipboard
+
+```
 
 Install Python 3.7
 ```bash
