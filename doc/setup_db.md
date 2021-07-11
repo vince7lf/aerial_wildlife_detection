@@ -70,6 +70,91 @@ However, for the database operation, this is not required. If you wish to skip t
     sudo sysctl -p
 ```
 
+## Activate the postgresql logs to see statements
+As root.
+`vi /etc/postgresql/10/main/postgresql.conf`
+
+```
+#------------------------------------------------------------------------------
+# ERROR REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+# - Where to Log -
+
+log_destination = 'stderr'              # Valid values are combinations of
+                                        # stderr, csvlog, syslog, and eventlog,
+                                        # depending on platform.  csvlog
+                                        # requires logging_collector to be on.
+
+# This is used when logging to stderr:
+logging_collector = on          # Enable capturing of stderr and csvlog
+                                        # into log files. Required to be on for
+                                        # csvlogs.
+                                        # (change requires restart)
+
+# These are only used if logging_collector is on:
+log_directory = 'pg_log'                        # directory where log files are written,
+                                        # can be absolute or relative to PGDATA
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log' # log file name pattern,
+                                        # can include strftime() escapes
+log_file_mode = 0600                    # creation mode for log files,
+                                        # begin with 0 to use octal notation
+log_truncate_on_rotation = off          # If on, an existing log file with the
+                                        # same name as the new log file will be
+                                        # truncated rather than appended to.
+                                        # But such truncation only occurs on
+                                        # time-driven rotation, not on restarts
+                                        # or size-driven rotation.  Default is
+                                        # off, meaning append to existing files
+                                        # in all cases.
+log_rotation_age = 1d                   # Automatic rotation of logfiles will
+                                        # happen after that time.  0 disables.
+log_rotation_size = 10MB                # Automatic rotation of logfiles will
+                                        # happen after that much log output.
+                                        # 0 disables.
+
+log_connections = on
+log_disconnections = on
+
+log_hostname = on
+
+log_statement = 'all'                   # none, ddl, mod, all
+
+
+```
+
+## Validate postgresql.conf
+type `psql` in a console. Any error within the configurarion will be printed. 
+
+```
+root@tes2:/var/log/postgresql# psql
+Error: invalid line 456 in /etc/postgresql/10/main/postgresql.conf: x#log_statement = 'all'                     # none, ddl, mod, all
+```
+
+## Restart the service
+```
+sudo service postgresql restart
+or
+sudo /etc/init.d/postgresql restart
+```
+
+## check main postgresql logs
+
+To check if service restarted successfully. Otherwise the 'listening' parts would not be displayed. 
+
+```
+root@tes2:/var/log/postgresql# tail postgresql-10-main.log
+2021-07-11 16:19:21.540 UTC [1356] LOG:  received smart shutdown request
+2021-07-11 16:19:21.595 UTC [1356] LOG:  worker process: logical replication launcher (PID 1556) exited with exit code 1
+2021-07-11 16:19:21.596 UTC [1549] LOG:  shutting down
+2021-07-11 16:19:21.671 UTC [1356] LOG:  database system is shut down
+2021-07-11 16:31:07.451 UTC [12495] LOG:  listening on IPv4 address "0.0.0.0", port 17685
+2021-07-11 16:31:07.451 UTC [12495] LOG:  listening on IPv6 address "::", port 17685
+2021-07-11 16:31:07.453 UTC [12495] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.17685"
+2021-07-11 16:31:07.513 UTC [12495] LOG:  redirecting log output to logging collector process
+2021-07-11 16:31:07.513 UTC [12495] HINT:  Future log output will appear in directory "pg_log".
+```
+
 
 ## Create a new database and the main user account
 This needs to be done from the installation root of AIDE, with the correct environment activated.
