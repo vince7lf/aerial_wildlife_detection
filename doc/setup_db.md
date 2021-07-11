@@ -3,9 +3,6 @@
 AIDE uses [PostgreSQL](https://www.postgresql.org/) to store labels, predictions, file paths and metadata. The following instructions apply for recent versions of Debian-based Linux distributions, such as Ubuntu.
 Note that AIDE requires PostgreSQL >= 9.5 (it has been tested with version 10).
 
-
-
-
 ## Define database details
 
 The instructions below assume you have [installed the AIDE project](install.md) and [configured the project configuration file](configure_settings.md) on the machine that is dedicated to running the database.
@@ -128,6 +125,7 @@ log_statement = 'all'                   # none, ddl, mod, all
 * /etc/init.d/postgresql: service
 * /var/lib/postgresql/10/main/pg_log: all other logs
 * /etc/postgresql/10/main: configuration files
+
 
 ## Validate postgresql.conf
 type `psql` in a console. Any error within the configurarion will be printed. 
