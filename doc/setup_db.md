@@ -123,6 +123,12 @@ log_statement = 'all'                   # none, ddl, mod, all
 
 ```
 
+## postgresql folders
+* /var/log/postgresql: main logs
+* /etc/init.d/postgresql: service
+* /var/lib/postgresql/10/main/pg_log: all other logs
+* /etc/postgresql/10/main: configuration files
+
 ## Validate postgresql.conf
 type `psql` in a console. Any error within the configurarion will be printed. 
 
