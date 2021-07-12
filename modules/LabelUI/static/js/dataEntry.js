@@ -639,11 +639,11 @@ class ClassificationMLEntry extends AbstractDataEntry {
                 // var currentKey = Object.keys(this.annotations)[0];
                 // this.viewport.removeRenderElement(this.annotations[currentKey]);
                 // delete this.annotations[currentKey];
-                this.annotations[key].setProperty('label', element['label'].values().next().value);
+                this.annotations[key].setProperty('label', element['label']);
             } else {
                 // add new annotation from existing
                 var unsure = element['geometry']['unsure'];
-                var anno = new Annotation(key, {'label':element['label'].values().next().value, 'unsure':unsure}, 'labels', element['type']);
+                var anno = new Annotation(key, {'label':element['label'], 'unsure':unsure}, 'labels', element['type']);
                 this.annotations[key] = anno;
                 this.viewport.addRenderElement(anno.getRenderElement());
                 this.labelInstance = anno;

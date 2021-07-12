@@ -54,7 +54,7 @@ class DBMiddleware():
             self.defaultStyles = json.load(open('modules/ProjectAdministration/static/json/default_ui_settings.json', 'r'))
 
 
-    def _assemble_annotations(self, project, queryData, hideGoldenQuestionInfo):
+    def _assemble_annotations(self, project, queryData, hideGoldenQuestionInfo, multilabels=None):
         response = {}
         for b in queryData:
             # b = cursor.fetchone()
@@ -98,6 +98,8 @@ class DBMiddleware():
                         value = value.timestamp()
                     elif isinstance(value, UUID):
                         value = str(value)
+                    if(c == 'label' and multilabels != None):
+                        value = [str(entry['label']) for entry in multilabels]
                     entry[c] = value
                 
                 if b['ctype'] == 'annotation':
@@ -371,8 +373,13 @@ class DBMiddleware():
             queryVals = (uuids, username, username,)
 
         annoResult = self.dbConnector.execute(queryStr, queryVals, 'all')
+
+        # retrieve and assign labels
+        labels = self.getLabels(project, annoResult)
+
+        # VLF TODO retrieve the list of labels for each annotations, and assign them
         try:
-            response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo)
+            response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo, labels)
         except Exception as e:
             print(e)
     
@@ -411,8 +418,12 @@ class DBMiddleware():
             queryVals = (limit,)
 
         annoResult = self.dbConnector.execute(queryStr, queryVals, 'all')
+
+        # retrieve and assign labels
+        labels = self.getLabels(project, annoResult)
+
         try:
-            response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo)
+            response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo, labels)
         except Exception as e:
             print(e)
 
@@ -420,6 +431,22 @@ class DBMiddleware():
         self._set_images_requested(project, response)
 
         return { 'entries': response }
+
+    def getLabels(self, project, annoResult):
+        # loop through the annotation
+        # keep the ids
+        ids = [str(b['id']) for b in annoResult]
+
+        # query the labels for each annotation ids
+        queryStr = sql.SQL('''
+            SELECT annotation, label FROM {id_anno_label} WHERE annotation in (%s)
+        ''').format(
+            id_anno_label=sql.Identifier(project, 'annotation_label')
+        )
+
+        labelResult = self.dbConnector.execute(queryStr, ids, 'all')
+
+        return labelResult
 
 
     def getBatch_timeRange(self, project, minTimestamp, maxTimestamp, userList, skipEmptyImages=False, limit=None, goldenQuestionsOnly=False, hideGoldenQuestionInfo=True):
@@ -455,8 +482,12 @@ class DBMiddleware():
 
         # query and parse results
         annoResult = self.dbConnector.execute(queryStr, tuple(queryVals), 'all')
+
+        # retrieve and assign labels
+        labels = self.getLabels(project, annoResult)
+
         try:
-            response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo)
+            response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo, labels)
         except Exception as e:
             print(e)
 
@@ -556,7 +587,7 @@ class DBMiddleware():
         ''').format(
             id_anno_label=sql.Identifier(project, 'annotation_label')
         )
-        self.dbConnector.insert(queryStr, annotation_ids)
+        self.dbConnector.execute(queryStr, (annotation_ids,))
 
         # insert all associations annotation-label
         queryStr = sql.SQL('''

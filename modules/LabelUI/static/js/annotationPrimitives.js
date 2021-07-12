@@ -11,7 +11,11 @@ class Annotation {
 
     _parse_properties(properties) {
         if(properties.hasOwnProperty('label') && properties['label'] !== null && properties['label'] !== undefined) {
-            this.label.add(properties['label']);
+            if( typeof(properties['label']) === 'string') {
+                this.label.add(properties['label']);
+            } else if( typeof(properties['label']) === 'object') {
+                this.label = properties['label']
+            }
         } else {
             this.label.clear();
         }
