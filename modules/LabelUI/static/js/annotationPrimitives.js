@@ -81,7 +81,11 @@ class Annotation {
             );
         } else if(this.geometryType === 'labels') {
             // Classification label
-            var borderText = window.labelClassHandler.getName(this.label.values().next().value);
+            let borderText = '';
+            for (var it = this.label.values(), label= null; label=it.next().value; ) {
+                borderText += window.labelClassHandler.getName(label) + ' ';
+            }
+            // var borderText = window.labelClassHandler.getName(this.label.values().next().value);
             if(this.confidence != null) {
                 borderText += ' (' + 100*this.confidence + '%)';        //TODO: round to two decimals
             }
