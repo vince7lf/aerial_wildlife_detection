@@ -14,7 +14,7 @@ class Annotation {
             if( typeof(properties['label']) === 'string') {
                 this.label.add(properties['label']);
             } else if( typeof(properties['label']) === 'object') {
-                this.label = properties['label']
+                this.label = new Set(properties['label'])
             }
         } else {
             this.label.clear();
@@ -81,7 +81,7 @@ class Annotation {
             );
         } else if(this.geometryType === 'labels') {
             // Classification label
-            let borderText = '';
+            let borderText = this.label.size > 0 ? '' : 'No label';
             for (var it = this.label.values(), label= null; label=it.next().value; ) {
                 borderText += window.labelClassHandler.getName(label) + ' ';
             }
