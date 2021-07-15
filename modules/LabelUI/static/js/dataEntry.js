@@ -769,6 +769,18 @@ class ClassificationMLEntry extends AbstractDataEntry {
         return this.annotations[entryKey[0]].getProperty('label');
     }
 
+    unsetLabel(label) {
+        if(typeof(this.labelInstance) !== 'object')  return;
+
+        this.labelInstance.setProperty('label', null);
+
+        this.numInteractions++;
+
+        this.render();
+
+        window.dataHandler.updatePresentClasses();
+    }
+
     setLabel(label) {
         if(typeof(this.labelInstance) !== 'object') {
             // add new annotation

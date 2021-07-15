@@ -189,6 +189,17 @@ class DataHandler {
         // }
     }
 
+    updateActiveAnnotationLabel( labelid, flag ) {
+        // find the active annotation
+        // trigger toggleUserLabel
+        for(var i=0; i<this.dataEntries.length; i++) {
+            if(this.dataEntries[i].entryID != window.activeEntryID) continue;
+
+            if( flag ) this.dataEntries[i].setLabel(labelid);
+            else this.dataEntries[i].unsetLabel(labelid);
+        }
+    }
+
 
     _loadFirstBatch() {
         /**

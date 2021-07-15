@@ -141,7 +141,12 @@ class Annotation {
 
     setProperty(propertyName, value) {
         if(propertyName == 'label') {
-            this.label.add(value);
+            // remove label
+            if( value == null ) {
+                this.label.delete(value);
+            }  else {
+                this.label.add(value);
+            }
             if(this.geometry instanceof BorderStrokeElement) {
                 // show label text
                 if(value == null) {

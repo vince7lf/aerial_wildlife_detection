@@ -386,19 +386,25 @@ class LabelClassHandler {
     }
 
     setActiveClass(labelClassInstance) {
-        // reset style of currently active class
-        if(this.activeClass != null) {
-            $('#labelLegend_'+this.activeClass.classID).toggleClass('legend-inactive');
-            $('#labelLegend_alt_'+this.activeClass.classID).toggleClass('legend-inactive');
+        if(window.uiBlocked) return;
+
+        // click on another selected label : unselect it
+        if( $('#labelLegend_'+labelClassInstance.classID).hasClass('legend-inactive') )  {
+            window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
+            this.activeClass = null;
+        } else {
+            window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
+            this.activeClass = labelClassInstance;
         }
 
-        this.activeClass = labelClassInstance;
+         $('#labelLegend_'+labelClassInstance.classID).toggleClass('legend-inactive');
+         $('#labelLegend_alt_'+labelClassInstance.classID).toggleClass('legend-inactive');
 
-        // apply style to new active class
-        if(this.activeClass != null) {
-            $('#labelLegend_'+this.activeClass.classID).toggleClass('legend-inactive');
-            $('#labelLegend_alt_'+this.activeClass.classID).toggleClass('legend-inactive');
-        }
+        // // reset style of currently active class
+        // if(this.activeClass != null) {
+        //     $('#labelLegend_'+this.activeClass.classID).toggleClass('legend-inactive');
+        //     $('#labelLegend_alt_'+this.activeClass.classID).toggleClass('legend-inactive');
+        // }
 
         window.activeClassColor = this.getActiveColor();
     }
