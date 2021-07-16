@@ -143,12 +143,20 @@ class Annotation {
         return this.geometry.getProperty(propertyName);
     }
 
+    unsetLabel(value) {
+        // remove label
+        if( value != null ) {
+            this.label.delete(value);
+        }
+        if(this.geometry instanceof BorderStrokeElement) {
+            // TODO update label text
+        }
+    }
+
     setProperty(propertyName, value) {
         if(propertyName == 'label') {
             // remove label
-            if( value == null ) {
-                this.label.delete(value);
-            }  else {
+            if( value !== null ) {
                 this.label.add(value);
             }
             if(this.geometry instanceof BorderStrokeElement) {

@@ -410,8 +410,8 @@ class LabelClassHandler {
             window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
             this.activeClass = null;
         } else {
-            window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
             this.activeClass = labelClassInstance;
+            window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
         }
 
          $('#labelLegend_'+labelClassInstance.classID).toggleClass('legend-inactive');

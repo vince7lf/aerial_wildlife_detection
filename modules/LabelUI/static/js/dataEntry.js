@@ -772,7 +772,7 @@ class ClassificationMLEntry extends AbstractDataEntry {
     unsetLabel(label) {
         if(typeof(this.labelInstance) !== 'object')  return;
 
-        this.labelInstance.setProperty('label', null);
+        this.labelInstance.unsetLabel(label);
 
         this.numInteractions++;
 
