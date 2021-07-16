@@ -82,10 +82,13 @@ class Annotation {
         } else if(this.geometryType === 'labels') {
             // Classification label
             let borderText = this.label.size > 0 ? '' : 'No label';
+            window.labelClassHandler.switchoffLabelClasses();
+
             for (var it = this.label.values(), label= null; label=it.next().value; ) {
                 borderText += window.labelClassHandler.getName(label) + ' ';
+                var labelClass = window.labelClassHandler.getClass(label);
+                window.labelClassHandler.lighthenLabelClass(labelClass);
             }
-            // var borderText = window.labelClassHandler.getName(this.label.values().next().value);
             if(this.confidence != null) {
                 borderText += ' (' + 100*this.confidence + '%)';        //TODO: round to two decimals
             }
@@ -95,6 +98,7 @@ class Annotation {
                 style,
                 unsure
             )
+
         } else {
             throw Error('Unknown geometry type (' + this.geometryType + ').')
         }

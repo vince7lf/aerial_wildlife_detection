@@ -385,6 +385,23 @@ class LabelClassHandler {
         return (classID == null || !this.labelClasses.hasOwnProperty(classID)? null : this.labelClasses[classID]['name']);
     }
 
+    switchoffLabelClasses(){
+        for(var lc in this.labelClasses) {
+            var labelClassInstance = this.labelClasses[lc]
+            if (!$('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
+                $('#labelLegend_' + labelClassInstance.classID).addClass('legend-inactive');
+                $('#labelLegend_alt_' + labelClassInstance.classID).addClass('legend-inactive');
+            }
+        }
+    }
+
+    lighthenLabelClass(labelClassInstance){
+        if( $('#labelLegend_'+labelClassInstance.classID).hasClass('legend-inactive') ) {
+            $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
+            $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
+        }
+    }
+
     setActiveClass(labelClassInstance) {
         if(window.uiBlocked) return;
 
