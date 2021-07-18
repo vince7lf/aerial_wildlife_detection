@@ -1,0 +1,105 @@
+#map {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    z-index: -1;
+
+    /* height: 500px;
+     border: 1px solid black;*/
+}
+
+#main_panel {
+    position: fixed;
+    width: 400px;
+    max-height: 97%;
+    left: 10px;
+    top: 10px;
+    z-index: 1000;
+    overflow-y: auto;
+    /*background: #222222;*/
+
+}
+
+/*Set map zoom cotrol position*/
+.ol-zoom {
+    left: auto;
+    right: 10px;
+    top: 10px;
+}
+
+
+/*Form to classify image not in bold*/
+label {
+    font-weight: normal;
+}
+
+/*Radio button in classify image form*/
+#inputModel {
+    padding-left: 5px;
+}
+
+/*Drop down list in Couches*/
+#selectMosaic {
+    display: inline-block;
+    width: 270px;
+}
+
+/*button to show or hide the image in Couches*/
+#buttonshowHide {
+    display: inline-block;
+    padding-right: 5px;
+}
+
+/*Remove space above Images title in Résultats panel*/
+#resultsImgTitle, #datasetTitle {
+    margin-top: 0px;
+}
+
+/*Dataset information list*/
+.ulDataset {
+    padding-left: 15px;
+}
+
+/*Credit*/
+#credit {
+    text-align: right;
+    font-size: smaller;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+/*Info button link main panel*/
+#infoLink {
+    text-align: right;
+}
+
+/*Button to hide/mask images in Couches*/
+.formSelectImage {
+    /*display:inline-block;*/
+}
+
+/* Loading spinning animation */
+.glyphicon.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from {
+        transform: scale(1) rotate(0deg);
+    }
+    to {
+        transform: scale(1) rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin2 {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}
