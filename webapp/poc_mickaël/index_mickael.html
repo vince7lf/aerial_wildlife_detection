@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Classification</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--STYLE-->
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="dl_classification/style/perso.css">
+
+    <!--SCRIPT-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+    <!--CHART JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+    
+    <script src="dl_classification/script/initMap.js"></script>
+    <script src="dl_classification/script/initSelectLayer.js"></script>
+    <script src="dl_classification/script/initOutils.js"></script>
+    <script src="dl_classification/script/mychart.js"></script>
+
+    
+    <script>
+        $(document).ready(function () {            
+            creationCarte();
+            creationSelectionCouche();
+            creationChart();
+            
+            // Reset the drop down list at page load
+            //document.getElementById("select_mosaic").reset();
+            //document.getElementById("dataset_info").reset();
+            //$("#selectData").selectpicker("refresh");
+            $("#selectData").val('');
+            $("#selectMosaic").val('');
+
+//$("#selectData").selectpicker("refresh");
+            
+            // To reset the list of model depening on the mosaic selected
+            showPrediction("");
+            
+            
+            //Tooltip
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+
+        }); // end readyfunction    
+    </script> 
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel-group">
+                    <div id ="main_panel" class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="menu-title">Classification d'images par apprentissage profond &nbsp;&nbsp;&nbsp;<a id="infoLink" href="#modalInformation" data-toggle="modal">
+          <span class="glyphicon glyphicon-info-sign"></span>
+        </a></div>
+                        </div>
+                        <div class="panel-body">
+                            <form>
+                                <div class="form-group">
+                                    <label class="radio-inline"><input checked="checked" type="radio" id="osm" name="optradio">OSM</label>
+                                    <label class="radio-inline"><input type="radio" id="bingsat" name="optradio">Satellite</label>
+                                </div>
+                            </form>
+                            <div class="panel-group" id="accordion">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">Ajouter une image</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse1" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                            <button type="button" class="btn btn btn-default" disabled data-toggle="tooltip" data-placement="top" title="Bientôt disponible!">Parcourir...</button>
+                                            <span>Exemple : image.tif</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Classifier une image</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse2" class="panel-collapse collapse">
+                                        <div class="panel-body">
+                                        <h4 id="datasetTitle">Jeux de données</h4>
+
+                                        <div class="form-group">
+                                            <select id="selectData" name="dataset_info" onchange="showDatasetInfo(this.value)" class="form-control">
+                                                <option value="">Sélectionner un jeu de données</option>
+                                                <?php include("dl_classification/script/list_dataset_info.php"); ?>
+                                            </select>
+                                        </div>
+                                        <div id="txtHintDataset"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h4 class="panel-title">
+                                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">Résultats</a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapse3" class="panel-collapse collapse in">
+
+                                    <div class="panel-body">
+                                        <h4 id="resultsImgTitle">Images</h4>
+                                        <em for="selectMosaic">Sélectionnez une image pour afficher les modèles</em>
+                                        <div class="formSelectImage">
+                                            
+                                            <select id="selectMosaic" name="select_mosaic"  onchange="showLayerInformation(this.value)" class="form-control">
+                                                <option value="">Sélectioner une image</option>
+                                                <?php include("dl_classification/script/list_mosaic.php"); ?>
+                                            </select>
+                                                <label for="showHideMosaicLayer"></label>
+                                            <div id="buttonshowHide">
+                                            <button id="showHideMosaicLayer" type="button" class="btn btn-default btn-sm">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                            </button>
+                                            </div>
+                                            </div>
+                                        <h4 class="modelListText">Modèle(s)</h4>
+
+                                        <form id="form_list_prediction">
+                                            
+                                        <?php include("dl_classification/script/list_prediction.php"); ?>
+                                        </form>
+                                        <em class="modelListText">Passez la souris sur une tuile pour afficher le détail.</em>
+                                    </div>
+                                        
+                                    
+                                     
+                                        
+                                        
+                                        
+                                        
+                                    <div class="panel-body">
+                                        
+                                        <canvas id="myChart"  height="250"></canvas>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <p id="credit">© 2021 MELCC</p>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+<!-- Modal -->
+<div class="modal" id="my_modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Échantillons de la classe  : <span id="nomClass"></span></h4>
+      </div>
+      <div class="modal-body">
+        <div id="sampleImgContainer">
+          <p>Nombre d'images dans la classe : <span id="nombreImg"></span></p>
+            <img id = "sampleClassImg" src="" alt="Class Samples" height="400" >
+          </div>
+          
+          <button id= "loadingbttnSampleImg" class="btn btn-lg btn-info">
+              <span class="glyphicon glyphicon-refresh spinning"></span> Chargement des images...
+          </button>
+      </div>
+      <div class="modal-footer">
+        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+<!-- Modal Modèle detail -->
+<div class="modal" id="modalModele">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Détails du modèle :  <span id="nomModel"></span></h4>
+      </div>
+      <div class="modal-body">
+        <div id="modelInfo"></div>
+        <img id = "modelDetailImg" src="" alt="Model summary" height="400" >
+      </div>
+      <div class="modal-footer">
+        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+        
+    
+<!-- Modal Classification -->
+<div class="modal" id="modalClassification">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Classification</h4>
+      </div>
+      <div class="modal-body">
+          <button id= "loadingbttnClassification" class="btn btn-lg btn-info">
+              <span class="glyphicon glyphicon-refresh spinning"></span> Classification en cours...
+          </button>
+          <span id="etatClassification"></span>
+        </div>
+      <div class="modal-footer">
+        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+<!-- Modal Information -->
+<div class="modal" id="modalInformation">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Information</h4>
+      </div>
+      <div class="modal-body">
+
+<p>Cette application a été réalisée dans le cadre d’un essai pour l’obtention d’une maîtrise en sciences géographiques à l’Université de Sherbrooke. 
+</p>
+<p>L’interface permet de classifier des images très haute résolution (1 mètre) à partir de modèles entrainés sur des réseaux de neurones convolutifs.</p>
+          <p>Pour plus d'information, me contacter : mgmikez@gmail.com</p>
+
+
+        </div>
+      <div class="modal-footer">
+        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+</body>
+
+</html>
