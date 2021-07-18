@@ -55,3 +55,20 @@ Ce serait l’outil idéal à tester pour l’identification des espèces
 il va faire des regroupements de features par différents algorithmes (Vissl en propose plusieurs). Je verrai cet outil plus comme une aide à l’annotation pour un projet en démarrage. On ne l’utilisera pas dans le projet actuel (MELCC)l, mais dans de futures propositions, ce serait intéressant à intégrer/tester en plus du contexte spatial et la fusion multisource.
 
 Pour info, Justine Boulent, ma postdoc va tester le self-supervised dans un projet. On pourra regarder les performances
+
+# Open Layers
+To use ol, install it from npm `npm install ol` 
+
+Set proxy if VPN used.
+```   
+C:\Users\vincent.le_falher\myprojects\university\aerial_wildlife_detection>npm config get proxy
+http://fastweb.bell.ca:8083/
+C:\Users\vincent.le_falher\myprojects\university\aerial_wildlife_detection>npm config get https-proxy
+http://fastweb.bell.ca:8083/
+```
+Get rid of the proxy if not begin VPN.
+```
+C:\Users\vincent.le_falher\myprojects\university\aerial_wildlife_detection>npm config rm https-proxy
+C:\Users\vincent.le_falher\myprojects\university\aerial_wildlife_detection>npm config rm proxy
+```
+   
