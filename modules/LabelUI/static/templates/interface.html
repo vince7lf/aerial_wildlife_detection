@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="/static/interface/css/interface.css?v={{ version }}" />
     <link rel="stylesheet" href="/static/general/css/messaging.css?v={{ version }}" />
     <link rel="stylesheet" href="/static/aiController/css/workflowMonitor.css?v={{ version }}" />
+
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css">
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js?v={{ version }}" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -97,7 +101,7 @@
                 <div class="grad-border-v" id="tools-container-resize-handle"></div>
 
                 <!-- Toolboxes -->
-                <div id="tools-container">                
+                <div id="tools-container">
                     <!-- Label Classes search box -->
                     <div id="classes-container" class="toolbox" style="order:0;flex-shrink:0">
                         <h2>Classes</h2>
@@ -112,9 +116,9 @@
                     <div id="classes-container" class="toolbox" style="order:1;height:100%">
                         <div id="legend-entries"></div>
                     </div>
-                    
+
                     <div id="toolbox-divider" class="grad-border-h" style="order:2;flex-shrink:0;margin-top:10px;margin-bottom:10px;display:none;"></div>
-                    
+
                     <!-- Image sequence controls -->
                     <div id="review-controls-container" class="toolbox" style="order:3;display:none;">
                         <h2 id="imorder-title">Image Order</h2>
@@ -123,7 +127,7 @@
                             <label for="imorder-auto">automatic</label><br />
                             <input type="radio" id="imorder-review" name="imorder" value="imorder-review" />
                             <label for="imorder-review">review annotations</label><br />
-                            
+
                             <div id="review-controls" style="display:none">
                                 <input type="checkbox" id="review-enable-editing" />
                                 <label for="review-enable-editing">enable editing</label><br />

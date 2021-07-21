@@ -156,7 +156,7 @@ class DataHandler {
     setMinimapVisible(visible) {
         if(window.uiBlocked) return;
         for(var i=0; i<this.dataEntries.length; i++) {
-            this.dataEntries[i].setMinimapVisible(visible);
+            // this.dataEntries[i].setMinimapVisible(visible);
         }
     }
 

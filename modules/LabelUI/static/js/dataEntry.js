@@ -591,8 +591,597 @@ class AbstractDataEntry {
     }
 }
 
+// ----------------------------------------------------------------------------
+class AbstractDataEntryEx {
+    /*
+       Abstract base class for data entries.
+    */
+    constructor(entryID, properties, disableInteractions) {
+        this.entryID = entryID;
+        this.canvasID = entryID + '_canvas';
+        this.fileName = properties['fileName'];
+        this.isGoldenQuestion = ( typeof(properties['isGoldenQuestion']) === 'boolean' ? properties['isGoldenQuestion'] : false);
+        this.isBookmarked = ( typeof(properties['isBookmarked']) === 'boolean' ? properties['isBookmarked'] : false);
+        this.numInteractions = 0;
+        this.disableInteractions = disableInteractions;
 
-class ClassificationMLEntry extends AbstractDataEntry {
+        // for interaction handlers
+        this.mouseDown = false;
+        this.mouseDrag = false;
+
+        var self = this;
+        this.imageEntry = null;
+        // this._setup_viewport();
+        // this._setup_markup();
+        this.loadingPromise = this._loadImage(this.getImageURI()).then(image => {
+            self._createMapOlEntry(image);
+            //self._parseLabels(properties);
+            self.startTime = new Date();
+            self.render();
+            return true;
+        })
+        .catch(error => {
+            self._createImageEntry(null);
+            self.render();
+            return false;
+        });
+    }
+
+    _click(event) {
+        /*
+            Click listener to disable active annotations in other
+            data entries (unless shift key held down)
+        */
+        if(event.shiftKey) return;
+        window.activeEntryID = this.entryID;
+        window.dataHandler.refreshActiveAnnotations();      //TODO: ugly hack...
+    }
+
+    _toggleGoldenQuestion() {
+        /*
+            Posts to the server to flip the bool about the entry
+            being a golden question (if user is admin).
+        */
+        if(!window.isAdmin || window.demoMode) return;
+
+        let self = this;
+        self.isGoldenQuestion = !self.isGoldenQuestion;
+        let goldenQuestions = {};
+        goldenQuestions[self.entryID] = self.isGoldenQuestion;
+
+        return $.ajax({
+            url: 'setGoldenQuestions',
+            method: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: JSON.stringify({
+                goldenQuestions: goldenQuestions
+            }),
+            success: function(data) {
+                if(data.hasOwnProperty('status') && data['status'] === 0) {
+                    // change successful; set flag accordingly
+                    if(data.hasOwnProperty('golden_questions') && data['golden_questions'].hasOwnProperty(self.entryID)) {
+                        self.isGoldenQuestion = data['golden_questions'][self.entryID];
+                    }
+                    if(self.isGoldenQuestion) {
+                        self.flag.attr('src', '/static/interface/img/controls/flag_active.svg');
+                    } else {
+                        self.flag.attr('src', '/static/interface/img/controls/flag.svg');
+                    }
+                }
+            },
+            error: function(xhr, message, error) {
+                console.error(error);
+                window.messager.addMessage('An error occurred while trying to set golden question (message: "' + error + '").', 'error', 0);
+            },
+            statusCode: {
+                401: function(xhr) {
+                    return window.renewSessionRequest(xhr, function() {
+                        return _toggleGoldenQuestion();
+                    });
+                }
+            }
+        })
+    }
+
+    _toggleBookmark() {
+        /*
+            Same for bookmarking, although this is allowed also for
+            non-admins.
+        */
+        if(window.demoMode) return;
+        let self = this;
+        let bookmarks = {};
+        bookmarks[this.entryID] = !this.isBookmarked;
+
+        return $.ajax({
+            url: 'setBookmark',
+            method: 'POST',
+            contentType: "application/json; charset=utf-8",
+            dataType: 'json',
+            data: JSON.stringify({
+                bookmarks: bookmarks
+            }),
+            success: function(data) {
+                if(data.hasOwnProperty('bookmarks_success') && data['bookmarks_success'].includes(self.entryID)) {
+                    // change successful; set flag accordingly
+                    self.isBookmarked = !self.isBookmarked;
+                    if(self.isBookmarked) {
+                        self.bookmark.attr('src', '/static/interface/img/controls/bookmark_active.svg');    //TODO
+                    } else {
+                        self.bookmark.attr('src', '/static/interface/img/controls/bookmark.svg');           //TODO
+                    }
+                } else if(data.hasOwnProperty('errors')) {
+                    window.messager.addMessage('Image could not be bookmarked.', 'error', 0);
+                }
+            },
+            error: function(xhr, message, error) {
+                console.error(error);
+                window.messager.addMessage('An error occurred while trying to bookmark image (message: "' + error + '").', 'error', 0);
+            },
+            statusCode: {
+                401: function(xhr) {
+                    return window.renewSessionRequest(xhr, function() {
+                        return _toggleBookmark();
+                    });
+                }
+            }
+        })
+    }
+
+    _setup_viewport() {
+        var self = this;
+        if(window.dataType ==='images') {
+            // create canvas
+            this.canvas = $('<canvas id="'+this.canvasID+'" width="'+window.defaultImage_w+'" height="'+window.defaultImage_h+'"></canvas>');
+            this.canvas.ready(function() {
+                self.viewport.resetViewport();
+            });
+            this.canvas.css('cursor', window.uiControlHandler.getDefaultCursor());
+
+            this.viewport = new ImageViewport(this.canvas, this.disableInteractions);
+
+        } else {
+            // maps
+            throw Error('Maps not yet implemented.');
+        }
+    }
+
+    _addElement(element) {
+        if(typeof(this.annotations) !== 'object') {
+            // not yet initialized; abort
+            return;
+        }
+
+        if(!element.isValid()) return;
+        var key = element['annotationID'];
+        if(element['type'] ==='annotation') {
+            this.annotations[key] = element;
+        } else if(element['type'] ==='prediction' && window.showPredictions) {
+            this.predictions[key] = element;
+        }
+        // this.viewport.addRenderElement(element.getRenderElement());
+    }
+
+    _updateElement(element) {
+        var key = element['annotationID'];
+        if(element['type'] ==='annotation') {
+            this.annotations[key] = element;
+        } else if(element['type'] ==='prediction') {
+            this.predictions[key] = element;
+        }
+        // this.viewport.updateRenderElement(
+        //     this.viewport.indexOfRenderElement(element.getRenderElement()),
+        //     element.getRenderElement()
+        // );
+    }
+
+    _removeElement(element) {
+        // this.viewport.removeRenderElement(element.getRenderElement());
+        if(element['type'] ==='annotation') {
+            delete this.annotations[element['annotationID']];
+        } else if(element['type'] ==='prediction') {
+            delete this.predictions[element['annotationID']];
+        }
+    }
+
+    getAnnotationType() {
+        throw Error('Not implemented.');
+    }
+
+    convertPredictions() {
+        if(typeof(this.predictions_raw) !== 'object' || Object.keys(this.predictions_raw).length === 0) return;
+
+        // remove current annotations that had been converted from predictions
+        for(var key in this.annotations) {
+            let changed = this.annotations[key].getChanged();
+            let autoConverted = this.annotations[key]['autoConverted'];
+            if(typeof(autoConverted) === 'boolean' && autoConverted && !changed) {
+                // auto-converted and unchanged by user; remove
+                this._removeElement(this.annotations[key]);
+            }
+        }
+
+        let geometryType_anno = String(window.annotationType);
+
+        if(window.annotationType === 'labels') {
+            // need image-wide labels
+            if(window.predictionType === 'labels') {
+                // both annotations and predictions are labels: only convert if user has not yet provided a label
+                if(typeof(this.labelInstance) === 'object' && typeof(this.labelInstance.autoConverted) === 'boolean' && !this.labelInstance.autoConverted) {
+                    // user has already provided a label; abort
+                    return
+                }
+                let pred = this.predictions_raw[Object.keys(this.predictions_raw)[0]];
+                if(pred['confidence'] >= window.carryOverPredictions_minConf) {
+                    this.setLabel(pred['label']);
+                    this.labelInstance.setProperty('autoConverted', true);
+                } else {
+                    this.setLabel(null);
+                }
+
+            } else if(window.predictionType === 'points' || window.predictionType === 'boundingBoxes') {
+                // check carry-over rule
+                if(window.carryOverRule === 'maxConfidence') {
+                    // select arg max
+                    var maxConf = -1;
+                    var argMax = null;
+                    for(var key in this.predictions_raw) {
+                        var predConf = this.predictions_raw[key]['confidence'];
+                        if(predConf >= window.carryOverPredictions_minConf && predConf > maxConf) {
+                            maxConf = predConf;
+                            argMax = key;
+                        }
+                    }
+                    if(argMax != null) {
+                        // construct new classification entry
+                        let id = this.predictions_raw[key]['id'];
+                        let label = this.predictions_raw[key]['label'];
+                        let anno = new Annotation(window.getRandomID(), {'id':id, 'label':label, 'confidence':maxConf}, geometryType_anno, 'annotation', true);
+                        this._addElement(anno);
+                    }
+                } else if(window.carryOverRule === 'mode') {
+                    var counts = {};
+                    for(var key in this.predictions_raw) {
+                        let prediction = new Annotation(window.getRandomID(), this.predictions_raw[key], geometryType_anno, 'prediction');
+                        if(!(counts.hasOwnProperty(prediction.label))) {
+                            counts[label] = 0;
+                        }
+                        counts[label] += 1;
+                    }
+                    // find mode
+                    var count = -1;
+                    var argMax = null;
+                    for(var key in counts) {
+                        if(counts[key] > count) {
+                            count = counts[key];
+                            argMax = key;
+                        }
+                    }
+                    // add new label annotation
+                    if(argMax != null) {
+                        let anno = new Annotation(window.getRandomID(), {'label':argMax}, geometryType_anno, 'annotation', true);
+                        this._addElement(anno);
+                    }
+                }
+            }
+        } else if(window.annotationType === window.predictionType) {
+            // no conversion required
+            for(var key in this.predictions_raw) {
+                let props = this.predictions_raw[key];
+                if(props['confidence'] >= window.carryOverPredictions_minConf) {
+                    let anno = new Annotation(window.getRandomID(), props, geometryType_anno, 'annotation', true);
+                    this._addElement(anno);
+                }
+            }
+        } else if(window.annotationType === 'points' && window.predictionType === 'boundingBoxes') {
+            // remove width and height
+            for(var key in this.predictions_raw) {
+                let props = this.predictions_raw[key];
+                if(props['confidence'] >= window.carryOverPredictions_minConf) {
+                    delete props['width'];
+                    delete props['height'];
+                    let anno = new Annotation(window.getRandomID(), props, geometryType_anno, 'annotation', true);
+                    this._addElement(anno);
+                }
+            }
+        } else if(window.annotationType === 'boundingBoxes' && window.predictionType === 'points') {
+            // add default width and height
+            for(var key in this.predictions_raw) {
+                let props = this.predictions_raw[key];
+                if(props['confidence'] >= window.carryOverPredictions_minConf) {
+                    props['width'] = window.defaultBoxSize_w;
+                    props['height'] = window.defaultBoxSize_h;
+                    let anno = new Annotation(window.getRandomID(), props, geometryType_anno, 'annotation', true);
+                    this._addElement(anno);
+                }
+            }
+        }
+    }
+
+    _parseLabels(properties) {
+        /*
+            Iterates through properties object's entries "predictions" and "annotations"
+            and creates new primitive instances each.
+            Might automatically convert predictions and carry them over to the annotations
+            if applicable and specified in the project settings.
+        */
+        let geometryType_pred = String(window.predictionType);
+        let geometryType_anno = String(window.annotationType);
+
+        this.predictions = {};
+        this.annotations = {};
+        let hasAnnotations = (properties.hasOwnProperty('annotations') && Object.keys(properties['annotations']).length > 0);
+
+        // add predictions as static, immutable objects
+        for(var key in properties['predictions']) {
+            let prediction = new Annotation(key, properties['predictions'][key], geometryType_pred, 'prediction');
+            if(prediction.confidence < window.showPredictions_minConf) {
+                prediction.setProperty('visible', false);
+            }
+            this._addElement(prediction);
+        }
+
+        if(typeof(properties['predictions']) === 'object') {
+            this.predictions_raw = properties['predictions'];
+        } else {
+            this.predictions_raw = {};
+        }
+
+        // convert predictions into annotations where possible and allowed
+        this.convertPredictions();
+
+        // add annotations
+        if(hasAnnotations) {
+            for(var key in properties['annotations']) {
+                //TODO: make more failsafe?
+                var annotation = new Annotation(key, properties['annotations'][key], geometryType_anno, 'annotation');
+                // Only add annotation if it is of the correct type.
+                // if(annotation.getAnnotationType() ===this.getAnnotationType()) {     //TODO: disabled for debugging purposes
+                this._addElement(annotation);
+                // }
+            }
+        }
+    }
+
+    _loadImage(imageURI) {
+        return new Promise(resolve => {
+            const image = new Image();
+            image.addEventListener('load', () => {
+                resolve(image);
+            });
+            image.src = imageURI;
+        });
+    }
+
+    _createMapOlEntry(image) {
+        this.imageEntry = new MapOlElement(this.entryID + '_image', image, this.viewport);
+        // this.viewport.addRenderElement(this.imageEntry);
+    }
+
+    _createImageEntry(image) {
+        this.imageEntry = new ImageElement(this.entryID + '_image', image, this.viewport);
+        // this.viewport.addRenderElement(this.imageEntry);
+    }
+
+    _setup_markup() {
+        this.markup = $('<div class="entry"></div>');
+
+        let self = this;
+
+        this.markup.append(this.canvas);
+
+        let imageFooterDiv = $('<div class="image-footer"></div>');
+
+        // file name (if enabled)
+        if(window.showImageNames) {
+
+            if(window.showImageURIs) {
+                imageFooterDiv.append($('<a href="' + this.getImageURI() + '" target="_blank">' + this.fileName + '</a>'));
+            } else {
+                imageFooterDiv.append($('<span style="color:white">' + this.fileName + '</span>'));
+            }
+        }
+
+        if(!this.disableInteractions)
+            this.markup.on('click', (self._click).bind(self));
+
+        let flagContainer = $('<div class="flag-container"></div>');
+        imageFooterDiv.append(flagContainer);
+
+        // flag for golden questions (if admin)
+        if(window.isAdmin && !window.demoMode) {
+            this.flag = $('<img class="golden-question-flag" title="toggle golden question" />');
+            if(self.isGoldenQuestion) {
+                this.flag.attr('src', '/static/interface/img/controls/flag_active.svg');
+            } else {
+                this.flag.attr('src', '/static/interface/img/controls/flag.svg');
+            }
+            if(!this.disableInteractions) {
+                this.flag.click(function() {
+                    // toggle golden question on server
+                    self._toggleGoldenQuestion();
+                });
+            }
+            flagContainer.append(this.flag);
+        }
+
+        // flag for bookmarking
+        if(!window.demoMode) {
+            this.bookmark = $('<img class="bookmark" title="toggle bookmark" />');
+            if(this.isBookmarked) {
+                this.bookmark.attr('src', '/static/interface/img/controls/bookmark_active.svg');
+            } else {
+                this.bookmark.attr('src', '/static/interface/img/controls/bookmark.svg');
+            }
+            if(!this.disableInteractions) {
+                this.bookmark.click(function() {
+                    // toggle bookmark on server
+                    self._toggleBookmark();
+                });
+            }
+            flagContainer.append(this.bookmark);
+        }
+
+        this.markup.append(imageFooterDiv);
+    }
+
+    getImageURI() {
+        if(this.fileName.startsWith('/')) {
+            // static image; don't prepend data server URI & Co.
+            return this.fileName;
+        } else {
+            return window.dataServerURI + window.projectShortname + '/files/' + this.fileName;
+        }
+    }
+
+    getProperties(minimal, onlyUserAnnotations) {
+        var timeCreated = this.getTimeCreated();
+        if(timeCreated != null) timeCreated = timeCreated.toISOString();
+        var props = {
+            'id': this.entryID,
+            'timeCreated': timeCreated,
+            'timeRequired': this.getTimeRequired(),
+            'numInteractions': this.numInteractions
+        };
+        props['annotations'] = [];
+        for(var key in this.annotations) {
+            if(!onlyUserAnnotations || this.annotations[key].getChanged())
+                var annoProps = this.annotations[key].getProperties(minimal);
+
+                // append time created and time required
+                annoProps['timeCreated'] = this.getTimeCreated();
+                var timeRequired = Math.max(0, this.annotations[key].getTimeChanged() - this.getTimeCreated());
+                annoProps['timeRequired'] = timeRequired;
+                props['annotations'].push(annoProps);
+        }
+        if(!minimal) {
+            props['fileName'] = this.fileName;
+            props['predictions'] = {};
+            if(!onlyUserAnnotations) {
+                for(var key in this.predictions) {
+                    props['predictions'][key] = this.predictions[key].getProperties(minimal);
+                }
+            }
+        }
+        return props;
+    }
+
+    getTimeCreated() {
+        // returns the timestamp of the image having successfully loaded
+        return (this.imageEntry === null? null : this.imageEntry.getTimeCreated());
+    }
+
+    getTimeRequired() {
+        // returns the difference between now() and the annotation's creation
+        // date
+        return new Date() - this.startTime;
+    }
+
+    setLabel(label) {
+        for(var key in this.annotations) {
+            this.annotations[key].setProperty('label', label);
+        }
+        this.render();
+        this.numInteractions++;
+
+        window.dataHandler.updatePresentClasses();
+    }
+
+    setPredictionsVisible(visible) {
+        for(var key in this.predictions) {
+            this.predictions[key].setVisible(visible);
+        }
+        this.render();
+    }
+
+    setAnnotationsVisible(visible) {
+        for(var key in this.annotations) {
+            this.annotations[key].setVisible(visible);
+        }
+        this.render();
+    }
+
+    setAnnotationsInactive() {
+        for(var key in this.annotations) {
+            this.annotations[key].setActive(false, this.viewport);
+        }
+        this.render();
+    }
+
+    removeActiveAnnotations() {
+            var numRemoved = 0;
+            for(var key in this.annotations) {
+                if(this.annotations[key].isActive()) {
+                    this.annotations[key].setActive(false, this.viewport);
+                    this._removeElement(this.annotations[key]);
+                    numRemoved++;
+                }
+            }
+            this.render();
+            this.numInteractions++;
+            window.dataHandler.updatePresentClasses();
+            return numRemoved;
+    }
+
+    removeAllAnnotations() {
+        for(var key in this.annotations) {
+            this.annotations[key].setActive(false, this.viewport);
+            this._removeElement(this.annotations[key]);
+        }
+        this.render();
+        this.numInteractions++;
+        window.dataHandler.updatePresentClasses();
+    }
+
+    toggleActiveAnnotationsUnsure() {
+        var active = false;
+        for(var key in this.annotations) {
+            if(this.annotations[key].isActive()) {
+                this.annotations[key].setProperty('unsure', !this.annotations[key].getProperty('unsure'));
+                active = true;
+            }
+        }
+        this.render();
+        this.numInteractions++;
+        return active;
+    }
+
+    getActiveClassIDs() {
+        /*
+            Returns distinct label class IDs of all annotations and predictions
+            present in the entry.
+        */
+        var classIDs = {};
+        for(var key in this.annotations) {
+            var label = this.annotations[key].label;
+            if(label != null) classIDs[label] = 1;
+        }
+        for(var key in this.predictions) {
+            var label = this.predictions[key].label;
+            if(label != null) classIDs[label] = 1;
+        }
+        return classIDs;
+    }
+
+    styleChanged() {
+        for(var key in this.annotations) {
+            this.annotations[key].styleChanged();
+        }
+        for(var key in this.predictions) {
+                this.predictions[key].styleChanged();
+            }
+        this.render();
+    }
+
+    render() {
+        // this.viewport.render();
+        this.imageEntry.render();
+    }
+}
+
+
+class ClassificationMLEntry extends AbstractDataEntryEx {
     /*
        Implementation for image classification with multilabel.
        Expected keys in 'properties' input:
@@ -611,7 +1200,7 @@ class ClassificationMLEntry extends AbstractDataEntry {
     constructor(entryID, properties, disableInteractions) {
         super(entryID, properties, disableInteractions);
 
-        this._setup_markup();
+        // this._setup_markup();
         this.loadingPromise.then(response => {
             if(this.labelInstance ===null) {
                 // add a default, blank instance if nothing has been predicted or annotated yet
@@ -645,7 +1234,7 @@ class ClassificationMLEntry extends AbstractDataEntry {
                 var unsure = element['geometry']['unsure'];
                 var anno = new Annotation(key, {'label':element['label'], 'unsure':unsure}, 'labels', element['type']);
                 this.annotations[key] = anno;
-                this.viewport.addRenderElement(anno.getRenderElement());
+                // this.viewport.addRenderElement(anno.getRenderElement());
                 this.labelInstance = anno;
             }
 
@@ -659,7 +1248,7 @@ class ClassificationMLEntry extends AbstractDataEntry {
 
         } else if(element['type'] ==='prediction' && window.showPredictions) {
             this.predictions[key] = element;
-            this.viewport.addRenderElement(element.getRenderElement());
+            // this.viewport.addRenderElement(element.getRenderElement());
         }
 
         window.dataHandler.updatePresentClasses();
