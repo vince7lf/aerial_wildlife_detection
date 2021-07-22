@@ -72,3 +72,15 @@ C:\Users\vincent.le_falher\myprojects\university\aerial_wildlife_detection>npm c
 C:\Users\vincent.le_falher\myprojects\university\aerial_wildlife_detection>npm config rm proxy
 ```
    
+# Création des tuiles
+
+Avec les commandes. Ensuite avec Python et modules gdal. 
+```
+c:\QGIS310>OSGeo4W.bat
+c:\QGIS310>py3_env
+c:\QGIS310>cd c:\Users\vincent.le_falher\Downloads\AIDEMELCC\gdal_tile
+
+gdal_retile -levels 1 -tileIndex tuiles.shp -tileIndexField Location -ps 224 224 -targetDir c:\Users\vincent.le_falher\Downloads\AIDEMELCC\gdal_tile test_retile.jpg
+
+ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 tuiles.geojson tuiles.shp
+```

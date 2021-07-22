@@ -8,7 +8,7 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
      * @param {Number} y The top left y coordinate
      * @param {Number} width The width of the rectangle
      * @param {Number} height The height of the rectangle
-     * @param {Number} [radius = 5] The corner radius; It can also be an object 
+     * @param {Number} [radius = 5] The corner radius; It can also be an object
      *                 to specify different radii for corners
      * @param {Number} [radius.tl = 0] Top left
      * @param {Number} [radius.tr = 0] Top right
@@ -16,22 +16,22 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
      * @param {Number} [radius.bl = 0] Bottom left
      * @param {Boolean} [fill = false] Whether to fill the rectangle.
      * @param {Boolean} [stroke = true] Whether to stroke the rectangle.
-     * 
+     *
      * source: https://stackoverflow.com/questions/1255512/how-to-draw-a-rounded-rectangle-on-html-canvas
      */
-    if (typeof(stroke) == 'undefined') {
-      stroke = true;
+    if (typeof (stroke) == 'undefined') {
+        stroke = true;
     }
-    if (typeof(radius) === 'undefined') {
-      radius = 5;
+    if (typeof (radius) === 'undefined') {
+        radius = 5;
     }
-    if (typeof(radius) === 'number') {
-      radius = {tl: radius, tr: radius, br: radius, bl: radius};
+    if (typeof (radius) === 'number') {
+        radius = {tl: radius, tr: radius, br: radius, bl: radius};
     } else {
-      var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
-      for (var side in defaultRadius) {
-        radius[side] = radius[side] || defaultRadius[side];
-      }
+        var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+        for (var side in defaultRadius) {
+            radius[side] = radius[side] || defaultRadius[side];
+        }
     }
     ctx.beginPath();
     ctx.moveTo(x + radius.tl, y);
@@ -45,14 +45,13 @@ function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
     ctx.quadraticCurveTo(x, y, x + radius.tl, y);
     ctx.closePath();
     if (fill) {
-      ctx.fill();
+        ctx.fill();
     }
     if (stroke) {
-      ctx.stroke();
+        ctx.stroke();
     }
-  
-  }
 
+}
 
 
 class AbstractRenderElement {
@@ -60,10 +59,10 @@ class AbstractRenderElement {
     constructor(id, style, zIndex, disableInteractions) {
         this.id = id;
         this.style = style;
-        if(this.style === null || this.style === undefined) {
+        if (this.style === null || this.style === undefined) {
             this.style = {};
         }
-        this.zIndex = (zIndex == null? 0 : zIndex);
+        this.zIndex = (zIndex == null ? 0 : zIndex);
         this.disableInteractions = disableInteractions;
         this.isActive = false;
         this.changed = false;   // will be set to true if user modifies the initial geometry
@@ -74,9 +73,9 @@ class AbstractRenderElement {
     }
 
     getProperty(propertyName) {
-        if(this.hasOwnProperty(propertyName)) {
+        if (this.hasOwnProperty(propertyName)) {
             return this[propertyName];
-        } else if(this.style.hasOwnProperty(propertyName)) {
+        } else if (this.style.hasOwnProperty(propertyName)) {
             return this.style[propertyName];
         }
         return null;
@@ -85,13 +84,13 @@ class AbstractRenderElement {
     setProperty(propertyName, value) {
 
         // handle style properties separately
-        if(this.style.hasOwnProperty(propertyName)) {
+        if (this.style.hasOwnProperty(propertyName)) {
             this.style[propertyName] = value;
         }
         this[propertyName] = value;
 
         // set to user-modified
-        if(!['id', 'isActive', 'visible', 'zIndex'].includes(propertyName)) {
+        if (!['id', 'isActive', 'visible', 'zIndex'].includes(propertyName)) {
             this.changed = true;
             this.lastUpdated = new Date();
         }
@@ -120,7 +119,7 @@ class AbstractRenderElement {
     }
 
     render(ctx, scaleFun) {
-        if(!this.visible) return;
+        if (!this.visible) return;
     }
 }
 
@@ -130,20 +129,20 @@ class ElementGroup extends AbstractRenderElement {
     constructor(id, elements, zIndex, disableInteractions) {
         super(id, null, zIndex, disableInteractions);
         this.elements = elements;
-        if(this.elements == null) {
+        if (this.elements == null) {
             this.elements = [];
         }
     }
 
     addElement(element) {
-        if(this.elements.indexOf(element) === -1) {
+        if (this.elements.indexOf(element) === -1) {
             this.elements.push(element);
         }
     }
 
     removeElement(element) {
         var idx = this.elements.indexOf(element);
-        if(idx !== -1) {
+        if (idx !== -1) {
             this.elements.splice(idx, 1);
         }
     }
@@ -151,14 +150,14 @@ class ElementGroup extends AbstractRenderElement {
     setVisible(visible) {
         super.setVisible(visible);
 
-        for(var e=0; e<this.elements.length; e++) {
+        for (var e = 0; e < this.elements.length; e++) {
             this.elements[e].setVisible(visible);
         }
     }
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        for(var e=0; e<this.elements.length; e++) {
+        for (var e = 0; e < this.elements.length; e++) {
             this.elements[e].render(ctx, scaleFun);
         }
     }
@@ -196,6 +195,16 @@ class MapOlElement extends AbstractRenderElement {
                 lineCap: 'round'
             })
         });
+        const selectedCountry = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgba(200,20,20,0.8)',
+                width: 2,
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(200,20,20,0.4)',
+            }),
+        });
+
         var extent = [0, -3040, 4056, 0];
         var projection = new ol.proj.Projection({
             code: 'xkcd-image',
@@ -222,6 +231,12 @@ class MapOlElement extends AbstractRenderElement {
             condition: ol.events.condition.pointerMove,
             style: canadaStyleSelect
         });
+        var clickInteraction = new ol.interaction.Select({
+            condition: ol.events.condition.pointerClick,
+            style: function( feature) {
+                return selectedCountry;
+            }
+        });
         view = new ol.View({
             projection: projection,
             center: [2000, -1500],
@@ -235,10 +250,10 @@ class MapOlElement extends AbstractRenderElement {
             layers: [staticImage, vectorLayer1]
         });
 
-
         // Set the view for the map
         map.setView(view);
         map.addInteraction(selectInteraction)
+        map.addInteraction(clickInteraction)
     }
 }
 
@@ -250,15 +265,15 @@ class ImageElement extends AbstractRenderElement {
         this.image = image;
         this.viewport = viewport;
 
-        if(this.image != null) {
+        if (this.image != null) {
             // calculate image bounds
             let imageSize = [this.image.naturalWidth, this.image.naturalHeight];
             let canvasSize = [this.viewport.canvas.width(), this.viewport.canvas.height()];
-            let scaleFactor = Math.min(canvasSize[0]/imageSize[0], canvasSize[1]/imageSize[1]);
-            let dimensions = [scaleFactor*imageSize[0]/canvasSize[0], scaleFactor*imageSize[1]/canvasSize[1]];
+            let scaleFactor = Math.min(canvasSize[0] / imageSize[0], canvasSize[1] / imageSize[1]);
+            let dimensions = [scaleFactor * imageSize[0] / canvasSize[0], scaleFactor * imageSize[1] / canvasSize[1]];
 
             // define valid canvas area as per image offset
-            this.bounds = [(1-dimensions[0])/2, (1-dimensions[1])/2, dimensions[0], dimensions[1]];
+            this.bounds = [(1 - dimensions[0]) / 2, (1 - dimensions[1]) / 2, dimensions[0], dimensions[1]];
             this.viewport.setValidArea(this.bounds);
         }
         this.timeCreated = new Date();
@@ -277,8 +292,8 @@ class ImageElement extends AbstractRenderElement {
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        var targetCoords = scaleFun([0,0,1,1], 'validArea');
-        if(this.image != null) {
+        var targetCoords = scaleFun([0, 0, 1, 1], 'validArea');
+        if (this.image != null) {
             ctx.drawImage(this.image, targetCoords[0], targetCoords[1],
                 targetCoords[2],
                 targetCoords[3]);
@@ -291,11 +306,10 @@ class ImageElement extends AbstractRenderElement {
             ctx.font = '20px sans-serif';
             var dimensions = ctx.measureText(text);
             ctx.fillStyle = '#FFFFFF';
-            ctx.fillText(text, targetCoords[2]/2 - dimensions.width/2, targetCoords[3]/2);
+            ctx.fillText(text, targetCoords[2] / 2 - dimensions.width / 2, targetCoords[3] / 2);
         }
     }
 }
-
 
 
 class HoverTextElement extends AbstractRenderElement {
@@ -305,50 +319,49 @@ class HoverTextElement extends AbstractRenderElement {
         this.text = hoverText;
         this.position = position;
         this.reference = reference;
-        if(this.style.textColor == null || this.style.textColor == undefined) {
+        if (this.style.textColor == null || this.style.textColor == undefined) {
             this.style['textColor'] = window.styles.hoverText.text.color;
         }
     }
 
     setProperty(propertyName, value) {
         super.setProperty(propertyName, value);
-        if(propertyName === 'color') {
+        if (propertyName === 'color') {
             this.style.fillColor = window.addAlpha(value, this.style.fillOpacity);
         }
     }
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        if(this.text == null) return;
+        if (this.text == null) return;
         var hoverPos = scaleFun(this.position, this.reference);
         ctx.font = window.styles.hoverText.text.fontSizePix + 'px ' + window.styles.hoverText.text.fontStyle;
         var dimensions = ctx.measureText(this.text);
         dimensions.height = window.styles.hoverText.box.height;
         dimensions = [dimensions.width + 8, dimensions.height];
         var offsetH = window.styles.hoverText.offsetH;
-        
-        if(this.style.fillColor != null) {
+
+        if (this.style.fillColor != null) {
             ctx.fillStyle = this.style.fillColor;
-            ctx.fillRect(offsetH+hoverPos[0]-4, hoverPos[1]-(dimensions[1]/2+4), dimensions[0]+4, dimensions[1]+4);
+            ctx.fillRect(offsetH + hoverPos[0] - 4, hoverPos[1] - (dimensions[1] / 2 + 4), dimensions[0] + 4, dimensions[1] + 4);
         }
-        if(this.style.strokeColor != null && this.style.lineWidth != null) {
+        if (this.style.strokeColor != null && this.style.lineWidth != null) {
             ctx.strokeStyle = this.style.strokeColor;
             ctx.lineWidth = this.style.lineWidth;
             ctx.setLineDash([]);
-            ctx.strokeRect(offsetH+hoverPos[0]-4, hoverPos[1]-(dimensions[1]/2+4), dimensions[0]+4, dimensions[1]+4);
+            ctx.strokeRect(offsetH + hoverPos[0] - 4, hoverPos[1] - (dimensions[1] / 2 + 4), dimensions[0] + 4, dimensions[1] + 4);
         }
         ctx.fillStyle = this.style.textColor;
-        ctx.fillText(this.text, offsetH+hoverPos[0], hoverPos[1]);
+        ctx.fillText(this.text, offsetH + hoverPos[0], hoverPos[1]);
     }
 }
-
 
 
 class PointElement extends AbstractRenderElement {
 
     constructor(id, x, y, style, unsure, zIndex, disableInteractions) {
         super(id, style, zIndex, disableInteractions);
-        if(!this.style.hasOwnProperty('fillColor') && this.style.hasOwnProperty('color')) {
+        if (!this.style.hasOwnProperty('fillColor') && this.style.hasOwnProperty('color')) {
             this.style['fillColor'] = window.addAlpha(this.style.color, this.style.fillOpacity);
         }
         this.x = x;
@@ -360,7 +373,7 @@ class PointElement extends AbstractRenderElement {
 
     setProperty(propertyName, value) {
         super.setProperty(propertyName, value);
-        if(propertyName === 'color') {
+        if (propertyName === 'color') {
             this.style.fillColor = window.addAlpha(value, this.style.fillOpacity);
         }
     }
@@ -376,12 +389,12 @@ class PointElement extends AbstractRenderElement {
 
     /* interaction events */
     _mousedown_event(event, viewport, force) {
-        if(!this.visible ||
+        if (!this.visible ||
             !force && (!([ACTIONS.DO_NOTHING, ACTIONS.ADD_ANNOTATION].includes(window.uiControlHandler.getAction())))) return;
         this.mousePos_current = viewport.getRelativeCoordinates(event, 'validArea');
         this.mouseDrag = (event.which === 1);
-        var tolerance = viewport.transformCoordinates([0,0,window.annotationProximityTolerance,0], 'canvas', true)[2];
-        if(this.euclideanDistance(this.mousePos_current) <= tolerance) {
+        var tolerance = viewport.transformCoordinates([0, 0, window.annotationProximityTolerance, 0], 'canvas', true)[2];
+        if (this.euclideanDistance(this.mousePos_current) <= tolerance) {
             viewport.canvas.css('cursor', 'move');
         }
     }
@@ -392,14 +405,14 @@ class PointElement extends AbstractRenderElement {
             - always: update cursor
             - if drag and within distance to point: move it
         */
-        if(!this.visible) return;
+        if (!this.visible) return;
         var coords = viewport.getRelativeCoordinates(event, 'validArea');
-        if(this.mousePos_current == null) {
+        if (this.mousePos_current == null) {
             this.mousePos_current = coords;
         }
         var mpc = this.mousePos_current;
-        var tolerance = viewport.transformCoordinates([0,0,window.annotationProximityTolerance,0], 'canvas', true)[2];
-        if(this.mouseDrag && this.euclideanDistance(mpc) <= tolerance) {
+        var tolerance = viewport.transformCoordinates([0, 0, window.annotationProximityTolerance, 0], 'canvas', true)[2];
+        if (this.mouseDrag && this.euclideanDistance(mpc) <= tolerance) {
             // move point
             this.setProperty('x', this.x + coords[0] - mpc[0]);
             this.setProperty('y', this.y + coords[1] - mpc[1]);
@@ -420,16 +433,16 @@ class PointElement extends AbstractRenderElement {
 
     _mouseup_event(event, viewport, force) {
         this.mouseDrag = false;
-        if(!this.visible ||
+        if (!this.visible ||
             !force && (!(window.uiControlHandler.getAction() === ACTIONS.DO_NOTHING ||
-            window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION)) ||
+                window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION)) ||
             (window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION && window.uiControlHandler.burstMode)) return;
-        
+
         var mousePos = viewport.getRelativeCoordinates(event, 'validArea');
-        
+
         // activate if position within tolerance
-        var tolerance = viewport.transformCoordinates([0,0,window.annotationProximityTolerance,0], 'canvas', true)[2];
-        if(this.euclideanDistance(mousePos) <= tolerance) {
+        var tolerance = viewport.transformCoordinates([0, 0, window.annotationProximityTolerance, 0], 'canvas', true)[2];
+        if (this.euclideanDistance(mousePos) <= tolerance) {
             this.setActive(true, viewport);
         } else {
             this.setActive(false, viewport);
@@ -438,29 +451,29 @@ class PointElement extends AbstractRenderElement {
 
     _mouseleave_event(event, viewport, force) {
         this.mouseDrag = false;
-        if(force || (window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION && !window.uiControlHandler.burstMode)) {
+        if (force || (window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION && !window.uiControlHandler.burstMode)) {
             window.uiControlHandler.setAction(ACTIONS.DO_NOTHING);
         }
     }
 
     _get_active_handle_callback(type, viewport) {
         var self = this;
-        if(type === 'mousedown') {
-            return function(event) {
+        if (type === 'mousedown') {
+            return function (event) {
                 self._mousedown_event(event, viewport, false);
             };
 
-        } else if(type === 'mousemove') {
-            return function(event) {
+        } else if (type === 'mousemove') {
+            return function (event) {
                 self._mousemove_event(event, viewport, false);
             }
 
-        } else if(type === 'mouseup') {
-            return function(event) {
+        } else if (type === 'mouseup') {
+            return function (event) {
                 self._mouseup_event(event, viewport, false);
             }
-        } else if(type === 'mouseleave') {
-            return function(event) {
+        } else if (type === 'mouseleave') {
+            return function (event) {
                 self._mouseleave_event(event, viewport, false);
             }
         }
@@ -470,9 +483,9 @@ class PointElement extends AbstractRenderElement {
         /*
             Sets the 'active' property to the given value.
         */
-        if(!this.disableInteractions) {
+        if (!this.disableInteractions) {
             super.setActive(active, viewport);
-            if(active) {
+            if (active) {
                 viewport.addCallback(this.id, 'mousedown', this._get_active_handle_callback('mousedown', viewport));
                 viewport.addCallback(this.id, 'mousemove', this._get_active_handle_callback('mousemove', viewport));
                 viewport.addCallback(this.id, 'mouseup', this._get_active_handle_callback('mouseup', viewport));
@@ -494,7 +507,7 @@ class PointElement extends AbstractRenderElement {
             Adds this instance to the viewport.
             This makes the entry user-modifiable in terms of position.
         */
-        if(!this.disableInteractions)
+        if (!this.disableInteractions)
             viewport.addCallback(this.id, 'mouseup', this._get_active_handle_callback('mouseup', viewport));
     }
 
@@ -504,46 +517,46 @@ class PointElement extends AbstractRenderElement {
     }
 
     render(ctx, scaleFun) {
-        if(!this.visible || this.x == null || this.y == null) return;
+        if (!this.visible || this.x == null || this.y == null) return;
 
         var coords = scaleFun([this.x, this.y], 'validArea');
 
         // draw actual point
         ctx.fillStyle = window.addAlpha(this.style.fillColor, this.style.fillOpacity);
         ctx.beginPath();
-        ctx.arc(coords[0], coords[1], this.style.pointSize, 0, 2*Math.PI);
+        ctx.arc(coords[0], coords[1], this.style.pointSize, 0, 2 * Math.PI);
         ctx.fill();
         ctx.closePath();
 
         // if active: also draw outline
-        if(this.isActive) {
+        if (this.isActive) {
             ctx.strokeStyle = window.addAlpha(this.style.fillColor, this.style.lineOpacity);
             ctx.lineWidth = 4;
             ctx.setLineDash([]);
             ctx.beginPath();
-            ctx.arc(coords[0], coords[1], this.style.pointSize + 6, 0, 2*Math.PI);
+            ctx.arc(coords[0], coords[1], this.style.pointSize + 6, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.closePath();
         }
 
         // unsure flag
-        if(this.unsure) {
+        if (this.unsure) {
             var text = 'unsure';
-            var scaleFactors = scaleFun([0,0,ctx.canvas.width,ctx.canvas.height], 'canvas', true).slice(2,4);
+            var scaleFactors = scaleFun([0, 0, ctx.canvas.width, ctx.canvas.height], 'canvas', true).slice(2, 4);
             ctx.font = window.styles.hoverText.text.fontSizePix * scaleFactors[0] + 'px ' + window.styles.hoverText.text.fontStyle;
             var dimensions = ctx.measureText(text);
             dimensions.height = window.styles.hoverText.box.height;
             dimensions = [dimensions.width + 8, dimensions.height * scaleFactors[1]];
             ctx.setLineDash([]);
             ctx.fillStyle = this.style.fillColor;
-            ctx.fillRect(coords[0]+4, coords[1]-(dimensions[1]), dimensions[0]+8, dimensions[1]);
+            ctx.fillRect(coords[0] + 4, coords[1] - (dimensions[1]), dimensions[0] + 8, dimensions[1]);
             ctx.fillStyle = window.styles.hoverText.text.color;
-            ctx.fillText(text, coords[0]+12, coords[1]-dimensions[1]/2+4);
+            ctx.fillText(text, coords[0] + 12, coords[1] - dimensions[1] / 2 + 4);
         }
     }
 
     euclideanDistance(that) {
-        return Math.sqrt(Math.pow(this.x - that[0],2) + Math.pow(this.y - that[1],2));
+        return Math.sqrt(Math.pow(this.x - that[0], 2) + Math.pow(this.y - that[1], 2));
     }
 
     isInDistance(coordinates, tolerance) {
@@ -556,12 +569,11 @@ class PointElement extends AbstractRenderElement {
 }
 
 
-
 class LineElement extends AbstractRenderElement {
 
     constructor(id, startX, startY, endX, endY, style, unsure, zIndex, disableInteractions) {
         super(id, style, zIndex, disableInteractions);
-        if(!this.style.hasOwnProperty('strokeColor') && this.style.hasOwnProperty('color')) {
+        if (!this.style.hasOwnProperty('strokeColor') && this.style.hasOwnProperty('color')) {
             this.style['strokeColor'] = window.addAlpha(this.style.color, this.style.lineOpacity);
         }
         this.startX = startX;
@@ -575,7 +587,7 @@ class LineElement extends AbstractRenderElement {
 
     setProperty(propertyName, value) {
         super.setProperty(propertyName, value);
-        if(propertyName === 'color') {
+        if (propertyName === 'color') {
             this.style.strokeColor = window.addAlpha(value, this.style.lineOpacity);
         }
     }
@@ -593,15 +605,15 @@ class LineElement extends AbstractRenderElement {
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        if(this.startX == null || this.startY == null ||
+        if (this.startX == null || this.startY == null ||
             this.endX == null || this.endY == null)
             return;
-        
+
         var startPos = scaleFun([this.startX, this.startY], 'validArea');
         var endPos = scaleFun([this.endX, this.endY], 'validArea');
-        
-        if(this.style.strokeColor != null) ctx.strokeStyle = this.style.strokeColor;
-        if(this.style.lineWidth != null) ctx.lineWidth = this.style.lineWidth;
+
+        if (this.style.strokeColor != null) ctx.strokeStyle = this.style.strokeColor;
+        if (this.style.lineWidth != null) ctx.lineWidth = this.style.lineWidth;
         ctx.setLineDash(this.style.lineDash);
         ctx.beginPath();
         ctx.moveTo(startPos[0], startPos[1]);
@@ -616,7 +628,7 @@ class RectangleElement extends PointElement {
 
     constructor(id, x, y, width, height, style, unsure, zIndex, disableInteractions) {
         super(id, x, y, style, unsure, zIndex, disableInteractions);
-        if(!this.style.hasOwnProperty('strokeColor') && this.style.hasOwnProperty('color')) {
+        if (!this.style.hasOwnProperty('strokeColor') && this.style.hasOwnProperty('color')) {
             this.style['strokeColor'] = window.addAlpha(this.style.color, this.style.lineOpacity);
         }
         this.x = x;
@@ -630,7 +642,7 @@ class RectangleElement extends PointElement {
 
     setProperty(propertyName, value) {
         super.setProperty(propertyName, value);
-        if(propertyName === 'color') {
+        if (propertyName === 'color') {
             this.style.strokeColor = window.addAlpha(value, this.style.lineOpacity);
         }
     }
@@ -647,7 +659,7 @@ class RectangleElement extends PointElement {
     }
 
     getExtent() {
-        return [this.x - this.width/2, this.y - this.height/2, this.x + this.width/2, this.y + this.height/2];
+        return [this.x - this.width / 2, this.y - this.height / 2, this.x + this.width / 2, this.y + this.height / 2];
     }
 
     containsPoint(coordinates) {
@@ -661,7 +673,7 @@ class RectangleElement extends PointElement {
             Returns true if any parts of the bounding box are
             within a tolerance's distance of the provided coordinates.
         */
-        var extentsTolerance = [this.x-this.width/2-tolerance, this.y-this.height/2-tolerance, this.x+this.width/2+tolerance, this.y+this.height/2+tolerance];
+        var extentsTolerance = [this.x - this.width / 2 - tolerance, this.y - this.height / 2 - tolerance, this.x + this.width / 2 + tolerance, this.y + this.height / 2 + tolerance];
         return (coordinates[0] >= extentsTolerance[0] && coordinates[0] <= extentsTolerance[2]) &&
             (coordinates[1] >= extentsTolerance[1] && coordinates[1] <= extentsTolerance[3]);
     }
@@ -671,12 +683,12 @@ class RectangleElement extends PointElement {
             Returns small drawable rectangles at the corners
             and sides of the rectangle.
         */
-        if(this.resizeHandles != null) {
+        if (this.resizeHandles != null) {
             return this.resizeHandles;
         }
 
         var self = this;
-        var getHandle = function(x, y) {
+        var getHandle = function (x, y) {
             return new ResizeHandle(
                 self.id + '_resize_' + x + '_' + y,
                 x, y,
@@ -685,37 +697,37 @@ class RectangleElement extends PointElement {
         var handles = [];
 
         // corners
-        handles.push(getHandle(this.x - this.width/2, this.y - this.height/2));
-        handles.push(getHandle(this.x - this.width/2, this.y + this.height/2));
-        handles.push(getHandle(this.x + this.width/2, this.y - this.height/2));
-        handles.push(getHandle(this.x + this.width/2, this.y + this.height/2));
+        handles.push(getHandle(this.x - this.width / 2, this.y - this.height / 2));
+        handles.push(getHandle(this.x - this.width / 2, this.y + this.height / 2));
+        handles.push(getHandle(this.x + this.width / 2, this.y - this.height / 2));
+        handles.push(getHandle(this.x + this.width / 2, this.y + this.height / 2));
 
         // sides
-        handles.push(getHandle(this.x, this.y - this.height/2));
-        handles.push(getHandle(this.x, this.y + this.height/2));
-        handles.push(getHandle(this.x - this.width/2, this.y));
-        handles.push(getHandle(this.x + this.width/2, this.y));
-        
+        handles.push(getHandle(this.x, this.y - this.height / 2));
+        handles.push(getHandle(this.x, this.y + this.height / 2));
+        handles.push(getHandle(this.x - this.width / 2, this.y));
+        handles.push(getHandle(this.x + this.width / 2, this.y));
+
         this.resizeHandles = new ElementGroup(this.id + '_resizeHandles', handles);
     }
 
     _updateResizeHandles() {
-        if(this.resizeHandles == null) return;
-        this.resizeHandles.elements[0].setProperty('x', this.x - this.width/2);
-        this.resizeHandles.elements[0].setProperty('y', this.y - this.height/2);
-        this.resizeHandles.elements[1].setProperty('x', this.x - this.width/2);
-        this.resizeHandles.elements[1].setProperty('y', this.y + this.height/2);
-        this.resizeHandles.elements[2].setProperty('x', this.x + this.width/2);
-        this.resizeHandles.elements[2].setProperty('y', this.y - this.height/2);
-        this.resizeHandles.elements[3].setProperty('x', this.x + this.width/2);
-        this.resizeHandles.elements[3].setProperty('y', this.y + this.height/2);
+        if (this.resizeHandles == null) return;
+        this.resizeHandles.elements[0].setProperty('x', this.x - this.width / 2);
+        this.resizeHandles.elements[0].setProperty('y', this.y - this.height / 2);
+        this.resizeHandles.elements[1].setProperty('x', this.x - this.width / 2);
+        this.resizeHandles.elements[1].setProperty('y', this.y + this.height / 2);
+        this.resizeHandles.elements[2].setProperty('x', this.x + this.width / 2);
+        this.resizeHandles.elements[2].setProperty('y', this.y - this.height / 2);
+        this.resizeHandles.elements[3].setProperty('x', this.x + this.width / 2);
+        this.resizeHandles.elements[3].setProperty('y', this.y + this.height / 2);
         this.resizeHandles.elements[4].setProperty('x', this.x);
-        this.resizeHandles.elements[4].setProperty('y', this.y - this.height/2);
+        this.resizeHandles.elements[4].setProperty('y', this.y - this.height / 2);
         this.resizeHandles.elements[5].setProperty('x', this.x);
-        this.resizeHandles.elements[5].setProperty('y', this.y + this.height/2);
-        this.resizeHandles.elements[6].setProperty('x', this.x - this.width/2);
+        this.resizeHandles.elements[5].setProperty('y', this.y + this.height / 2);
+        this.resizeHandles.elements[6].setProperty('x', this.x - this.width / 2);
         this.resizeHandles.elements[6].setProperty('y', this.y);
-        this.resizeHandles.elements[7].setProperty('x', this.x + this.width/2);
+        this.resizeHandles.elements[7].setProperty('x', this.x + this.width / 2);
         this.resizeHandles.elements[7].setProperty('y', this.y);
     }
 
@@ -728,47 +740,47 @@ class RectangleElement extends PointElement {
         */
 
         // check first if cursor is within reach
-        if(!this.isInDistance(coordinates, tolerance)) return null;
+        if (!this.isInDistance(coordinates, tolerance)) return null;
 
-        var distL = Math.abs((this.x - this.width/2) - coordinates[0]);
-        var distT = Math.abs((this.y - this.height/2) - coordinates[1]);
-        var distR = Math.abs((this.x + this.width/2) - coordinates[0]);
-        var distB = Math.abs((this.y + this.height/2) - coordinates[1]);
-        
+        var distL = Math.abs((this.x - this.width / 2) - coordinates[0]);
+        var distT = Math.abs((this.y - this.height / 2) - coordinates[1]);
+        var distR = Math.abs((this.x + this.width / 2) - coordinates[0]);
+        var distB = Math.abs((this.y + this.height / 2) - coordinates[1]);
+
         var distCorner = Math.min(distL, distT, distR, distB);
-        var distCenter = Math.sqrt(Math.pow(this.x-coordinates[0], 2) + Math.pow(this.y-coordinates[1], 2));
+        var distCenter = Math.sqrt(Math.pow(this.x - coordinates[0], 2) + Math.pow(this.y - coordinates[1], 2));
 
-        if(distCenter < distCorner && distCenter <= tolerance) {
+        if (distCenter < distCorner && distCenter <= tolerance) {
             return 'c';
 
-        } else if(distT <= tolerance) {
-            if(distL <= tolerance) return 'nw';
-            if(distR <= tolerance) return 'ne';
+        } else if (distT <= tolerance) {
+            if (distL <= tolerance) return 'nw';
+            if (distR <= tolerance) return 'ne';
             return 'n';
-        } else if(distB <= tolerance) {
-            if(distL <= tolerance) return 'sw';
-            if(distR <= tolerance) return 'se';
+        } else if (distB <= tolerance) {
+            if (distL <= tolerance) return 'sw';
+            if (distR <= tolerance) return 'se';
             return 's';
-        } else if(distL <= tolerance) {
+        } else if (distL <= tolerance) {
             return 'w';
-        } else if(distR <= tolerance) {
+        } else if (distR <= tolerance) {
             return 'e';
-        } else if(this.containsPoint(coordinates)) {
+        } else if (this.containsPoint(coordinates)) {
             return 'c';
         } else {
             return null;
         }
     }
 
-    
+
     /* interaction events */
     _mousedown_event(event, viewport, force) {
-        if(!this.visible ||
+        if (!this.visible ||
             !force && (!([ACTIONS.DO_NOTHING, ACTIONS.ADD_ANNOTATION].includes(window.uiControlHandler.getAction())))) return;
         this.mousePos_current = viewport.getRelativeCoordinates(event, 'validArea');
         this.mouseDrag = (event.which === 1);
-        this.activeHandle = this.getClosestHandle(this.mousePos_current, Math.min(this.width, this.height)/3);
-        if(this.activeHandle === 'c') {
+        this.activeHandle = this.getClosestHandle(this.mousePos_current, Math.min(this.width, this.height) / 3);
+        if (this.activeHandle === 'c') {
             // center of a box clicked; set globally so that other active boxes don't falsely resize
             viewport.canvas.css('cursor', 'move');
         }
@@ -781,12 +793,12 @@ class RectangleElement extends PointElement {
             - if drag and close to resize handle: resize rectangle and move resize handles
             - if drag and inside rectangle: move rectangle and resize handles
         */
-        if(!this.visible || 
+        if (!this.visible ||
             !force && (!(window.uiControlHandler.getAction() === ACTIONS.DO_NOTHING || window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION)
             )) return;
         var coords = viewport.getRelativeCoordinates(event, 'validArea');
         // var handle = this.getClosestHandle(coords, window.annotationProximityTolerance / Math.min(viewport.canvas.width(), viewport.canvas.height()));
-        if(this.mousePos_current == null) {
+        if (this.mousePos_current == null) {
             this.mousePos_current = coords;
         }
         var mpc = this.mousePos_current;
@@ -801,45 +813,45 @@ class RectangleElement extends PointElement {
         //     this.lastUpdated = new Date();
 
         // } else
-        if(this.mouseDrag && this.activeHandle != null) {
+        if (this.mouseDrag && this.activeHandle != null) {
             // move or resize rectangle
-            if(this.activeHandle.includes('w')) {
+            if (this.activeHandle.includes('w')) {
                 var width = extent[2] - mpc[0];
-                if(width < 0) {
+                if (width < 0) {
                     this.activeHandle = this.activeHandle.replace('w', 'e');
                 }
-                var x = mpc[0] + width/2;
+                var x = mpc[0] + width / 2;
                 this.setProperty('width', width);
                 this.setProperty('x', x);
             }
-            if(this.activeHandle.includes('e')) {
+            if (this.activeHandle.includes('e')) {
                 var width = mpc[0] - extent[0];
-                if(width < 0) {
+                if (width < 0) {
                     this.activeHandle = this.activeHandle.replace('e', 'w');
                 }
-                var x = mpc[0] - width/2;
+                var x = mpc[0] - width / 2;
                 this.setProperty('width', width);
                 this.setProperty('x', x);
             }
-            if(this.activeHandle.includes('n')) {
+            if (this.activeHandle.includes('n')) {
                 var height = extent[3] - mpc[1];
-                if(height < 0) {
+                if (height < 0) {
                     this.activeHandle = this.activeHandle.replace('n', 's');
                 }
-                var y = mpc[1] + height/2;
+                var y = mpc[1] + height / 2;
                 this.setProperty('height', height);
                 this.setProperty('y', y);
             }
-            if(this.activeHandle.includes('s')) {
+            if (this.activeHandle.includes('s')) {
                 var height = mpc[1] - extent[1];
-                if(height < 0) {
+                if (height < 0) {
                     this.activeHandle = this.activeHandle.replace('s', 'n');
                 }
-                var y = mpc[1] - height/2;
+                var y = mpc[1] - height / 2;
                 this.setProperty('height', height);
                 this.setProperty('y', y);
             }
-            if(this.activeHandle.includes('c')) {
+            if (this.activeHandle.includes('c')) {
                 this.setProperty('x', this.x + coords[0] - mpc[0]);
                 this.setProperty('y', this.y + coords[1] - mpc[1]);
             }
@@ -847,16 +859,16 @@ class RectangleElement extends PointElement {
             // update timestamp
             this.lastUpdated = new Date();
         } else {
-            this.activeHandle = this.getClosestHandle(mpc, Math.min(this.width, this.height)/3);
+            this.activeHandle = this.getClosestHandle(mpc, Math.min(this.width, this.height) / 3);
         }
 
         // update resize handles
         this._updateResizeHandles();
 
         // update cursor
-        if(window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION || this.activeHandle == null) {
+        if (window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION || this.activeHandle == null) {
             viewport.canvas.css('cursor', window.uiControlHandler.getDefaultCursor());
-        } else if(this.activeHandle == 'c') {
+        } else if (this.activeHandle == 'c') {
             viewport.canvas.css('cursor', 'move');
         } else {
             viewport.canvas.css('cursor', this.activeHandle + '-resize');
@@ -871,15 +883,15 @@ class RectangleElement extends PointElement {
 
     _mouseup_event(event, viewport, force) {
         this._clamp_min_box_size(viewport);
-        if(!this.visible ||
+        if (!this.visible ||
             !force && (!(window.uiControlHandler.getAction() === ACTIONS.DO_NOTHING ||
-            window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION))) return;
+                window.uiControlHandler.getAction() === ACTIONS.ADD_ANNOTATION))) return;
         var mousePos = viewport.getRelativeCoordinates(event, 'validArea');
-        this.activeHandle = this.getClosestHandle(mousePos, Math.min(this.width, this.height)/3);
-        if(this.activeHandle == null) {
+        this.activeHandle = this.getClosestHandle(mousePos, Math.min(this.width, this.height) / 3);
+        if (this.activeHandle == null) {
             this.setActive(false, viewport);
         } else {
-            if(!this.active) {
+            if (!this.active) {
                 this.setActive(true, viewport);
             }
         }
@@ -893,7 +905,7 @@ class RectangleElement extends PointElement {
         // TODO: does not scale independently of canvas size
         var minWidth = window.minBoxSize_w;
         var minHeight = window.minBoxSize_h;
-        var minSize = viewport.transformCoordinates([0, 0, minWidth, minHeight], 'validArea', true).slice(2,4);
+        var minSize = viewport.transformCoordinates([0, 0, minWidth, minHeight], 'validArea', true).slice(2, 4);
         this.width = Math.max(this.width, minSize[0]);
         this.height = Math.max(this.height, minSize[1]);
     }
@@ -905,10 +917,10 @@ class RectangleElement extends PointElement {
             Also draws resize handles to the viewport if active
             and makes them resizable through callbacks.
         */
-        if(this.disableInteractions) return;
+        if (this.disableInteractions) return;
 
         super.setActive(active, viewport);
-        if(active) {
+        if (active) {
             this._createResizeHandles();
             viewport.addRenderElement(this.resizeHandles);
             viewport.addCallback(this.id, 'mousedown', this._get_active_handle_callback('mousedown', viewport));
@@ -934,22 +946,22 @@ class RectangleElement extends PointElement {
         super.setVisible(visible);
 
         // also propagate to resize handles (if available)
-        if(this.resizeHandles != null) {
+        if (this.resizeHandles != null) {
             this.resizeHandles.setVisible(visible);
         }
     }
 
 
     render(ctx, scaleFun) {
-        if(!this.visible || this.x == null || this.y == null) return;
+        if (!this.visible || this.x == null || this.y == null) return;
 
-        var coords = [this.x-this.width/2, this.y-this.height/2, this.width, this.height];
+        var coords = [this.x - this.width / 2, this.y - this.height / 2, this.width, this.height];
         coords = scaleFun(coords, 'validArea');
-        if(this.style.fillColor != null) {
+        if (this.style.fillColor != null) {
             ctx.fillStyle = this.style.fillColor;
             ctx.fillRect(coords[0], coords[1], coords[2], coords[3]);
         }
-        if(this.style.strokeColor != null) {
+        if (this.style.strokeColor != null) {
             ctx.strokeStyle = this.style.strokeColor;
             ctx.lineWidth = this.style.lineWidth;
             ctx.setLineDash(this.style.lineDash);
@@ -957,22 +969,21 @@ class RectangleElement extends PointElement {
             ctx.strokeRect(coords[0], coords[1], coords[2], coords[3]);
             ctx.closePath();
         }
-        if(this.unsure) {
+        if (this.unsure) {
             var text = 'unsure';
-            var scaleFactors = scaleFun([0,0,ctx.canvas.width,ctx.canvas.height], 'canvas', true).slice(2,4);
+            var scaleFactors = scaleFun([0, 0, ctx.canvas.width, ctx.canvas.height], 'canvas', true).slice(2, 4);
             ctx.font = window.styles.hoverText.text.fontSizePix * scaleFactors[0] + 'px ' + window.styles.hoverText.text.fontStyle;
             var dimensions = ctx.measureText(text);
             dimensions.height = window.styles.hoverText.box.height;
             dimensions = [dimensions.width + 8, dimensions.height * scaleFactors[1]];
             ctx.setLineDash([]);
             ctx.fillStyle = this.style.strokeColor;
-            ctx.fillRect(coords[0]-4, coords[1]-(dimensions[1]), dimensions[0]+4, dimensions[1]);
+            ctx.fillRect(coords[0] - 4, coords[1] - (dimensions[1]), dimensions[0] + 4, dimensions[1]);
             ctx.fillStyle = window.styles.hoverText.text.color;
-            ctx.fillText(text, coords[0]+4, coords[1]-dimensions[1]/2+4);
+            ctx.fillText(text, coords[0] + 4, coords[1] - dimensions[1] / 2 + 4);
         }
     }
 }
-
 
 
 class BorderStrokeElement extends AbstractRenderElement {
@@ -982,7 +993,7 @@ class BorderStrokeElement extends AbstractRenderElement {
     */
     constructor(id, text, style, unsure, zIndex, disableInteractions) {
         super(id, style, zIndex, disableInteractions);
-        if(this.style.textColor == null || this.style.textColor == undefined) {
+        if (this.style.textColor == null || this.style.textColor == undefined) {
             this.style['textColor'] = window.styles.hoverText.text.color;
         }
         this.text = text;
@@ -992,10 +1003,10 @@ class BorderStrokeElement extends AbstractRenderElement {
 
     setProperty(propertyName, value) {
         super.setProperty(propertyName, value);
-        if(propertyName === 'color') {
+        if (propertyName === 'color') {
             this.style.strokeColor = window.addAlpha(value, this.style.lineOpacity);
             this.style.fillColor = window.addAlpha(value, this.style.fillOpacity);
-            if(value == null || value == undefined) {
+            if (value == null || value == undefined) {
                 this.text = null;
             }
         }
@@ -1010,11 +1021,11 @@ class BorderStrokeElement extends AbstractRenderElement {
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        if(!this.visible) return;
-        var scaleFactors = scaleFun([ctx.canvas.width,ctx.canvas.height], 'canvas', true);
-        var coords = scaleFun([0,0,1,1], 'canvas');
+        if (!this.visible) return;
+        var scaleFactors = scaleFun([ctx.canvas.width, ctx.canvas.height], 'canvas', true);
+        var coords = scaleFun([0, 0, 1, 1], 'canvas');
 
-        if(this.style.strokeColor != null) {
+        if (this.style.strokeColor != null) {
             ctx.strokeStyle = this.style.strokeColor;
             ctx.lineWidth = this.style.lineWidth * scaleFactors[0];
             ctx.setLineDash(this.style.lineDash);
@@ -1025,9 +1036,9 @@ class BorderStrokeElement extends AbstractRenderElement {
 
         // show text in bottom left corner
         var text = ''
-        if(this.text != null) text = this.text + ' ';
-        if(this.unsure) text += '(unsure)';
-        if(this.text != null || this.unsure) {
+        if (this.text != null) text = this.text + ' ';
+        if (this.unsure) text += '(unsure)';
+        if (this.text != null || this.unsure) {
             text = text.trim();
             ctx.fillStyle = window.styles.hoverText.text.color;
             ctx.font = window.styles.hoverText.text.fontSizePix * scaleFactors[0] + 'px ' + window.styles.hoverText.text.fontStyle;
@@ -1035,13 +1046,12 @@ class BorderStrokeElement extends AbstractRenderElement {
             dimensions.height = window.styles.hoverText.box.height;
             dimensions = [dimensions.width + 8, dimensions.height * scaleFactors[1]]
             ctx.fillStyle = (this.style.strokeColor == null ? '#929292' : this.style.strokeColor);
-            ctx.fillRect(coords[0], coords[3] - dimensions[1]/2 - 4, dimensions[0], dimensions[1] + 8);
+            ctx.fillRect(coords[0], coords[3] - dimensions[1] / 2 - 4, dimensions[0], dimensions[1] + 8);
             ctx.fillStyle = this.style.textColor;
             ctx.fillText(text, coords[0] + 4, coords[3] - 4);
         }
     }
 }
-
 
 
 class ResizeHandle extends AbstractRenderElement {
@@ -1057,19 +1067,19 @@ class ResizeHandle extends AbstractRenderElement {
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        if(!this.visible || this.x == null || this.y == null) return;
+        if (!this.visible || this.x == null || this.y == null) return;
 
         var coords = scaleFun([this.x, this.y], 'validArea');
 
         var sz = window.styles.resizeHandles.size;
 
         ctx.fillStyle = window.styles.resizeHandles.fillColor;
-        ctx.fillRect(coords[0] - sz/2, coords[1] - sz/2, sz, sz);
+        ctx.fillRect(coords[0] - sz / 2, coords[1] - sz / 2, sz, sz);
         ctx.strokeStyle = window.styles.resizeHandles.strokeColor;
         ctx.lineWidth = window.styles.resizeHandles.lineWidth;
         ctx.setLineDash([]);
         ctx.beginPath();
-        ctx.strokeRect(coords[0] - sz/2, coords[1] - sz/2, sz, sz);
+        ctx.strokeRect(coords[0] - sz / 2, coords[1] - sz / 2, sz, sz);
         ctx.closePath();
     }
 }
@@ -1088,28 +1098,26 @@ class PaintbrushElement extends AbstractRenderElement {
 
     render(ctx, scaleFun) {
         super.render(ctx, scaleFun);
-        if(!this.visible || this.x == null || this.y == null) return;
+        if (!this.visible || this.x == null || this.y == null) return;
         var coords = scaleFun([this.x, this.y], 'validArea');
         var size = window.uiControlHandler.segmentation_properties.brushSize;
-        size = scaleFun(scaleFun([0,0,size,size], 'canvas', true), 'validArea')[2];
+        size = scaleFun(scaleFun([0, 0, size, size], 'canvas', true), 'validArea')[2];
 
         ctx.strokeStyle = window.styles.paintbrush.strokeColor;
         ctx.lineWidth = window.styles.paintbrush.lineWidth;
         ctx.setLineDash(window.styles.paintbrush.lineDash === undefined ? [] : window.styles.paintbrush.lineDash);
-        if(window.uiControlHandler.getBrushType() === 'rectangle') {
-            ctx.strokeRect(coords[0] - size/2, coords[1] - size/2,
+        if (window.uiControlHandler.getBrushType() === 'rectangle') {
+            ctx.strokeRect(coords[0] - size / 2, coords[1] - size / 2,
                 size, size);
         } else {
             // circle
             ctx.beginPath();
-            ctx.arc(coords[0], coords[1], size/2, 0, 2*Math.PI);
+            ctx.arc(coords[0], coords[1], size / 2, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.closePath();
         }
     }
 }
-
-
 
 
 class MiniViewport extends AbstractRenderElement {
@@ -1123,7 +1131,7 @@ class MiniViewport extends AbstractRenderElement {
         this.parentViewport = parentViewport;
         this.parentExtent = parentExtent;
         this.position = null;
-        if(x != null && y != null && size != null)
+        if (x != null && y != null && size != null)
             this.position = [x, y, size, size];
     }
 
@@ -1146,7 +1154,7 @@ class MiniViewport extends AbstractRenderElement {
 
 
     render(ctx, scaleFun) {
-        if(this.position == null || this.parentExtent == null) return;
+        if (this.position == null || this.parentExtent == null) return;
         super.render(ctx, scaleFun);
 
         // draw parent canvas as an image
@@ -1155,14 +1163,12 @@ class MiniViewport extends AbstractRenderElement {
         ctx.drawImage(
             this.parentViewport.canvas[0],
             parentExtent_abs[0], parentExtent_abs[1],
-            parentExtent_abs[2]-parentExtent_abs[0], parentExtent_abs[3]-parentExtent_abs[1],
+            parentExtent_abs[2] - parentExtent_abs[0], parentExtent_abs[3] - parentExtent_abs[1],
             pos_abs[0], pos_abs[1],
             pos_abs[2], pos_abs[3]
         )
     }
 }
-
-
 
 
 class MiniMap extends AbstractRenderElement {
@@ -1176,25 +1182,25 @@ class MiniMap extends AbstractRenderElement {
         this.parentViewport = parentViewport;
 
         this.position = null;
-        if(x != null && y != null && size != null)
+        if (x != null && y != null && size != null)
             this.position = [x, y, size, size];
 
-        if(interactive)
+        if (interactive)
             this._setup_interactions();
     }
 
     _mousedown_event(event) {
-        if(this.position == null || this.pos_abs == null) return;
+        if (this.position == null || this.pos_abs == null) return;
 
         // check if mousedown over mini-rectangle
         var mousePos = this.parentViewport.getAbsoluteCoordinates(event);
         var extent_parent = this.minimapScaleFun(this.parentViewport.getViewport(), 'canvas');
-        
+
         //TODO: something's still buggy here...
 
-        if(mousePos[0] >= extent_parent[0] && mousePos[1] >= extent_parent[1] &&
-            mousePos[0] < (extent_parent[0]+extent_parent[1]) &&
-            mousePos[1] < (extent_parent[1]+extent_parent[2])) {
+        if (mousePos[0] >= extent_parent[0] && mousePos[1] >= extent_parent[1] &&
+            mousePos[0] < (extent_parent[0] + extent_parent[1]) &&
+            mousePos[1] < (extent_parent[1] + extent_parent[2])) {
 
             this.mousePos = mousePos;
             this.mouseDown = true;
@@ -1202,7 +1208,7 @@ class MiniMap extends AbstractRenderElement {
     }
 
     _mousemove_event(event) {
-        if(this.position == null || this.pos_abs == null || !this.mouseDown) return;
+        if (this.position == null || this.pos_abs == null || !this.mouseDown) return;
 
         // determine difference to previous parent extent
         var newMousePos = this.parentViewport.getAbsoluteCoordinates(event);
@@ -1211,7 +1217,7 @@ class MiniMap extends AbstractRenderElement {
         this.mousePos = newMousePos;
 
         // backproject differences to full canvas size
-        var diffProj = this.minimapScaleFun([0, 0, diffX, diffY], 'canvas', true).slice(2,4);
+        var diffProj = this.minimapScaleFun([0, 0, diffX, diffY], 'canvas', true).slice(2, 4);
         var vp = this.parentViewport.getViewport();
 
         // apply new viewport
@@ -1219,7 +1225,7 @@ class MiniMap extends AbstractRenderElement {
         vp[1] += diffProj[1];
         this.parentViewport.setViewport(vp);
     }
-    
+
     _mouseup_event(event) {
         this.mouseDown = false;
     }
@@ -1230,20 +1236,20 @@ class MiniMap extends AbstractRenderElement {
 
     __get_callback(type) {
         var self = this;
-        if(type === 'mousedown') {
-            return function(event) {
+        if (type === 'mousedown') {
+            return function (event) {
                 self._mousedown_event(event);
             };
-        } else if(type ==='mousemove') {
-            return function(event) {
+        } else if (type === 'mousemove') {
+            return function (event) {
                 self._mousemove_event(event);
             };
-        } else if(type ==='mouseup') {
-            return function(event) {
+        } else if (type === 'mouseup') {
+            return function (event) {
                 self._mouseup_event(event);
             };
-        } else if(type ==='mouseleave') {
-            return function(event) {
+        } else if (type === 'mouseleave') {
+            return function (event) {
                 self._mouseleave_event(event);
             };
         }
@@ -1253,7 +1259,7 @@ class MiniMap extends AbstractRenderElement {
         /*
             Makes parent viewport move on drag of extent rectangle.
         */
-        if(this.disableInteractions) return;
+        if (this.disableInteractions) return;
 
         this.mouseDown = false;
         this.parentViewport.addCallback(this.id, 'mousedown', this.__get_callback('mousedown'));
@@ -1277,42 +1283,42 @@ class MiniMap extends AbstractRenderElement {
         */
         var coords_out = coordinates.slice();
 
-        if(backwards) {
+        if (backwards) {
 
             // un-shift position
             coords_out[0] -= this.pos_abs[0];
             coords_out[1] -= this.pos_abs[1];
 
             var canvasSize = [this.pos_abs[2], this.pos_abs[3]];
-            if(target === 'canvas') {
+            if (target === 'canvas') {
                 coords_out[0] /= canvasSize[0];
                 coords_out[1] /= canvasSize[1];
-                if(coords_out.length == 4) {
+                if (coords_out.length == 4) {
                     coords_out[2] /= canvasSize[0];
                     coords_out[3] /= canvasSize[1];
                 }
 
-            } else if(target === 'validArea') {
+            } else if (target === 'validArea') {
                 coords_out[0] /= canvasSize[0];
                 coords_out[1] /= canvasSize[1];
-                if(coords_out.length == 4) {
+                if (coords_out.length == 4) {
                     coords_out[2] /= canvasSize[0];
                     coords_out[3] /= canvasSize[1];
                 }
             }
         } else {
             var canvasSize = [this.pos_abs[2], this.pos_abs[3]];
-            if(target === 'canvas') {
+            if (target === 'canvas') {
                 coords_out[0] *= canvasSize[0];
                 coords_out[1] *= canvasSize[1];
-                if(coords_out.length == 4) {
+                if (coords_out.length == 4) {
                     coords_out[2] *= canvasSize[0];
                     coords_out[3] *= canvasSize[1];
                 }
-            } else if(target === 'validArea') {
+            } else if (target === 'validArea') {
                 coords_out[0] *= canvasSize[0];
                 coords_out[1] *= canvasSize[1];
-                if(coords_out.length == 4) {
+                if (coords_out.length == 4) {
                     coords_out[2] *= canvasSize[0];
                     coords_out[3] *= canvasSize[1];
                 }
@@ -1325,19 +1331,19 @@ class MiniMap extends AbstractRenderElement {
             // clamp coordinates to minimap extent
             coords_out[0] = Math.max(coords_out[0], this.pos_abs[0]);
             coords_out[1] = Math.max(coords_out[1], this.pos_abs[1]);
-            if(coords_out.length == 4) {
-                coords_out[0] = Math.min(coords_out[0], this.pos_abs[0]+this.pos_abs[2]-coords_out[2]);
-                coords_out[1] = Math.min(coords_out[1], this.pos_abs[1]+this.pos_abs[3]-coords_out[3]);
+            if (coords_out.length == 4) {
+                coords_out[0] = Math.min(coords_out[0], this.pos_abs[0] + this.pos_abs[2] - coords_out[2]);
+                coords_out[1] = Math.min(coords_out[1], this.pos_abs[1] + this.pos_abs[3] - coords_out[3]);
             } else {
-                coords_out[0] = Math.min(coords_out[0], this.pos_abs[0]+this.pos_abs[2]);
-                coords_out[1] = Math.min(coords_out[1], this.pos_abs[1]+this.pos_abs[3]);
+                coords_out[0] = Math.min(coords_out[0], this.pos_abs[0] + this.pos_abs[2]);
+                coords_out[1] = Math.min(coords_out[1], this.pos_abs[1] + this.pos_abs[3]);
             }
         }
         return coords_out;
     }
 
     render(ctx, scaleFun) {
-        if(!this.visible || this.position == null) return;
+        if (!this.visible || this.position == null) return;
         super.render(ctx, scaleFun);
 
         // position of minimap on parent viewport
@@ -1353,10 +1359,10 @@ class MiniMap extends AbstractRenderElement {
             5, true, true);
 
         // elements
-        for(var e=0; e<this.parentViewport.renderStack.length; e++) {
+        for (var e = 0; e < this.parentViewport.renderStack.length; e++) {
 
             //TODO: dirty hack to avoid rendering HoverTextElement instances, resize handles and paintbrush
-            if(this.parentViewport.renderStack[e].hasOwnProperty('text') ||
+            if (this.parentViewport.renderStack[e].hasOwnProperty('text') ||
                 this.parentViewport.renderStack[e] instanceof ElementGroup ||
                 this.parentViewport.renderStack[e] instanceof PaintbrushElement) continue;
             this.parentViewport.renderStack[e].render(ctx, (this.minimapScaleFun).bind(this));
@@ -1376,12 +1382,11 @@ class MiniMap extends AbstractRenderElement {
         ctx.strokeStyle = window.styles.minimap.background.strokeColor;
         ctx.lineWidth = window.styles.minimap.background.lineWidth;
         ctx.setLineDash(window.styles.minimap.background.lineDash);
-        roundRect(ctx, this.pos_abs[0] - ctx.lineWidth/2, this.pos_abs[1] - ctx.lineWidth/2,
+        roundRect(ctx, this.pos_abs[0] - ctx.lineWidth / 2, this.pos_abs[1] - ctx.lineWidth / 2,
             this.pos_abs[2] + ctx.lineWidth, this.pos_abs[3] + ctx.lineWidth,
             5, false, true);
     }
 }
-
 
 
 class SegmentationElement extends AbstractRenderElement {
@@ -1393,17 +1398,17 @@ class SegmentationElement extends AbstractRenderElement {
 
     _create_canvas(annotationMap, predictionMap, width, height) {
         this.canvas = document.createElement('canvas');
-        if(width && height) {
+        if (width && height) {
             this.setSize([width, height]);
         }
         this.ctx = this.canvas.getContext('2d');
         this.ctx.imageSmoothingEnabled = false;
-        
+
         // add image data to canvas if available
-        if(annotationMap !== undefined && annotationMap !== null) {
-            if(predictionMap !== undefined && predictionMap !== null) {
+        if (annotationMap !== undefined && annotationMap !== null) {
+            if (predictionMap !== undefined && predictionMap !== null) {
                 // both annotations and predictions available; blend if background not ignored
-                if(window.segmentation_ignoreUnlabeled) {
+                if (window.segmentation_ignoreUnlabeled) {
                     // unlabeled pixels are ignored: blend predictions in
                     this._blend_maps(window.base64ToBuffer(annotationMap), window.base64ToBuffer(predictionMap));
                 } else {
@@ -1414,15 +1419,15 @@ class SegmentationElement extends AbstractRenderElement {
                 // only annotations available
                 try {
                     this._parse_map(window.base64ToBuffer(annotationMap));
-                } catch(error) {
+                } catch (error) {
                     console.error(error);
                 }
             }
-        } else if(predictionMap !== undefined && predictionMap !== null) {
+        } else if (predictionMap !== undefined && predictionMap !== null) {
             // only predictions available
             try {
                 this._parse_map(window.base64ToBuffer(predictionMap));
-            } catch(error) {
+            } catch (error) {
                 console.error(error);
             }
         }
@@ -1460,14 +1465,14 @@ class SegmentationElement extends AbstractRenderElement {
         var data = pixels.data;
 
         // iterate over index data and assign
-        var nothing = [0,0,0];
+        var nothing = [0, 0, 0];
         var offset = 0;
         var color = nothing;
         var alpha = 0;
-        for(var i=0; i<indexedData.length; i++) {
+        for (var i = 0; i < indexedData.length; i++) {
             // find label class color at position
             var lc = window.labelClassHandler.getByIndex(indexedData[i]);
-            if(lc) {
+            if (lc) {
                 color = lc.colorValues;
                 alpha = 255;
             } else {
@@ -1475,9 +1480,9 @@ class SegmentationElement extends AbstractRenderElement {
                 alpha = 0;
             }
             data[offset] = color[0];
-            data[offset+1] = color[1];
-            data[offset+2] = color[2];
-            data[offset+3] = alpha;
+            data[offset + 1] = color[1];
+            data[offset + 2] = color[2];
+            data[offset + 3] = alpha;
             offset += 4;
         }
         this.ctx.putImageData(new ImageData(data, this.canvas.width, this.canvas.height), 0, 0);
@@ -1485,21 +1490,21 @@ class SegmentationElement extends AbstractRenderElement {
 
     _blend_maps(annotation_indexed, prediction_indexed) {
         /**
-            Merges two maps:
-            @param annotation_indexed A linear array of size (WxH) corresponding to
-                                    annotations made by the user and holding integer
-                                    class indices at each position.
-            @param prediction_indexed A linear array of size (WxH), corresponding to
-                                    predicted classes at each position.
-            
-            The result is an array of size (WxHx4) with RGBA values of the two maps
-            blended together. For blending, the annotation values are always preferred;
-            prediction values are adopted if the annotation values are invalid or <0.
-            This array is then set as image data for the canvas.
-        */
+         Merges two maps:
+         @param annotation_indexed A linear array of size (WxH) corresponding to
+         annotations made by the user and holding integer
+         class indices at each position.
+         @param prediction_indexed A linear array of size (WxH), corresponding to
+         predicted classes at each position.
+
+         The result is an array of size (WxHx4) with RGBA values of the two maps
+         blended together. For blending, the annotation values are always preferred;
+         prediction values are adopted if the annotation values are invalid or <0.
+         This array is then set as image data for the canvas.
+         */
         //TODO: make more failsafe (e.g. if sizes don't match)
-        
-        if(prediction_indexed === undefined || prediction_indexed === null) {
+
+        if (prediction_indexed === undefined || prediction_indexed === null) {
             return this._parse_map(annotation_indexed);
         }
 
@@ -1508,20 +1513,20 @@ class SegmentationElement extends AbstractRenderElement {
         var data = pixels.data;
 
         // iterate over index data and assign
-        var nothing = [0,0,0];
+        var nothing = [0, 0, 0];
         var offset = 0;
         var color = nothing;
         var alpha = 0;
-        for(var i=0; i<annotation_indexed.length; i++) {
+        for (var i = 0; i < annotation_indexed.length; i++) {
             // find label class color at position
             var lc_anno = window.labelClassHandler.getByIndex(annotation_indexed[i]);
-            if(lc_anno) {
+            if (lc_anno) {
                 color = lc_anno.colorValues;
                 alpha = 255;
             } else {
                 // try prediction instead
                 var lc_pred = window.labelClassHandler.getByIndex(prediction_indexed[i]);
-                if(lc_pred) {
+                if (lc_pred) {
                     color = lc_pred.colorValues;
                     alpha = 255;
                 } else {
@@ -1531,9 +1536,9 @@ class SegmentationElement extends AbstractRenderElement {
                 }
             }
             data[offset] = color[0];
-            data[offset+1] = color[1];
-            data[offset+2] = color[2];
-            data[offset+3] = alpha;
+            data[offset + 1] = color[1];
+            data[offset + 2] = color[2];
+            data[offset + 3] = alpha;
             offset += 4;
         }
         this.ctx.putImageData(new ImageData(data, this.canvas.width, this.canvas.height), 0, 0);
@@ -1553,7 +1558,7 @@ class SegmentationElement extends AbstractRenderElement {
         var reds = {};
         var greens = {};
         var blues = {};
-        for(var lc in window.labelClassHandler.labelClasses) {
+        for (var lc in window.labelClassHandler.labelClasses) {
             var color = window.getColorValues(window.labelClassHandler.labelClasses[lc].color);
             reds[color[0]] = 1;
             greens[color[1]] = 1;
@@ -1562,13 +1567,13 @@ class SegmentationElement extends AbstractRenderElement {
         reds = Object.keys(reds);
         greens = Object.keys(greens);
         blues = Object.keys(blues);
-        for(var i=0; i<reds.length; i++) {
+        for (var i = 0; i < reds.length; i++) {
             reds[i] = parseInt(reds[i]);
         }
-        for(var i=0; i<greens.length; i++) {
+        for (var i = 0; i < greens.length; i++) {
             greens[i] = parseInt(greens[i]);
         }
-        for(var i=0; i<blues.length; i++) {
+        for (var i = 0; i < blues.length; i++) {
             blues[i] = parseInt(blues[i]);
         }
         var validColors = [reds, greens, blues];
@@ -1579,17 +1584,17 @@ class SegmentationElement extends AbstractRenderElement {
 
         // convert to labelclass idx
         var indexedData = [];
-        for(var i=0; i<data.length; i+=4) {
-            var colorValues = data.slice(i,i+3);
+        for (var i = 0; i < data.length; i += 4) {
+            var colorValues = data.slice(i, i + 3);
 
             // correct color values if needed
-            for(var c=0; c<colorValues.length; c++) {
-                var closest = validColors[c].reduce(function(prev, curr) {
+            for (var c = 0; c < colorValues.length; c++) {
+                var closest = validColors[c].reduce(function (prev, curr) {
                     return (Math.abs(curr - colorValues[c]) < Math.abs(prev - colorValues[c]) ? curr : prev);
                 });
                 colorValues[c] = closest;
             }
-            
+
             // find label class at position
             var lc = window.labelClassHandler.getByColor(colorValues);
             indexedData.push(lc === null || lc === undefined ? 0 : lc.index);
@@ -1602,7 +1607,7 @@ class SegmentationElement extends AbstractRenderElement {
     _clear_circle(x, y, size) {
         this.ctx.beginPath();
         this.ctx.globalCompositeOperation = 'destination-out'
-        this.ctx.ellipse(x, y, size[0]/2, size[1]/2, 2*Math.PI, 0, 2*Math.PI)
+        this.ctx.ellipse(x, y, size[0] / 2, size[1] / 2, 2 * Math.PI, 0, 2 * Math.PI)
         // this.ctx.arc(x, y, radius, 0, Math.PI*2, true);
         this.ctx.fill();
         this.ctx.closePath();
@@ -1611,22 +1616,22 @@ class SegmentationElement extends AbstractRenderElement {
 
     paint(coords, color, brushType, brushSize) {
         this.ctx.fillStyle = color;
-        if(brushType === 'rectangle') {
-            this.ctx.fillRect(coords[0] - brushSize[0]/2, coords[1] - brushSize[1]/2,
+        if (brushType === 'rectangle') {
+            this.ctx.fillRect(coords[0] - brushSize[0] / 2, coords[1] - brushSize[1] / 2,
                 brushSize[0], brushSize[1]);
-        } else if(brushType === 'circle') {
+        } else if (brushType === 'circle') {
             this.ctx.beginPath();
-            this.ctx.ellipse(coords[0], coords[1], brushSize[0]/2, brushSize[1]/2, 2*Math.PI, 0, 2*Math.PI)
+            this.ctx.ellipse(coords[0], coords[1], brushSize[0] / 2, brushSize[1] / 2, 2 * Math.PI, 0, 2 * Math.PI)
             this.ctx.fill();
             this.ctx.closePath();
         }
     }
 
     clear(coords, brushType, brushSize) {
-        if(brushType === 'rectangle') {
-            this.ctx.clearRect(coords[0] - brushSize[0]/2, coords[1] - brushSize[1]/2,
+        if (brushType === 'rectangle') {
+            this.ctx.clearRect(coords[0] - brushSize[0] / 2, coords[1] - brushSize[1] / 2,
                 brushSize[0], brushSize[1]);
-        } else if(brushType === 'circle') {
+        } else if (brushType === 'circle') {
             this._clear_circle(coords[0], coords[1], brushSize)
         }
     }
@@ -1636,11 +1641,11 @@ class SegmentationElement extends AbstractRenderElement {
     }
 
     render(ctx, scaleFun) {
-        if(!this.visible) return;
+        if (!this.visible) return;
         super.render(ctx, scaleFun);
-        
-        var targetCoords = scaleFun([0,0,1,1], 'validArea');
-        
+
+        var targetCoords = scaleFun([0, 0, 1, 1], 'validArea');
+
         // draw canvas as an image
         ctx.globalAlpha = window.uiControlHandler.segmentation_properties.opacity;
         ctx.drawImage(

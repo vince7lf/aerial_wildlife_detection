@@ -64,9 +64,44 @@ function creationCarte() {
         layers: [staticImage, vectorLayer1]
     });
 
+    // lookup for selection objects
+    let selection = {};
+
+    // Selection
+    const selectionLayer = new ol.layer.VectorTileLayer({
+        map: map,
+        renderMode: 'vector',
+        source: vectorLayer1.getSource(),
+        style: function (feature) {
+            if (feature.getId() in selection) {
+                return canadaStyleSelect;
+            }
+        },
+    });
+
+    map.on(['click', 'pointermove'], function (event) {
+        vectorLayer1.getFeatures(event.pixel).then(function (features) {
+            if (!features.length) {
+                selection = {};
+                selectionLayer.changed();
+                return;
+            }
+            const feature = features[0];
+            if (!feature) {
+                return;
+            }
+            const fid = feature.getId();
+
+            selection = {};
+            // add selected feature to lookup
+            selection[fid] = feature;
+
+            selectionLayer.changed();
+        });
+    });
 
     // Set the view for the map
     map.setView(view);
-    map.addInteraction(selectInteraction)
+    // map.addInteraction(selectInteraction)
 
 }
