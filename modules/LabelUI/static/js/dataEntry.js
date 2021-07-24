@@ -614,6 +614,7 @@ class AbstractDataEntryEx {
         // this._setup_viewport();
         // this._setup_markup();
         this.loadingPromise = this._loadImage(this.getImageURI()).then(image => {
+            // TODO check if geojson file exists
             self._createMapOlEntry(image);
             //self._parseLabels(properties);
             self.startTime = new Date();
@@ -955,7 +956,7 @@ class AbstractDataEntryEx {
     }
 
     _createMapOlEntry(image) {
-        this.imageEntry = new MapOlElement(this.entryID + '_image', image, this.viewport);
+        this.imageEntry = new MapOlElement(this.entryID + '_image', image);
         // this.viewport.addRenderElement(this.imageEntry);
     }
 
@@ -1177,6 +1178,24 @@ class AbstractDataEntryEx {
     render() {
         // this.viewport.render();
         this.imageEntry.render();
+    }
+}
+
+class ClassificationTileEntry extends ClassificationMLEntry {
+
+    constructor(entryID, properties, disableInteractions) {
+        super(entryID, properties, disableInteractions);
+        this.annotations = []
+    }
+
+    addAnnotation(annotation){
+        this.annotation.append(annotation)
+    }
+
+    updateActiveAnnotationLabel( tilename ){
+        for( tile in this.annotation){
+
+        }
     }
 }
 

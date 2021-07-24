@@ -427,8 +427,8 @@ VALID_IMAGE_EXTENSIONS = (
     '.jpeg',
     '.png',
     '.gif',
-    # '.tif',
-    # '.tiff',
+    '.tif',
+    '.tiff',
     '.bmp',
     '.ico',
     '.jfif',
@@ -443,7 +443,8 @@ VALID_IMAGE_MIME_TYPES = (
     'image/x-windows-bmp',
     'image/gif',
     'image/x-icon',
-    'image/png'
+    'image/png',
+    'image/tiff'
 )
 
 

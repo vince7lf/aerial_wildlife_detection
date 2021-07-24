@@ -194,9 +194,14 @@ class DataHandler {
         // trigger toggleUserLabel
         for(var i=0; i<this.dataEntries.length; i++) {
             if(this.dataEntries[i].entryID != window.activeEntryID) continue;
+            if ( this.dataEntries[i] instanceof ClassificationTileEntry) {
+                this.dataEntries[i].updateActiveAnnotationLabel(tilename)
+            } else {
+                if( flag ) this.dataEntries[i].setLabel(labelid);
+                else this.dataEntries[i].unsetLabel(labelid);
+            }
 
-            if( flag ) this.dataEntries[i].setLabel(labelid);
-            else this.dataEntries[i].unsetLabel(labelid);
+            return;
         }
     }
 
@@ -497,6 +502,7 @@ class DataHandler {
                 self.dataEntries = [];
 
                 // add new ones
+                var tiles = {}
                 for(var d in batch) {
                     let entryID = batch[d];
 
@@ -507,7 +513,21 @@ class DataHandler {
 
                     switch(String(window.annotationType)) {
                         case 'labels':
-                            var entry = new ClassificationMLEntry(entryID, data['entries'][entryID]);
+                            // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
+                            // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
+                            var dataEntry = data['entries'][entryID]
+                            if( dataEntry.filename == 'test_retile.jpg') {
+                                var entry = new ClassificationTileEntry(entryID, dataEntry);
+                                tiles[dataEntry.filename] = entry;
+                            } else {
+                                var entry = new ClassificationMLEntry(entryID, dataEntry);
+                                for (var key in tiles) {
+                                    if (dataEntry.filename.indexOf(key)) {
+                                        var tileentry = tiles[key]
+                                        tileentry.addAnnotation(entry)
+                                    }
+                                }
+                            }
                             break;
                         case 'points':
                             var entry = new PointAnnotationEntry(entryID, data['entries'][entryID]);

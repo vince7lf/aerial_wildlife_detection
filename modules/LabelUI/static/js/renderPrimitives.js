@@ -167,12 +167,16 @@ class ElementGroup extends AbstractRenderElement {
 // ----------------------------------------------------------------------------
 class MapOlElement extends AbstractRenderElement {
 
-    constructor(id) {
+    constructor(id, image) {
         super(id, null);
+        this.image = image.currentSrc;
+        this.geojson = this.image.replace('jpg', 'geojson');
     }
 
     render() {
-        var map, view, staticImage, vectorLayer1;
+        var map, view, staticImage, vectorLayer1, image, geojson;
+        image = this.image;
+        geojson = this.geojson;
 
         var canadaStyle = new ol.style.Style({
             fill: new ol.style.Fill({
@@ -213,7 +217,7 @@ class MapOlElement extends AbstractRenderElement {
         });
         staticImage = new ol.layer.Image({
             source: new ol.source.ImageStatic({
-                url: './files/Soleil_ISO100_1m.JPG',
+                url: image,
                 projection: projection,
                 imageExtent: extent
             })
@@ -222,7 +226,7 @@ class MapOlElement extends AbstractRenderElement {
 
         vectorLayer1 = new ol.layer.Vector({
             source: new ol.source.Vector({
-                url: './files/tuile.geojson',
+                url: geojson,
                 format: new ol.format.GeoJSON(),
             }),
             style: canadaStyle
