@@ -195,7 +195,7 @@ class DataHandler {
         for(var i=0; i<this.dataEntries.length; i++) {
             if(this.dataEntries[i].entryID != window.activeEntryID) continue;
             if ( this.dataEntries[i] instanceof ClassificationTileEntry) {
-                this.dataEntries[i].updateActiveAnnotationLabel(tilename)
+                this.dataEntries[i].updateActiveAnnotationLabel(labelid, flag, tilename)
             } else {
                 if( flag ) this.dataEntries[i].setLabel(labelid);
                 else this.dataEntries[i].unsetLabel(labelid);

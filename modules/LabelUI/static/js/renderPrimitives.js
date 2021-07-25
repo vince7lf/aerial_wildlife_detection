@@ -238,6 +238,8 @@ class MapOlElement extends AbstractRenderElement {
         var clickInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerClick,
             style: function( feature) {
+                // set current tile/annotation selected
+                // TODO
                 return selectedCountry;
             }
         });

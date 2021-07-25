@@ -1192,9 +1192,12 @@ class ClassificationTileEntry extends ClassificationMLEntry {
         this.annotation.append(annotation)
     }
 
-    updateActiveAnnotationLabel( tilename ){
-        for( tile in this.annotation){
-
+    updateActiveAnnotationLabel( labelid, flag, tilename ){
+        for( tile in this.annotations){
+            if( tile.filename === tilename) {
+                if( flag ) tile.setLabel(labelid);
+                else tile.unsetLabel(labelid);
+            }
         }
     }
 }
