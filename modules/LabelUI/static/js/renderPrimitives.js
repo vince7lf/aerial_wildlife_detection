@@ -173,10 +173,16 @@ class MapOlElement extends AbstractRenderElement {
         this.geojson = this.image.replace('jpg', 'geojson');
     }
 
+    setTilesRef(tilesAnnotation){
+        this.tilesAnnotation = tilesAnnotation
+    }
+
     render() {
-        var map, view, staticImage, vectorLayer1, image, geojson;
-        image = this.image;
-        geojson = this.geojson;
+        var map, view, staticImage, vectorLayer1;
+        var image = this.image;
+        var geojson = this.geojson;
+        var tilesAnnotation = this.tilesAnnotation;
+        var selectedTileAnnotation = null;
 
         var canadaStyle = new ol.style.Style({
             fill: new ol.style.Fill({
@@ -239,7 +245,7 @@ class MapOlElement extends AbstractRenderElement {
             condition: ol.events.condition.pointerClick,
             style: function( feature) {
                 // set current tile/annotation selected
-                // TODO
+                selectedTileAnnotation = tilesAnnotation[feature.Location]
                 return selectedCountry;
             }
         });
