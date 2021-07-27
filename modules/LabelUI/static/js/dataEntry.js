@@ -615,10 +615,17 @@ class AbstractDataEntryEx {
         // this._setup_markup();
         this.loadingPromise = this._loadImage(this.getImageURI()).then(image => {
             // TODO check if geojson file exists
-            // if so create the MapOlEntry
-            // otherwise create ML image
-            self._createMapOlEntry(image);
-            //self._parseLabels(properties);
+            if( image.src.indexOf('test_retile.jpg') > -1 )  {
+                // if so create the MapOlEntry
+                // otherwise create ML image
+                self._createMapOlEntry(image);
+                //self._parseLabels(properties);
+            } else {
+                this._setup_viewport();
+                this._setup_markup();
+                self._createImageEntry(image);
+                self._parseLabels(properties);
+            }
             self.startTime = new Date();
             self.render();
             return true;
@@ -964,7 +971,7 @@ class AbstractDataEntryEx {
 
     _createImageEntry(image) {
         this.imageEntry = new ImageElement(this.entryID + '_image', image, this.viewport);
-        // this.viewport.addRenderElement(this.imageEntry);
+        this.viewport.addRenderElement(this.imageEntry);
     }
 
     _setup_markup() {

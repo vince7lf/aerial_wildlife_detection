@@ -516,7 +516,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][entryID]
-                            if( dataEntry.filename == 'test_retile.jpg') {
+                            if( dataEntry.filename.indexOf('test_retile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(entryID, dataEntry);
                                 tiles[dataEntry.filename] = entry;
                             } else {
@@ -560,6 +560,12 @@ class DataHandler {
                 window.windowResized();
 
                 window.setUIblocked(false);
+
+                // make the tiles ImageElement accessible to the MapOlElement so when a tile is clicked the respective ImageElement will be saved as a selectedImageElement
+                for (var key in tiles) {
+                    var tileentry = tiles[key];
+                    tileentry.setImageEntryTilesRef()
+                }
 
                 // modify URL
                 if(imgIDs.length > 0) {
