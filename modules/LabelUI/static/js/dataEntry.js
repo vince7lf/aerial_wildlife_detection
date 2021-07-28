@@ -1194,19 +1194,19 @@ class ClassificationTileEntry extends ClassificationMLEntry {
 
     constructor(entryID, properties, disableInteractions) {
         super(entryID, properties, disableInteractions);
-        this.annotations = []
+        this.entries = [] // array of ClassificationMLEntry
     }
 
-    addAnnotation(annotation){
-        this.annotations.append(annotation)
+    addEntry(entry){ // annotation of type ClassificationMLEntry
+        this.entries.append(entry)
     }
 
     setImageEntryTilesRef(){
-        this.imageEntry.setTilesRef(this.annotations)
+        this.imageEntry.setTilesRef(this.entries)
     }
 
     updateActiveAnnotationLabel( labelid, flag, tilename ){
-        for( var tile in this.annotations){
+        for( var tile in this.entries){
             if( tile.filename === tilename) {
                 if( flag ) tile.setLabel(labelid);
                 else tile.unsetLabel(labelid);

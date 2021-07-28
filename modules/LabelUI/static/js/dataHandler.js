@@ -524,7 +524,7 @@ class DataHandler {
                                 for (var key in tiles) {
                                     if (dataEntry.filename.indexOf(key)) {
                                         var tileentry = tiles[key]
-                                        tileentry.addAnnotation(entry)
+                                        tileentry.addEntry(entry)
                                     }
                                 }
                             }
