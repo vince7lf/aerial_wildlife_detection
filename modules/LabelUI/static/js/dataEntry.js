@@ -1488,6 +1488,11 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
 
         window.dataHandler.updatePresentClasses();
     }
+
+    // triggered in the MapOlElement when a tile get selected, the respective ClassificationMLEntry get retrieved and the click function called
+    click() {
+        this.labelInstance.enlightLabels()
+    }
 }
 
 

@@ -6,7 +6,9 @@ class Annotation {
         this.type = type;
         this.autoConverted = autoConverted;
         this.label = new Set();
-        this._parse_properties(properties);
+        // in our context do not set the labels when loading, but only when selected
+        // breaking the compatibilty with other tpe of annotation
+        // this._parse_properties(properties);
     }
 
     _parse_properties(properties) {
@@ -80,15 +82,20 @@ class Annotation {
                 unsure
             );
         } else if(this.geometryType === 'labels') {
+
+            // find out if this images has the focus / has been selected
             // Classification label
             let borderText = this.label.size > 0 ? '' : 'No label';
-            window.labelClassHandler.switchoffLabelClasses();
+            // window.labelClassHandler.switchoffLabelClasses();
+            //
+            // for (var it = this.label.values(), label= null; label=it.next().value; ) {
+            //     borderText += window.labelClassHandler.getName(label) + ' ';
+            //     var labelClass = window.labelClassHandler.getClass(label);
+            //     window.labelClassHandler.lighthenLabelClass(labelClass);
+            // }
 
-            for (var it = this.label.values(), label= null; label=it.next().value; ) {
-                borderText += window.labelClassHandler.getName(label) + ' ';
-                var labelClass = window.labelClassHandler.getClass(label);
-                window.labelClassHandler.lighthenLabelClass(labelClass);
-            }
+            this.enlightLabels();
+
             if(this.confidence != null) {
                 borderText += ' (' + 100*this.confidence + '%)';        //TODO: round to two decimals
             }
@@ -101,6 +108,14 @@ class Annotation {
 
         } else {
             throw Error('Unknown geometry type (' + this.geometryType + ').')
+        }
+    }
+
+    enlightLabels(){
+        window.labelClassHandler.switchoffLabelClasses();
+        for (var it = this.label.values(), label= null; label=it.next().value; ) {
+            var labelClass = window.labelClassHandler.getClass(label);
+            window.labelClassHandler.lighthenLabelClass(labelClass);
         }
     }
 
