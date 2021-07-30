@@ -1190,32 +1190,6 @@ class AbstractDataEntryEx {
     }
 }
 
-class ClassificationTileEntry extends ClassificationMLEntry {
-
-    constructor(entryID, properties, disableInteractions) {
-        super(entryID, properties, disableInteractions);
-        this.entries = [] // array of ClassificationMLEntry
-    }
-
-    addEntry(entry){ // annotation of type ClassificationMLEntry
-        this.entries.append(entry)
-    }
-
-    setImageEntryTilesRef(){
-        this.imageEntry.setTilesRef(this.entries)
-    }
-
-    updateActiveAnnotationLabel( labelid, flag, tilename ){
-        for( var tile in this.entries){
-            if( tile.filename === tilename) {
-                if( flag ) tile.setLabel(labelid);
-                else tile.unsetLabel(labelid);
-            }
-        }
-    }
-}
-
-
 class ClassificationMLEntry extends AbstractDataEntryEx {
     /*
        Implementation for image classification with multilabel.
@@ -1494,6 +1468,32 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
         this.labelInstance.enlightLabels()
     }
 }
+
+class ClassificationTileEntry extends ClassificationMLEntry {
+
+    constructor(entryID, properties, disableInteractions) {
+        super(entryID, properties, disableInteractions);
+        this.entries = [] // array of ClassificationMLEntry
+    }
+
+    addEntry(entry){ // annotation of type ClassificationMLEntry
+        this.entries.append(entry)
+    }
+
+    setImageEntryTilesRef(){
+        this.imageEntry.setTilesRef(this.entries)
+    }
+
+    updateActiveAnnotationLabel( labelid, flag, tilename ){
+        for( var tile in this.entries){
+            if( tile.filename === tilename) {
+                if( flag ) tile.setLabel(labelid);
+                else tile.unsetLabel(labelid);
+            }
+        }
+    }
+}
+
 
 
 class ClassificationEntry extends AbstractDataEntry {

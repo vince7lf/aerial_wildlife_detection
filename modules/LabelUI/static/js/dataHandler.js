@@ -246,12 +246,26 @@ class DataHandler {
 
                 let imgIDs = '';
 
+                var tiles = {}
                 for(var d in data['entries']) {
                     // create new data entry
                     switch(String(window.annotationType)) {
                         case 'labels':
-                            // var entry = new ClassificationEntry(d, data['entries'][d]);
-                            var entry = new ClassificationMLEntry(d, data['entries'][d]);
+                            // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
+                            // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
+                            var dataEntry = data['entries'][d]
+                            if( dataEntry.filename.indexOf('test_retile.jpg') > -1) {
+                                var entry = new ClassificationTileEntry(d, dataEntry);
+                                tiles[dataEntry.filename] = entry;
+                            } else {
+                                var entry = new ClassificationMLEntry(d, dataEntry);
+                                for (var key in tiles) {
+                                    if (dataEntry.filename.indexOf(key)) {
+                                        var tileentry = tiles[key]
+                                        tileentry.addEntry(entry)
+                                    }
+                                }
+                            }
                             break;
                         case 'points':
                             var entry = new PointAnnotationEntry(d, data['entries'][d]);
@@ -290,6 +304,12 @@ class DataHandler {
                         // re-check
                         self._check_user_finished();
                     }
+                }
+
+                // make the tiles ImageElement accessible to the MapOlElement so when a tile is clicked the respective ImageElement will be saved as a selectedImageElement
+                for (var key in tiles) {
+                    var tileentry = tiles[key];
+                    tileentry.setImageEntryTilesRef()
                 }
 
                 // modify URL
@@ -349,11 +369,26 @@ class DataHandler {
 
                 let imgIDs = '';
 
+                var tiles = {}
                 for(var d in data['entries']) {
                     // create new data entry
                     switch(String(window.annotationType)) {
                         case 'labels':
-                            var entry = new ClassificationMLEntry(d, data['entries'][d]);
+                            // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
+                            // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
+                            var dataEntry = data['entries'][d]
+                            if( dataEntry.filename.indexOf('test_retile.jpg') > -1) {
+                                var entry = new ClassificationTileEntry(d, dataEntry);
+                                tiles[dataEntry.filename] = entry;
+                            } else {
+                                var entry = new ClassificationMLEntry(d, dataEntry);
+                                for (var key in tiles) {
+                                    if (dataEntry.filename.indexOf(key)) {
+                                        var tileentry = tiles[key]
+                                        tileentry.addEntry(entry)
+                                    }
+                                }
+                            }
                             break;
                         case 'points':
                             var entry = new PointAnnotationEntry(d, data['entries'][d]);
@@ -392,6 +427,12 @@ class DataHandler {
 
                 // adjust width of entries
                 window.windowResized();
+
+                // make the tiles ImageElement accessible to the MapOlElement so when a tile is clicked the respective ImageElement will be saved as a selectedImageElement
+                for (var key in tiles) {
+                    var tileentry = tiles[key];
+                    tileentry.setImageEntryTilesRef()
+                }
 
                 // modify URL
                 if(imgIDs.length > 0) {
