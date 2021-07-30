@@ -245,7 +245,9 @@ class MapOlElement extends AbstractRenderElement {
             condition: ol.events.condition.pointerClick,
             style: function( feature) {
                 // set current tile/annotation selected
-                selectedTileEntry = tileEntries[feature.Location];
+                var props = feature.getProperties();
+                var location = props['Location']
+                selectedTileEntry = tileEntries[location];
                 // select the already associated labels
                 selectedTileEntry.click();
                 return selectedCountry;

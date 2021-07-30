@@ -965,7 +965,7 @@ class AbstractDataEntryEx {
     }
 
     _createMapOlEntry(image) {
-        this.imageEntry = new MapOlElement(this.entryID + '_image');
+        this.imageEntry = new MapOlElement(this.entryID + '_image', image);
         // this.viewport.addRenderElement(this.imageEntry);
     }
 
@@ -1480,7 +1480,7 @@ class ClassificationTileEntry extends ClassificationMLEntry {
         this.entries.append(entry)
     }
 
-    setImageEntryTilesRef(){
+    setEntryTilesRef(){
         this.imageEntry.setTilesRef(this.entries)
     }
 
