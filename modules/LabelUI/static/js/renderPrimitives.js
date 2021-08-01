@@ -171,10 +171,15 @@ class MapOlElement extends AbstractRenderElement {
         super(id, null);
         this.image = image.currentSrc;
         this.geojson = this.image.replace('jpg', 'geojson');
+        this.timeCreated = new Date();
     }
 
     setTilesRef(tileEntries){
         this.tileEntries = tileEntries
+    }
+
+    getTimeCreated() {
+        return this.timeCreated;
     }
 
     render() {
@@ -246,10 +251,8 @@ class MapOlElement extends AbstractRenderElement {
             style: function( feature) {
                 // set current tile/annotation selected
                 var props = feature.getProperties();
-                var location = props['Location']
-                selectedTileEntry = tileEntries[location];
-                // select the already associated labels
-                selectedTileEntry.click();
+                var location = props['Location'];
+                window.dataHandler.tileSelected(location);
                 return selectedCountry;
             }
         });

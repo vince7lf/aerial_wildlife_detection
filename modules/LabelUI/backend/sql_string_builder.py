@@ -148,9 +148,11 @@ class SQLStringBuilder:
             subsetFragment_b = 'WHERE (viewcount IS NULL OR viewcount = 0)'
 
         if len(subsetFragment):
-            subsetFragment += ' AND (NOW() - COALESCE(img.last_requested, to_timestamp(0))) > interval \'900 second\''
+            # 900 sec
+            subsetFragment += ' AND (NOW() - COALESCE(img.last_requested, to_timestamp(0))) > interval \'0 second\''
+            # subsetFragment += ' AND img.filename = \'onetuile/test_retile.jpg\''
         else:
-            subsetFragment = 'WHERE (NOW() - COALESCE(img.last_requested, to_timestamp(0))) > interval \'900 second\''
+            subsetFragment = 'WHERE (NOW() - COALESCE(img.last_requested, to_timestamp(0))) > interval \'0 second\''
 
         if order == 'unlabeled':
             orderSpec_a = 'ORDER BY isgoldenquestion DESC NULLS LAST, viewcount ASC NULLS FIRST, annoCount ASC NULLS FIRST, score DESC NULLS LAST'

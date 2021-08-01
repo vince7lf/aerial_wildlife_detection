@@ -67,7 +67,7 @@ However, for the database operation, this is not required. If you wish to skip t
     sudo sysctl -p
 ```
 
-## postgresql folders
+## postgresql folders, including logs
 * /var/log/postgresql: main logs
 * /etc/init.d/postgresql: service
 * /var/lib/postgresql/10/main/pg_log: all other logs
@@ -99,6 +99,7 @@ logging_collector = on          # Enable capturing of stderr and csvlog
 # These are only used if logging_collector is on:
 log_directory = 'pg_log'                        # directory where log files are written,
                                         # can be absolute or relative to PGDATA
+                                        # cd /var/lib/postgresql/10/main/pg_log
 log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log' # log file name pattern,
                                         # can include strftime() escapes
 log_file_mode = 0600                    # creation mode for log files,

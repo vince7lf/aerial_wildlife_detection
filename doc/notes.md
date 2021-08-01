@@ -84,3 +84,16 @@ gdal_retile -levels 1 -tileIndex tuiles.shp -tileIndexField Location -ps 224 224
 
 ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 tuiles.geojson tuiles.shp
 ```
+
+# Transformation des tif en jpg
+Avec GDAL
+```
+c:\QGIS310>gdal_translate -of JPEG -scale -co worldfile=yes c:\Users\vincent.le_falher\Downloads\AIDEMELCC\gdal_tile\test_retile_14_15.tif c:\Users\vincent.le_falher\Downloads\AIDEMELCC\gdal_tile\test_retile_14_15.tif.jpg
+Input file size is 224, 128
+0...10...20...30...40...50...60...70...80...90...100 - done.
+```
+
+Avec ImageMagik (installation n/cessaire)
+```
+mogrify -format jpg c:/Users/vincent.le_falher/Downloads/AIDEMELCC/gdal_tile/*.tif
+```

@@ -14,6 +14,9 @@ class DataHandler {
         this.undoStack = [];
         this.redoStack = [];
 
+        this.tiles = {}
+        this.entriesStack = {};
+
         this.skipConfirmationDialog = window.getCookie('skipAnnotationConfirmation');
 
         // prepare user statistics (e.g. browser)
@@ -22,7 +25,7 @@ class DataHandler {
         // this._navigator = JSON.stringify(this._navigator);
 
         // check if user has finished labeling
-        if(window.annotationType === 'segmentationMasks') {
+        if (window.annotationType === 'segmentationMasks') {
             // re-check if finished after every batch in this case
             this.recheckInterval = 1;
         } else {
@@ -34,13 +37,13 @@ class DataHandler {
 
     _check_user_finished() {
         let footerPanel = $('#footer-message-panel');
-        if(footerPanel.length === 0) return;
+        if (footerPanel.length === 0) return;
         var self = this;
         $.ajax({
             url: 'getUserFinished',
             method: 'GET',
-            success: function(response) {
-                if(response.hasOwnProperty('finished') && response['finished']) {
+            success: function (response) {
+                if (response.hasOwnProperty('finished') && response['finished']) {
                     // show message
                     footerPanel.html('Congratulations, you have finished labeling this dataset!')
                     footerPanel.css('color', 'green');
@@ -58,14 +61,14 @@ class DataHandler {
 
 
     renderAll() {
-        for(var i=0; i<this.dataEntries.length; i++) {
+        for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].render();
         }
     }
 
 
     resetZoom() {
-        for(var e=0; e<this.dataEntries.length; e++) {
+        for (var e = 0; e < this.dataEntries.length; e++) {
             this.dataEntries[e].viewport.resetViewport();
         }
     }
@@ -76,8 +79,8 @@ class DataHandler {
             For classification entries only: assigns the selected label
             to all data entries.
         */
-        if(window.uiBlocked) return;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        if (window.uiBlocked) return;
+        for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].setLabel(window.labelClassHandler.getActiveClassID());
         }
     }
@@ -86,9 +89,9 @@ class DataHandler {
         /*
             Remove all assigned labels (if 'enableEmptyClass' is true).
         */
-        if(window.uiBlocked || !window.enableEmptyClass) return 0;
+        if (window.uiBlocked || !window.enableEmptyClass) return 0;
         var numRemoved = 0;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        for (var i = 0; i < this.dataEntries.length; i++) {
             numRemoved += this.dataEntries[i].removeAllAnnotations();
         }
         return numRemoved;
@@ -100,20 +103,20 @@ class DataHandler {
             inactive, unless the globally set active data entry corresponds to
             the respective data entry's entryID.
         */
-        for(var i=0; i<this.dataEntries.length; i++) {
-            if(this.dataEntries[i].entryID != window.activeEntryID) {
+        for (var i = 0; i < this.dataEntries.length; i++) {
+            if (this.dataEntries[i].entryID != window.activeEntryID) {
                 this.dataEntries[i].setAnnotationsInactive();
             }
         }
     }
 
     removeActiveAnnotations() {
-        if(window.uiBlocked) return 0;
+        if (window.uiBlocked) return 0;
         var numRemoved = 0;
-        if(window.annotationType === 'labels') {
+        if (window.annotationType === 'labels') {
             return this.clearLabelInAll();
         } else {
-            for(var i=0; i<this.dataEntries.length; i++) {
+            for (var i = 0; i < this.dataEntries.length; i++) {
                 numRemoved += this.dataEntries[i].removeActiveAnnotations();
             }
         }
@@ -121,41 +124,41 @@ class DataHandler {
     }
 
     toggleActiveAnnotationsUnsure() {
-        if(window.uiBlocked) return;
+        if (window.uiBlocked) return;
         window.unsureButtonActive = true;   // for classification entries
         var annotationsActive = false;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        for (var i = 0; i < this.dataEntries.length; i++) {
             var response = this.dataEntries[i].toggleActiveAnnotationsUnsure();
-            if(response) annotationsActive = true;
+            if (response) annotationsActive = true;
         }
 
-        if(annotationsActive) window.unsureButtonActive = false;
+        if (annotationsActive) window.unsureButtonActive = false;
     }
 
     convertPredictions() {
-        if(window.uiBlocked) return;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        if (window.uiBlocked) return;
+        for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].convertPredictions();
         }
     }
 
     setPredictionsVisible(visible) {
-        if(window.uiBlocked) return;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        if (window.uiBlocked) return;
+        for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].setPredictionsVisible(visible);
         }
     }
 
     setAnnotationsVisible(visible) {
-        if(window.uiBlocked) return;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        if (window.uiBlocked) return;
+        for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].setAnnotationsVisible(visible);
         }
     }
 
     setMinimapVisible(visible) {
-        if(window.uiBlocked) return;
-        for(var i=0; i<this.dataEntries.length; i++) {
+        if (window.uiBlocked) return;
+        for (var i = 0; i < this.dataEntries.length; i++) {
             // this.dataEntries[i].setMinimapVisible(visible);
         }
     }
@@ -166,7 +169,7 @@ class DataHandler {
             in the image entry/entries.
         */
         var presentClassIDs = {};
-        for(var key in this.dataEntries) {
+        for (var key in this.dataEntries) {
             presentClassIDs = {...presentClassIDs, ...this.dataEntries[key].getActiveClassIDs()};
         }
         return presentClassIDs;
@@ -189,15 +192,15 @@ class DataHandler {
         // }
     }
 
-    updateActiveAnnotationLabel( labelid, flag ) {
+    updateActiveAnnotationLabel(labelid, flag) {
         // find the active annotation
         // trigger toggleUserLabel
-        for(var i=0; i<this.dataEntries.length; i++) {
-            if(this.dataEntries[i].entryID != window.activeEntryID) continue;
-            if ( this.dataEntries[i] instanceof ClassificationTileEntry) {
+        for (var i = 0; i < this.dataEntries.length; i++) {
+            if (this.dataEntries[i].entryID != window.activeEntryID) continue;
+            if (this.dataEntries[i] instanceof ClassificationTileEntry) {
                 this.dataEntries[i].updateActiveAnnotationLabel(labelid, flag, tilename)
             } else {
-                if( flag ) this.dataEntries[i].setLabel(labelid);
+                if (flag) this.dataEntries[i].setLabel(labelid);
                 else this.dataEntries[i].unsetLabel(labelid);
             }
 
@@ -214,14 +217,14 @@ class DataHandler {
          */
         let url = new URL(window.location.href);
         let uuids_load = url.searchParams.get('imgs');
-        if(typeof(uuids_load) === 'string') {
+        if (typeof (uuids_load) === 'string') {
             uuids_load = uuids_load.split(',');
 
             // make sure image UUIDs are unique
             let uuids_filtered = [];
             let uuids_added = {};
-            for(var u=0; u<uuids_load.length; u++) {
-                if(!uuids_added.hasOwnProperty(uuids_load[u])) {
+            for (var u = 0; u < uuids_load.length; u++) {
+                if (!uuids_added.hasOwnProperty(uuids_load[u])) {
                     uuids_filtered.push(uuids_load[u]);
                     uuids_added[uuids_load[u]] = 1;
                 }
@@ -239,32 +242,25 @@ class DataHandler {
         return $.ajax({
             url: url,
             dataType: 'json',
-            success: function(data) {
+            success: function (data) {
                 // clear current entries
                 self.parentDiv.empty();
                 self.dataEntries = [];
 
                 let imgIDs = '';
 
-                var tiles = {}
-                for(var d in data['entries']) {
+                for (var d in data['entries']) {
                     // create new data entry
-                    switch(String(window.annotationType)) {
+                    switch (String(window.annotationType)) {
                         case 'labels':
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][d]
-                            if( dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(d, dataEntry);
-                                tiles[dataEntry.fileName] = entry;
+                                self.tiles[dataEntry.fileName] = entry;
                             } else {
                                 var entry = new ClassificationMLEntry(d, dataEntry);
-                                for (var key in tiles) {
-                                    if (dataEntry.fileName.indexOf(key)) {
-                                        var tileentry = tiles[key]
-                                        tileentry.addEntry(entry)
-                                    }
-                                }
                             }
                             break;
                         case 'points':
@@ -283,8 +279,18 @@ class DataHandler {
                     // append
                     self.parentDiv.append(entry.markup);
                     self.dataEntries.push(entry);
+                    self.entriesStack[d] = entry;
 
                     imgIDs += d + ','
+                }
+
+                for (var key in self.tiles) {
+                    for (var id in self.entriesStack) {
+                        if (self.entriesStack[id].fileName.indexOf(key.slice(0, -4)) !== -1 && self.entriesStack[id].fileName !== key ) {
+                            var tileentry = self.tiles[key];
+                            tileentry.addEntry(self.entriesStack[id]);
+                        }
+                    }
                 }
 
                 // update present classes list
@@ -298,37 +304,30 @@ class DataHandler {
                 window.windowResized();
 
                 // re-check if finished (if threshold exceeded)
-                if(self.numBatchesSeen >= 0) {
+                if (self.numBatchesSeen >= 0) {
                     self.numBatchesSeen += 1;
-                    if(self.numBatchesSeen >= self.recheckInterval) {
+                    if (self.numBatchesSeen >= self.recheckInterval) {
                         // re-check
                         self._check_user_finished();
                     }
                 }
 
-                // make the tiles ImageElement accessible to the MapOlElement so when a tile is clicked the respective ImageElement will be saved as a selectedImageElement
-                for (var key in tiles) {
-                    var tileentry = tiles[key];
-                    tileentry.setEntryTilesRef()
-                }
-
                 // modify URL
-                if(imgIDs.length > 0) {
-                    imgIDs = imgIDs.slice(0, imgIDs.length-1);  // remove trailing comma
+                if (imgIDs.length > 0) {
+                    imgIDs = imgIDs.slice(0, imgIDs.length - 1);  // remove trailing comma
                     window.history.replaceState({}, document.title, 'interface?imgs=' + imgIDs);
                 } else {
                     window.history.replaceState({}, document.title, 'interface');
                 }
             },
-            error: function(xhr, status, error) {
-                if(error == 'Unauthorized') {
+            error: function (xhr, status, error) {
+                if (error == 'Unauthorized') {
                     // ask user to provide password again
                     window.verifyLogin((self._loadNextBatch).bind(self));
                 }
             }
         });
     }
-
 
 
     _loadReviewBatch() {
@@ -339,11 +338,11 @@ class DataHandler {
         var skipEmptyImgs = $('#review-skip-empty').prop('checked');
         var goldenQuestionsOnly = $('#review-golden-questions-only').prop('checked');
         var userNames = [];
-        if(window.uiControlHandler.hasOwnProperty('reviewUsersTable')) {
+        if (window.uiControlHandler.hasOwnProperty('reviewUsersTable')) {
             // user is admin; check which names are selected
-            window.uiControlHandler.reviewUsersTable.children().each(function() {
+            window.uiControlHandler.reviewUsersTable.children().each(function () {
                 var checked = $(this).find(':checkbox').prop('checked');
-                if(checked) {
+                if (checked) {
                     userNames.push($(this).find('.user-list-name').html());
                 }
             })
@@ -362,32 +361,25 @@ class DataHandler {
                 goldenQuestionsOnly: goldenQuestionsOnly,
                 limit: this.numImagesPerBatch
             }),
-            success: function(data) {
+            success: function (data) {
                 // clear current entries
                 self.parentDiv.empty();
                 self.dataEntries = [];
 
                 let imgIDs = '';
 
-                var tiles = {}
-                for(var d in data['entries']) {
+                for (var d in data['entries']) {
                     // create new data entry
-                    switch(String(window.annotationType)) {
+                    switch (String(window.annotationType)) {
                         case 'labels':
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][d]
-                            if( dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(d, dataEntry);
-                                tiles[dataEntry.fileName] = entry;
+                                self.tiles[dataEntry.fileName] = entry;
                             } else {
                                 var entry = new ClassificationMLEntry(d, dataEntry);
-                                for (var key in tiles) {
-                                    if (dataEntry.fileName.indexOf(key)) {
-                                        var tileentry = tiles[key]
-                                        tileentry.addEntry(entry)
-                                    }
-                                }
                             }
                             break;
                         case 'points':
@@ -406,12 +398,22 @@ class DataHandler {
                     // append
                     self.parentDiv.append(entry.markup);
                     self.dataEntries.push(entry);
+                    self.entriesStack[d] = entry;
 
                     // update min and max timestamp
                     var nextTimestamp = data['entries'][d]['last_checked'];
-                    minTimestamp = Math.max(minTimestamp, nextTimestamp+1);
+                    minTimestamp = Math.max(minTimestamp, nextTimestamp + 1);
 
                     imgIDs += d + ',';
+                }
+
+                for (var key in self.tiles) {
+                    for (var id in self.entriesStack) {
+                        if (self.entriesStack[id].fileName.indexOf(key.slice(0, -4)) !== -1 && self.entriesStack[id].fileName !== key ) {
+                            var tileentry = self.tiles[key];
+                            tileentry.addEntry(self.entriesStack[id]);
+                        }
+                    }
                 }
 
                 // update present classes list
@@ -428,22 +430,16 @@ class DataHandler {
                 // adjust width of entries
                 window.windowResized();
 
-                // make the tiles ImageElement accessible to the MapOlElement so when a tile is clicked the respective ImageElement will be saved as a selectedImageElement
-                for (var key in tiles) {
-                    var tileentry = tiles[key];
-                    tileentry.setEntryTilesRef()
-                }
-
                 // modify URL
-                if(imgIDs.length > 0) {
-                    imgIDs = imgIDs.slice(0, imgIDs.length-1);  // remove trailing comma
+                if (imgIDs.length > 0) {
+                    imgIDs = imgIDs.slice(0, imgIDs.length - 1);  // remove trailing comma
                     window.history.replaceState({}, document.title, 'interface?imgs=' + imgIDs);
                 } else {
                     window.history.replaceState({}, document.title, 'interface');
                 }
             },
-            error: function(xhr, status, error) {
-                if(error == 'Unauthorized') {
+            error: function (xhr, status, error) {
+                if (error == 'Unauthorized') {
                     // ask user to provide password again
                     window.verifyLogin((self._loadReviewBatch).bind(self));
                 }
@@ -452,11 +448,10 @@ class DataHandler {
     }
 
 
-
     _entriesToJSON(minimal, onlyUserAnnotations) {
         // assemble entries
         var entries = {};
-        for(var e=0; e<this.dataEntries.length; e++) {
+        for (var e = 0; e < this.dataEntries.length; e++) {
             entries[this.dataEntries[e].entryID] = this.dataEntries[e].getProperties(minimal, onlyUserAnnotations);
         }
 
@@ -477,7 +472,7 @@ class DataHandler {
 
 
     _submitAnnotations(silent) {
-        if(window.demoMode) {
+        if (window.demoMode) {
             return $.Deferred().promise();
         }
 
@@ -489,11 +484,11 @@ class DataHandler {
             contentType: 'application/json; charset=utf-8',
             data: entries,
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 // check status
-                if(response['status'] !== 0) {
+                if (response['status'] !== 0) {
                     // error
-                    if(!silent) {
+                    if (!silent) {
                         //TODO: make proper messaging system
                         alert('Error: ' + response['message']);
                         return $.Deferred();
@@ -501,19 +496,20 @@ class DataHandler {
                 } else {
                     // submitted; nudge annotation watchdog if possible
                     try {
-                        if(window.wfMonitor instanceof WorkflowMonitor) {
+                        if (window.wfMonitor instanceof WorkflowMonitor) {
                             window.wfMonitor.queryNow(true);
                         }
-                    } catch {}
+                    } catch {
+                    }
                 }
             },
-            error: function(xhr, status, error) {
-                if(error == 'Unauthorized') {
+            error: function (xhr, status, error) {
+                if (error == 'Unauthorized') {
                     return window.verifyLogin((self._submitAnnotations).bind(self));
 
                 } else {
                     // error
-                    if(!silent) {
+                    if (!silent) {
                         //TODO: make proper messaging system
                         alert('Unexpected error: ' + error);
                         return $.Deferred();
@@ -531,9 +527,9 @@ class DataHandler {
             url: 'getImages',
             contentType: "application/json; charset=utf-8",
             dataType: 'json',
-            data: JSON.stringify({'imageIDs':batch}),
+            data: JSON.stringify({'imageIDs': batch}),
             type: 'POST',
-            success: function(data) {
+            success: function (data) {
 
                 let imgIDs = '';    // for updating URL in case of errors
                 let errors = '';
@@ -543,31 +539,24 @@ class DataHandler {
                 self.dataEntries = [];
 
                 // add new ones
-                var tiles = {}
-                for(var d in batch) {
+                for (var d in batch) {
                     let entryID = batch[d];
 
-                    if(!data['entries'].hasOwnProperty(entryID) || (data.hasOwnProperty('imgs_malformed') && data['imgs_malformed'].hasOwnProperty(entryID))) {
+                    if (!data['entries'].hasOwnProperty(entryID) || (data.hasOwnProperty('imgs_malformed') && data['imgs_malformed'].hasOwnProperty(entryID))) {
                         errors += entryID + ', ';
                         continue;
                     }
 
-                    switch(String(window.annotationType)) {
+                    switch (String(window.annotationType)) {
                         case 'labels':
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][entryID]
-                            if( dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(entryID, dataEntry);
-                                tiles[dataEntry.fileName] = entry;
+                                self.tiles[dataEntry.fileName] = entry;
                             } else {
                                 var entry = new ClassificationMLEntry(entryID, dataEntry);
-                                for (var key in tiles) {
-                                    if (dataEntry.fileName.indexOf(key)) {
-                                        var tileentry = tiles[key]
-                                        tileentry.addEntry(entry)
-                                    }
-                                }
                             }
                             break;
                         case 'points':
@@ -586,8 +575,18 @@ class DataHandler {
                     // append
                     self.parentDiv.append(entry.markup);
                     self.dataEntries.push(entry);
+                    self.entriesStack[d] = entry;
 
                     imgIDs += entryID + ',';
+                }
+
+                for (var key in self.tiles) {
+                    for (var id in self.entriesStack) {
+                        if (self.entriesStack[id].fileName.indexOf(key.slice(0, -4)) !== -1 && self.entriesStack[id].fileName !== key ) {
+                            var tileentry = self.tiles[key];
+                            tileentry.addEntry(self.entriesStack[id]);
+                        }
+                    }
                 }
 
                 // update present classes list
@@ -602,29 +601,23 @@ class DataHandler {
 
                 window.setUIblocked(false);
 
-                // make the tiles ImageElement accessible to the MapOlElement so when a tile is clicked the respective ImageElement will be saved as a selectedImageElement
-                for (var key in tiles) {
-                    var tileentry = tiles[key];
-                    tileentry.setEntryTilesRef()
-                }
-
                 // modify URL
-                if(imgIDs.length > 0) {
-                    imgIDs = imgIDs.slice(0, imgIDs.length-1);  // remove trailing comma
+                if (imgIDs.length > 0) {
+                    imgIDs = imgIDs.slice(0, imgIDs.length - 1);  // remove trailing comma
                     window.history.replaceState({}, document.title, 'interface?imgs=' + imgIDs);
                 } else {
                     window.history.replaceState({}, document.title, 'interface');
                 }
 
                 // show message in case of errors
-                if(errors.length > 0) {
-                    if(errors.endsWith(', ')) errors = errors.slice(0, errors.length-2);
-                    window.messager.addMessage('The following images could not be found or loaded:\n'+errors, 'error');
+                if (errors.length > 0) {
+                    if (errors.endsWith(', ')) errors = errors.slice(0, errors.length - 2);
+                    window.messager.addMessage('The following images could not be found or loaded:\n' + errors, 'error');
                 }
             },
-            error: function(xhr, status, error) {
-                if(error == 'Unauthorized') {
-                    var callback = function() {
+            error: function (xhr, status, error) {
+                if (error == 'Unauthorized') {
+                    var callback = function () {
                         self._loadFixedBatch(batch);
                     }
                     window.verifyLogin((callback).bind(self));
@@ -635,22 +628,22 @@ class DataHandler {
 
 
     nextBatch() {
-        if(window.uiBlocked) return;
+        if (window.uiBlocked) return;
 
         var self = this;
 
-        if(window.demoMode) {
-            var _next_batch = function() {
+        if (window.demoMode) {
+            var _next_batch = function () {
                 // in demo mode we add the entire objects to the history
-                for(var e=0; e<self.dataEntries.length; e++) {
+                for (var e = 0; e < self.dataEntries.length; e++) {
                     self.dataEntries[e].markup.detach();
                 }
                 self.undoStack.push(self.dataEntries.slice());
-                if(self.redoStack.length > 0) {
+                if (self.redoStack.length > 0) {
                     // re-initialize stored data entries
                     var entries = self.redoStack.pop();
                     self.dataEntries = entries;
-                    for(var e=0; e<self.dataEntries.length; e++) {
+                    for (var e = 0; e < self.dataEntries.length; e++) {
                         self.parentDiv.append(self.dataEntries[e].markup);
                     }
                 } else {
@@ -659,22 +652,22 @@ class DataHandler {
             }
 
         } else {
-            var _next_batch = function() {
+            var _next_batch = function () {
                 // add current image IDs to history
                 var historyEntry = [];
-                for(var i=0; i<this.dataEntries.length; i++) {
+                for (var i = 0; i < this.dataEntries.length; i++) {
                     historyEntry.push(this.dataEntries[i]['entryID']);
                 }
                 this.undoStack.push(historyEntry);
 
-                var callback = function() {
-                    if(self.redoStack.length > 0) {
+                var callback = function () {
+                    if (self.redoStack.length > 0) {
                         var nb = self.redoStack.pop();
                         self._loadFixedBatch(nb.slice());
                     } else {
                         //TODO: temporary mode to ensure compatibility with running instances
                         try {
-                            if($('#imorder-review').prop('checked')) {
+                            if ($('#imorder-review').prop('checked')) {
                                 self._loadReviewBatch();
                             } else {
                                 self._loadNextBatch();
@@ -687,7 +680,7 @@ class DataHandler {
 
                 // check if annotation commitment is enabled
                 var doSubmit = $('#imorder-auto').prop('checked') || $('#review-enable-editing').prop('checked');
-                if(doSubmit) {
+                if (doSubmit) {
                     this._submitAnnotations().done(callback);
                 } else {
                     // only go to next batch, don't submit annotations
@@ -700,13 +693,13 @@ class DataHandler {
 
 
     previousBatch() {
-        if(window.uiBlocked || this.undoStack.length === 0) return;
-        
+        if (window.uiBlocked || this.undoStack.length === 0) return;
+
         var self = this;
 
-        if(window.demoMode) {
-            var _previous_batch = function() {
-                for(var e=0; e<self.dataEntries.length; e++) {
+        if (window.demoMode) {
+            var _previous_batch = function () {
+                for (var e = 0; e < self.dataEntries.length; e++) {
                     self.dataEntries[e].markup.detach();
                 }
                 self.redoStack.push(self.dataEntries.slice());
@@ -714,25 +707,25 @@ class DataHandler {
                 // re-initialize stored data entries
                 var entries = self.undoStack.pop();
                 self.dataEntries = entries;
-                for(var e=0; e<self.dataEntries.length; e++) {
+                for (var e = 0; e < self.dataEntries.length; e++) {
                     self.parentDiv.append(self.dataEntries[e].markup);
                 }
             }
         } else {
-            var _previous_batch = function() {
+            var _previous_batch = function () {
                 // add current image IDs to history
                 var historyEntry = [];
-                for(var i=0; i<this.dataEntries.length; i++) {
+                for (var i = 0; i < this.dataEntries.length; i++) {
                     historyEntry.push(this.dataEntries[i]['entryID']);
                 }
                 this.redoStack.push(historyEntry);
-    
+
                 var pb = this.undoStack.pop();
 
                 // check if annotation commitment is enabled
                 var doSubmit = $('#imorder-auto').prop('checked') || $('#review-enable-editing').prop('checked');
-                if(doSubmit) {
-                    this._submitAnnotations().done(function() {
+                if (doSubmit) {
+                    this._submitAnnotations().done(function () {
                         self._loadFixedBatch(pb.slice());
                     });
                 } else {
@@ -754,21 +747,21 @@ class DataHandler {
 
 
     _showConfirmationDialog(callback_yes) {
-        
+
         // go to callback directly if user requested not to show message anymore
-        if(this.skipConfirmationDialog) {
+        if (this.skipConfirmationDialog) {
             callback_yes();
             return;
         }
 
         // create markup
-        if(this.confirmationDialog_markup === undefined) {
+        if (this.confirmationDialog_markup === undefined) {
             this.confirmationDialog_markup = {};
             this.confirmationDialog_markup.cookieCheckbox = $('<input type="checkbox" style="margin-right:10px" />');
             var cookieLabel = $('<label style="margin-top:20px">Do not show this message again.</label>').prepend(this.confirmationDialog_markup.cookieCheckbox);
             this.confirmationDialog_markup.button_yes = $('<button class="btn btn-primary btn-sm" style="display:inline;float:right">Yes</button>');
             var button_no = $('<button class="btn btn-secondary btn-sm" style="display:inline">No</button>');
-            button_no.click(function() {
+            button_no.click(function () {
                 window.showOverlay(null);
             });
             var buttons = $('<div></div>').append(button_no).append(this.confirmationDialog_markup.button_yes);
@@ -777,21 +770,29 @@ class DataHandler {
 
         // wrap callbacks
         var self = this;
-        var dispose = function() {
+        var dispose = function () {
             // check if cookie is to be set
             var skipMsg = self.confirmationDialog_markup.cookieCheckbox.is(':checked');
-            if(skipMsg) {
+            if (skipMsg) {
                 window.setCookie('skipAnnotationConfirmation', true, 365);
                 self.skipConfirmationDialog = true;
             }
             window.showOverlay(null);
         }
-        var action_yes = function() {
+        var action_yes = function () {
             dispose();
             callback_yes();
         }
         this.confirmationDialog_markup.button_yes.click(action_yes);
 
         window.showOverlay(this.confirmationDialog_markup.markup, false, false);
+    }
+
+    tileSelected(tilename) {
+        for (var id in this.entriesStack) {
+            if (this.entriesStack[id].fileName.indexOf(tilename) !== -1 ) {
+                this.entriesStack[id].click(this.entriesStack[id]);
+            }
+        }
     }
 }

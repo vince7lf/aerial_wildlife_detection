@@ -8,7 +8,7 @@ class Annotation {
         this.label = new Set();
         // in our context do not set the labels when loading, but only when selected
         // breaking the compatibilty with other tpe of annotation
-        // this._parse_properties(properties);
+        this._parse_properties(properties);
     }
 
     _parse_properties(properties) {
