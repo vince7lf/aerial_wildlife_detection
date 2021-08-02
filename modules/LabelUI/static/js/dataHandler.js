@@ -192,23 +192,6 @@ class DataHandler {
         // }
     }
 
-    updateActiveAnnotationLabel(labelid, flag) {
-        // find the active annotation
-        // trigger toggleUserLabel
-        for (var i = 0; i < this.dataEntries.length; i++) {
-            if (this.dataEntries[i].entryID != window.activeEntryID) continue;
-            if (this.dataEntries[i] instanceof ClassificationTileEntry) {
-                this.dataEntries[i].updateActiveAnnotationLabel(labelid, flag, tilename)
-            } else {
-                if (flag) this.dataEntries[i].setLabel(labelid);
-                else this.dataEntries[i].unsetLabel(labelid);
-            }
-
-            return;
-        }
-    }
-
-
     _loadFirstBatch() {
         /**
          * Checks if an image UUID or a list thereof is provided in the URL
@@ -256,7 +239,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][d]
-                            if (dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('_tile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(d, dataEntry);
                                 self.tiles[dataEntry.fileName] = entry;
                             } else {
@@ -282,15 +265,6 @@ class DataHandler {
                     self.entriesStack[d] = entry;
 
                     imgIDs += d + ','
-                }
-
-                for (var key in self.tiles) {
-                    for (var id in self.entriesStack) {
-                        if (self.entriesStack[id].fileName.indexOf(key.slice(0, -4)) !== -1 && self.entriesStack[id].fileName !== key ) {
-                            var tileentry = self.tiles[key];
-                            tileentry.addEntry(self.entriesStack[id]);
-                        }
-                    }
                 }
 
                 // update present classes list
@@ -375,7 +349,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][d]
-                            if (dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('_tile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(d, dataEntry);
                                 self.tiles[dataEntry.fileName] = entry;
                             } else {
@@ -405,15 +379,6 @@ class DataHandler {
                     minTimestamp = Math.max(minTimestamp, nextTimestamp + 1);
 
                     imgIDs += d + ',';
-                }
-
-                for (var key in self.tiles) {
-                    for (var id in self.entriesStack) {
-                        if (self.entriesStack[id].fileName.indexOf(key.slice(0, -4)) !== -1 && self.entriesStack[id].fileName !== key ) {
-                            var tileentry = self.tiles[key];
-                            tileentry.addEntry(self.entriesStack[id]);
-                        }
-                    }
                 }
 
                 // update present classes list
@@ -552,7 +517,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][entryID]
-                            if (dataEntry.fileName.indexOf('test_retile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('_tile.jpg') > -1) {
                                 var entry = new ClassificationTileEntry(entryID, dataEntry);
                                 self.tiles[dataEntry.fileName] = entry;
                             } else {
@@ -578,15 +543,6 @@ class DataHandler {
                     self.entriesStack[d] = entry;
 
                     imgIDs += entryID + ',';
-                }
-
-                for (var key in self.tiles) {
-                    for (var id in self.entriesStack) {
-                        if (self.entriesStack[id].fileName.indexOf(key.slice(0, -4)) !== -1 && self.entriesStack[id].fileName !== key ) {
-                            var tileentry = self.tiles[key];
-                            tileentry.addEntry(self.entriesStack[id]);
-                        }
-                    }
                 }
 
                 // update present classes list
@@ -788,10 +744,21 @@ class DataHandler {
         window.showOverlay(this.confirmationDialog_markup.markup, false, false);
     }
 
+    updateActiveAnnotationLabel(labelid, flag) {
+        // find the active annotation
+        // trigger toggleUserLabel
+        for (var id in this.entriesStack) {
+            if (this.entriesStack[id].entryID != window.activeEntryID) continue;
+            if (flag) this.entriesStack[id].setLabel(labelid);
+            else this.entriesStack[id].unsetLabel(labelid);
+            return;
+        }
+    }
+
     tileSelected(tilename) {
         for (var id in this.entriesStack) {
             if (this.entriesStack[id].fileName.indexOf(tilename) !== -1 ) {
-                this.entriesStack[id].click(this.entriesStack[id]);
+                this.entriesStack[id].click();
             }
         }
     }

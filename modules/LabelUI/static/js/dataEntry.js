@@ -1488,7 +1488,9 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
 
     // triggered in the MapOlElement when a tile get selected, the respective ClassificationMLEntry get retrieved and the click function called
     click(entry) {
+        // this.toggleUserLabel(false);
         // this._addElement(entry.annotations[0]); // Maybe have to do this ?
+        window.activeEntryID = this.entryID;
         this.labelInstance.enlightLabels();
     }
 }
@@ -1497,16 +1499,6 @@ class ClassificationTileEntry extends ClassificationMLEntry {
 
     constructor(entryID, properties, disableInteractions) {
         super(entryID, properties, disableInteractions);
-        this.entries = [] // array of ClassificationMLEntry
-    }
-
-    updateActiveAnnotationLabel(labelid, flag, tilename) {
-        for (var tile in this.entries) {
-            if (tile.filename === tilename) {
-                if (flag) tile.setLabel(labelid);
-                else tile.unsetLabel(labelid);
-            }
-        }
     }
 }
 

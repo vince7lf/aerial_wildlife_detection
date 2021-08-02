@@ -406,11 +406,10 @@ class LabelClassHandler {
         if(window.uiBlocked) return;
 
         // click on another selected label : unselect it
+        this.activeClass = labelClassInstance;
         if( $('#labelLegend_'+labelClassInstance.classID).hasClass('legend-inactive') )  {
             window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
-            this.activeClass = null;
         } else {
-            this.activeClass = labelClassInstance;
             window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
         }
 

@@ -435,16 +435,19 @@ class DBMiddleware():
     def getLabels(self, project, annoResult):
         # loop through the annotation
         # keep the ids
-        ids = [str(b['id']) for b in annoResult]
+        # VLF do not convert to str; keep UUID
+        ids = [b['id'] for b in annoResult if b['id'] is not None]
 
         # query the labels for each annotation ids
+        # do not put the %s between (); tuples passed to execute.
         queryStr = sql.SQL('''
-            SELECT annotation, label FROM {id_anno_label} WHERE annotation in (%s)
+            SELECT annotation, label FROM {id_anno_label} WHERE annotation in %s
         ''').format(
             id_anno_label=sql.Identifier(project, 'annotation_label')
         )
 
-        labelResult = self.dbConnector.execute(queryStr, ids, 'all')
+        # VLF array needs to be converted to a tuple, but argument to execute needs to be a tuple ... try and error to find out that.
+        labelResult = self.dbConnector.execute(queryStr, (tuple(ids),), 'all')
 
         return labelResult
 
@@ -578,16 +581,17 @@ class DBMiddleware():
                     # assemble annotation values
                     annotationTokens = self.annoParser.parseAnnotation(annotation)
                     if annotationTokens['label'] is not None:
-                        annoValues = [(annotation_ids[0],UUID(label)) for label in annotationTokens['label']]
+                        annoValues = annoValues + [(annotation_ids[0],UUID(label)) for label in annotationTokens['label']]
 
 
         # delete all associations annotation-label
+
         queryStr = sql.SQL('''
             DELETE FROM {id_anno_label} WHERE annotation in (%s)  
         ''').format(
             id_anno_label=sql.Identifier(project, 'annotation_label')
         )
-        self.dbConnector.execute(queryStr, (annotation_ids,))
+        self.dbConnector.execute(queryStr, annotation_ids)
 
         # insert all associations annotation-label
         queryStr = sql.SQL('''

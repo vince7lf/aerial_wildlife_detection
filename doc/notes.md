@@ -85,6 +85,19 @@ gdal_retile -levels 1 -tileIndex tuiles.shp -tileIndexField Location -ps 224 224
 ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 tuiles.geojson tuiles.shp
 ```
 
+Modifier dans le fichier .geojson les .tif en .jpg
+
+Transformer les fichiers .tif en .jpg
+
+Creer la table 'annotation_label' dans le schema du nouveau projet (/scripts/sql/extended)
+
+Copier le .geojson sur le serveur dans le images du projet avec les images
+
+Copier l'image tuile et les images générées
+l'image tuilée doit finir par '_tile.jpg'
+
+Les autres images doivent être générées à partir de l'image _tile.jpg 
+
 # Transformation des tif en jpg
 Avec GDAL
 ```

@@ -25,7 +25,8 @@ function creationCarte() {
             lineCap: 'round'
         })
     });
-    var extent = [0, -3040, 4056, 0];
+    // var extent = [0, -3040, 4056, 0];
+    var extent = [0, -448, 448, 0];
     var projection = new ol.proj.Projection({
         code: 'xkcd-image',
         units: 'pixels',
@@ -33,7 +34,7 @@ function creationCarte() {
     });
     staticImage = new ol.layer.Image({
         source: new ol.source.ImageStatic({
-            url: './Soleil_ISO100_1m.JPG',
+            url: './tile448x448_tile.jpg',
             projection: projection,
             imageExtent: extent
         })
@@ -42,7 +43,7 @@ function creationCarte() {
 
     vectorLayer1 = new ol.layer.Vector({
         source: new ol.source.Vector({
-            url: './tuile.geojson',
+            url: './tile448x448_tile.geojson',
             format: new ol.format.GeoJSON(),
         }),
         style: canadaStyle
@@ -53,7 +54,8 @@ function creationCarte() {
     });
     view = new ol.View({
         projection: projection,
-        center: [2000, -1500],
+        // center: [2000, -1500],
+        center: [224, -224],
         zoom: 2,
     });
 
@@ -64,11 +66,12 @@ function creationCarte() {
         layers: [staticImage, vectorLayer1]
     });
 
+    /*
     // lookup for selection objects
     let selection = {};
 
     // Selection
-    const selectionLayer = new ol.layer.VectorTileLayer({
+    const selectionLayer = new ol.layer.Vector({
         map: map,
         renderMode: 'vector',
         source: vectorLayer1.getSource(),
@@ -98,10 +101,10 @@ function creationCarte() {
 
             selectionLayer.changed();
         });
-    });
+    });*/
 
     // Set the view for the map
     map.setView(view);
-    // map.addInteraction(selectInteraction)
+    map.addInteraction(selectInteraction)
 
 }
