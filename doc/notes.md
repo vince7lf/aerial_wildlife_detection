@@ -106,7 +106,12 @@ Input file size is 224, 128
 0...10...20...30...40...50...60...70...80...90...100 - done.
 ```
 
-Avec ImageMagik (installation n/cessaire)
+Avec ImageMagik (installation nécessaire)
+
+exe dans le ENV PATH
+
+dans Cygwin, dans DOS ne marche pas
+
 ```
 mogrify -format jpg c:/Users/vincent.le_falher/Downloads/AIDEMELCC/gdal_tile/*.tif
 ```

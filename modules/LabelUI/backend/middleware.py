@@ -99,7 +99,7 @@ class DBMiddleware():
                     elif isinstance(value, UUID):
                         value = str(value)
                     if(c == 'label' and multilabels != None):
-                        value = [str(entry['label']) for entry in multilabels]
+                        value = [str(entry['label']) for entry in multilabels if str(entry['annotation']) == entryID]
                     entry[c] = value
                 
                 if b['ctype'] == 'annotation':
@@ -579,19 +579,18 @@ class DBMiddleware():
             if 'annotations' in entry and len(entry['annotations']):
                 for annotation in entry['annotations']:
                     # assemble annotation values
-                    annotationTokens = self.annoParser.parseAnnotation(annotation)
-                    if annotationTokens['label'] is not None:
-                        annoValues = annoValues + [(annotation_ids[0],UUID(label)) for label in annotationTokens['label']]
+                    if annotation['label'] is not None:
+                        annoValues = annoValues + [(UUID(annotation['id']),UUID(label)) for label in annotation['label']]
 
 
         # delete all associations annotation-label
 
         queryStr = sql.SQL('''
-            DELETE FROM {id_anno_label} WHERE annotation in (%s)  
+            DELETE FROM {id_anno_label} WHERE annotation in %s
         ''').format(
             id_anno_label=sql.Identifier(project, 'annotation_label')
         )
-        self.dbConnector.execute(queryStr, annotation_ids)
+        self.dbConnector.execute(queryStr, (tuple(annotation_ids),))
 
         # insert all associations annotation-label
         queryStr = sql.SQL('''

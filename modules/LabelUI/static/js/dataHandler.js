@@ -540,7 +540,7 @@ class DataHandler {
                     // append
                     self.parentDiv.append(entry.markup);
                     self.dataEntries.push(entry);
-                    self.entriesStack[d] = entry;
+                    self.entriesStack[entryID] = entry;
 
                     imgIDs += entryID + ',';
                 }
