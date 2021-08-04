@@ -608,7 +608,7 @@ class AbstractDataEntryEx {
         this.isBookmarked = (typeof (properties['isBookmarked']) === 'boolean' ? properties['isBookmarked'] : false);
         this.numInteractions = 0;
         this.disableInteractions = disableInteractions;
-        // this.labelInstance = null;
+        this.labelInstance = null;
 
         // for interaction handlers
         this.mouseDown = false;

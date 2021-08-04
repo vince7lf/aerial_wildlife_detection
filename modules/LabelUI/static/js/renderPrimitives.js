@@ -174,10 +174,6 @@ class MapOlElement extends AbstractRenderElement {
         this.timeCreated = new Date();
     }
 
-    setTilesRef(tileEntries){
-        this.tileEntries = tileEntries
-    }
-
     getTimeCreated() {
         return this.timeCreated;
     }
@@ -186,8 +182,6 @@ class MapOlElement extends AbstractRenderElement {
         var map, view, staticImage, vectorLayer1;
         var image = this.image;
         var geojson = this.geojson;
-        var tileEntries = this.tileEntries;
-        var selectedTileEntry = null;
 
         var canadaStyle = new ol.style.Style({
             fill: new ol.style.Fill({

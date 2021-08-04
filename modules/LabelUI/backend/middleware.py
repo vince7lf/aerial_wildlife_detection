@@ -410,7 +410,8 @@ class DBMiddleware():
         if limit is None:
             limit = 128
         else:
-            limit = min(int(limit), 128)
+            # limit = min(int(limit), 128)
+            limit = min(int(limit), 9999)
 
         # parse results
         queryVals = (username,username,limit,username,)
@@ -477,7 +478,8 @@ class DBMiddleware():
         if limit is None:
             limit = 128
         else:
-            limit = min(int(limit), 128)
+            # limit = min(int(limit), 128)
+            limit = min(int(limit), 9999)
         queryVals.append(limit)
 
         if userList is not None:
