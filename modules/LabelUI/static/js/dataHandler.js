@@ -762,4 +762,14 @@ class DataHandler {
             }
         }
     }
+
+    tileLabels(tilename) {
+        for (var id in this.entriesStack) {
+            if (this.entriesStack[id].fileName.indexOf(tilename) !== -1 ) {
+                var labels = this.entriesStack[id].getLabel();
+                return labels;
+            }
+        }
+    }
+
 }

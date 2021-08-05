@@ -195,23 +195,34 @@ class MapOlElement extends AbstractRenderElement {
         });
 
         var canadaStyleSelect = new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: [0, 0, 255, 0.2]
-            }),
+            // fill: new ol.style.Fill({
+            //     color: [0, 0, 255, 0.2]
+            // }),
             stroke: new ol.style.Stroke({
                 color: [177, 163, 148, 0.5],
-                width: 2,
+                width: 4,
+                lineCap: 'round'
+            })
+        });
+        var canadaStyleAnnoted = new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: [148, 162, 177, 0.5]
+            }),
+            stroke: new ol.style.Stroke({
+                // color: [177, 163, 148, 0.5],
+                color: [255, 0, 0, 0.8],
+                width: 1,
                 lineCap: 'round'
             })
         });
         const selectedCountry = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(200,20,20,0.8)',
-                width: 2,
+                width: 4,
             }),
-            fill: new ol.style.Fill({
-                color: 'rgba(200,20,20,0.4)',
-            }),
+            // fill: new ol.style.Fill({
+            //     color: 'rgba(200,20,20,0.4)',
+            // }),
         });
 
         var extent = [0, -3040, 4056, 0];
@@ -234,11 +245,24 @@ class MapOlElement extends AbstractRenderElement {
                 url: geojson,
                 format: new ol.format.GeoJSON(),
             }),
-            style: canadaStyle
+            // style: canadaStyle
+            style: function( feature) {
+                // set current tile/annotation selected
+                var props = feature.getProperties();
+                var location = props['Location'];
+                var labels = window.dataHandler.tileLabels(location);
+                var xstyle = canadaStyle;
+                if( labels.size > 0 ) {
+                    xstyle = canadaStyleAnnoted;
+                }
+                return xstyle;
+            }
+
         });
         var selectInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerMove,
-            style: canadaStyleSelect
+            // style: canadaStyleSelect
+            style: selectedCountry
         });
         var clickInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerClick,
