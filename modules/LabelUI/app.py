@@ -74,7 +74,7 @@ class LabelUI():
         #     return redirect('/' + project + '/interface')
 
 
-        with open(os.path.abspath(os.path.join('modules/LabelUI/static/templates/interface.html')), 'r') as f:
+        with open(os.path.abspath(os.path.join('modules/LabelUI/static/templates/interface_melcc.html')), 'r') as f:
             self.interface_template = SimpleTemplate(f.read())
 
         @self.app.route('/<project>/interface')
