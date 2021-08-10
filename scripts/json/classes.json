@@ -1,6 +1,14 @@
 {
-{
-  "name": "espece1",
-  "color": "1111FF"
-}
+  "espèces": [
+    {
+      "name": "espece1",
+      "color": "#1111FF"
+    }
+  ],
+  "genre": [
+    {
+      "name": "genre1",
+      "color": "#1111FF"
+    }
+  ]
 }
