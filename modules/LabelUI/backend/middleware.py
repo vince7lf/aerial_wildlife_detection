@@ -439,6 +439,8 @@ class DBMiddleware():
         # VLF do not convert to str; keep UUID
         ids = [b['id'] for b in annoResult if b['id'] is not None]
 
+        if( len(ids) == 0 ): return None;
+
         # query the labels for each annotation ids
         # do not put the %s between (); tuples passed to execute.
         queryStr = sql.SQL('''

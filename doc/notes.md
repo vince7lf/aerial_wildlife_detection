@@ -115,3 +115,10 @@ dans Cygwin, dans DOS ne marche pas
 ```
 mogrify -format jpg c:/Users/vincent.le_falher/Downloads/AIDEMELCC/gdal_tile/*.tif
 ```
+
+Setup new project multilabel with OpenLayer tile
+- create project as annotation
+- load all the classes using json file
+- set the number of images to be displayed equal to the number of images to load (exe : 267 for a 13x13=266 + 1)
+- upload all images + the main image + geojson on the /imsages/projecrt folder
+- create the annotation_label table  
