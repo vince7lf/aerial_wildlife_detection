@@ -116,6 +116,22 @@ dans Cygwin, dans DOS ne marche pas
 mogrify -format jpg c:/Users/vincent.le_falher/Downloads/AIDEMELCC/gdal_tile/*.tif
 ```
 
+# Install gdal/ogr on ubuntu 
+Reference: <https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html>
+
+```
+sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
+sudo apt-get update
+sudo apt-get install gdal-bin
+sudo apt-get install libgdal-dev
+sudo apt install python3-pip
+export CPLUS_INCLUDE_PATH=/usr/include/gdal
+export C_INCLUDE_PATH=/usr/include/gdal
+ogrinfo --version
+GDAL 2.4.2, released 2019/06/28
+pip3 install GDAL==2.4.2
+``` 
+
 Setup new project multilabel with OpenLayer tile
 - create project as annotation
 - load all the classes using json file
