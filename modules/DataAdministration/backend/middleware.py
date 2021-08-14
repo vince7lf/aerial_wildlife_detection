@@ -102,7 +102,7 @@ class DataAdministrationMiddleware:
             Image upload is handled directly through the
             dataWorker, without a Celery dispatching bridge.
         '''
-        return self.dataWorker.uploadImages(project, images, existingFiles,
+        return self.dataWorker.uploadImagesEx(project, images, existingFiles,
                                             splitImages, splitProperties)
 
 

@@ -7,28 +7,28 @@
     2020-21 Benjamin Kellenberger
 '''
 
-import os
 import io
+import math
+import os
 import re
 import shutil
+import subprocess
 import tempfile
 import zipfile
-import math
 from datetime import datetime
-import pytz
 from uuid import UUID
+
+import pytz
 from PIL import Image
 from psycopg2 import sql
+
 from modules.LabelUI.backend.annotation_sql_tokens import QueryStrings_annotation, QueryStrings_prediction
 from util.helpers import VALID_IMAGE_EXTENSIONS, FILENAMES_PROHIBITED_CHARS, listDirectory, base64ToImage, hexToRGB
 from util.imageSharding import split_image
 
 
 class DataWorker:
-
-    NUM_IMAGES_LIMIT = 4096         # maximum number of images that can be queried at once (to avoid bottlenecks)
-
-
+    NUM_IMAGES_LIMIT = 4096  # maximum number of images that can be queried at once (to avoid bottlenecks)
 
     def __init__(self, config, dbConnector, passiveMode=False):
         self.config = config
@@ -37,8 +37,6 @@ class DataWorker:
         self.passiveMode = passiveMode
 
         self.tempDir = self.config.getProperty('FileServer', 'tempfiles_dir', type=str, fallback=tempfile.gettempdir())
-
-
 
     def aide_internal_notify(self, message):
         '''
@@ -55,15 +53,15 @@ class DataWorker:
 
                 # set up folders for a newly created project
                 if 'projectName' in message:
-                    destPath = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), message['projectName'])
+                    destPath = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'),
+                                            message['projectName'])
                     os.makedirs(destPath, exist_ok=True)
 
-
-    
     ''' Image administration functionalities '''
+
     def listImages(self, project, folder=None, imageAddedRange=None, lastViewedRange=None,
-            viewcountRange=None, numAnnoRange=None, numPredRange=None,
-            orderBy=None, order='desc', startFrom=None, limit=None):
+                   viewcountRange=None, numAnnoRange=None, numPredRange=None,
+                   orderBy=None, order='desc', startFrom=None, limit=None):
         '''
             Returns a list of images, with ID, filename,
             date image was added, viewcount, number of annotations,
@@ -80,11 +78,11 @@ class DataWorker:
         if folder is not None and isinstance(folder, str):
             filterStr += ' filename LIKE %s '
             queryArgs.append(folder + '%')
-        if imageAddedRange is not None:     #TODO
+        if imageAddedRange is not None:  # TODO
             filterStr += 'AND date_added >= to_timestamp(%s) AND date_added <= to_timestamp(%s) '
             queryArgs.append(imageAddedRange[0])
             queryArgs.append(imageAddedRange[1])
-        if lastViewedRange is not None:     #TODO
+        if lastViewedRange is not None:  # TODO
             filterStr += 'AND last_viewed >= to_timestamp(%s) AND last_viewed <= to_timestamp(%s) '
             queryArgs.append(lastViewedRange[0])
             queryArgs.append(lastViewedRange[1])
@@ -139,7 +137,7 @@ class DataWorker:
         limit = max(min(limit, self.NUM_IMAGES_LIMIT), 1)
         limitStr = sql.SQL('LIMIT %s')
         queryArgs.append(limit)
-        
+
         queryStr = sql.SQL('''
             SELECT img.id, filename, EXTRACT(epoch FROM date_added) AS date_added,
                 COALESCE(viewcount, 0) AS viewcount,
@@ -184,9 +182,8 @@ class DataWorker:
             result[idx]['id'] = str(result[idx]['id'])
         return result
 
-
     def uploadImages(self, project, images, existingFiles='keepExisting',
-        splitImages=False, splitProperties=None):
+                     splitImages=False, splitProperties=None):
         '''
             Receives a dict of files (bottle.py file format),
             verifies their file extension and checks if they
@@ -239,7 +236,7 @@ class DataWorker:
             try:
                 nextUpload = images[key]
                 nextFileName = nextUpload.raw_filename
-                #TODO: check if raw_filename is compatible with uploads made from Windows
+                # TODO: check if raw_filename is compatible with uploads made from Windows
 
                 # check if correct file suffix
                 _, ext = os.path.splitext(nextFileName)
@@ -270,9 +267,9 @@ class DataWorker:
                 else:
                     # split image into patches instead
                     images, coords = split_image(image,
-                                            splitProperties['patchSize'],
-                                            splitProperties['stride'],
-                                            splitProperties['tight'])
+                                                 splitProperties['patchSize'],
+                                                 splitProperties['stride'],
+                                                 splitProperties['tight'])
                     bareFileName, ext = os.path.splitext(filename)
                     filenames = [f'{bareFileName}_{c[0]}_{c[1]}{ext}' for c in coords]
 
@@ -289,7 +286,7 @@ class DataWorker:
                     if fileExists:
                         if existingFiles == 'keepExisting':
                             # rename new file
-                            while(os.path.exists(absFilePath)):
+                            while (os.path.exists(absFilePath)):
                                 # rename file
                                 fn, ext = os.path.splitext(newFileName)
                                 match = self.countPattern.search(fn)
@@ -297,15 +294,16 @@ class DataWorker:
                                     newFileName = fn + '_1' + ext
                                 else:
                                     # parse number
-                                    number = int(fn[match.span()[0]+1:match.span()[1]])
-                                    newFileName = fn[:match.span()[0]] + '_' + str(number+1) + ext
+                                    number = int(fn[match.span()[0] + 1:match.span()[1]])
+                                    newFileName = fn[:match.span()[0]] + '_' + str(number + 1) + ext
 
                                 absFilePath = os.path.join(destFolder, newFileName)
                                 if not os.path.exists(absFilePath):
-                                    imgs_warn[key] = 'An image with name "{}" already exists under given path on disk. Image has been renamed to "{}".'.format(
+                                    imgs_warn[
+                                        key] = 'An image with name "{}" already exists under given path on disk. Image has been renamed to "{}".'.format(
                                         subFilename, newFileName
                                     )
-                        
+
                         elif existingFiles == 'skipExisting':
                             # ignore new file
                             imgs_warn[key] = f'Image "{newFileName}" already exists on disk and has been skipped.'
@@ -340,17 +338,21 @@ class DataWorker:
                                 id_img=sql.Identifier(project, 'image')
                             )
                             self.dbConnector.execute(queryStr,
-                                tuple([nextFileName]*4), None)
+                                                     tuple([nextFileName] * 4), None)
 
                             # remove file
                             try:
                                 os.remove(absFilePath)
-                                imgs_warn[key] = 'Image "{}" already existed on disk and has been overwritten.\n'.format(newFileName) + \
-                                                    'All metadata (views, annotations, predictions) have been removed from the database.'
+                                imgs_warn[
+                                    key] = 'Image "{}" already existed on disk and has been overwritten.\n'.format(
+                                    newFileName) + \
+                                           'All metadata (views, annotations, predictions) have been removed from the database.'
                             except:
-                                imgs_warn[key] = 'Image "{}" already existed on disk but could not be overwritten.\n'.format(newFileName) + \
-                                                    'All metadata (views, annotations, predictions) have been removed from the database.'
-                    
+                                imgs_warn[
+                                    key] = 'Image "{}" already existed on disk but could not be overwritten.\n'.format(
+                                    newFileName) + \
+                                           'All metadata (views, annotations, predictions) have been removed from the database.'
+
                     # write to disk
                     fileParent, _ = os.path.split(absFilePath)
                     if len(fileParent):
@@ -383,6 +385,241 @@ class DataWorker:
 
         return result
 
+    def gdalogr_createtiles(self, image, destFolder):
+        # trigger script
+        # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
+
+        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder],
+                              stdin=subprocess.PIPE,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.PIPE,
+                              universal_newlines=True,
+                              bufsize=0)
+
+        if proc.check_returncode() == 0: return None
+
+        # no output to fetch, assume no error; proof of concept mode
+        tileimages = []
+        tilenames = []
+        for line in proc.stdout:
+            tilenames.append(line)
+            tileimage = Image.open(line)
+            tileimages.append(tileimage)
+
+        return (tileimages, tilenames)
+
+    def uploadImagesEx(self, project, images, existingFiles='keepExisting',
+                       splitImages=False, splitProperties=None):
+        '''
+            Receives a dict of files (bottle.py file format),
+            verifies their file extension and checks if they
+            are loadable by PIL.
+            If they are, they are saved to disk in the project's
+            image folder, and registered in the database.
+            Parameter "existingFiles" can be set as follows:
+            - "keepExisting" (default): if an image already exists on
+              disk with the same path/file name, the new image will be
+              renamed with an underscore and trailing number.
+            - "skipExisting": do not save images that already exist on
+              disk under the same path/file name.
+            - "replaceExisting": overwrite images that exist with the
+              same path/file name. Note: in this case all existing anno-
+              tations, predictions, and other metadata about those images,
+              will be removed from the database.
+
+            If "splitImages" is True, the uploaded images will be automati-
+            cally divided into patches on a regular grid according to what
+            is defined in "splitProperties". For example, the following
+            definition:
+
+                splitProperties = {
+                    'patchSize': (800, 600),
+                    'stride': (400, 300),
+                    'tight': True
+                }
+
+            would divide the images into patches of size 800x600, with over-
+            lap of 50% (denoted by the "stride" being half the "patchSize"),
+            and with all patches completely inside the original image (para-
+            meter "tight" makes the last patches to the far left and bottom
+            of the image being fully inside the original image; they are shif-
+            ted if needed).
+            Instead of the full images, the patches are stored on disk and re-
+            ferenced through the database. The name format for patches is
+            "imageName_x_y.jpg", with "imageName" denoting the name of the ori-
+            ginal image, and "x" and "y" the left and top position of the patch
+            inside the original image.
+
+            Returns image keys for images that were successfully
+            saved, and keys and error messages for those that
+            were not.
+        '''
+        imgPaths_valid = []
+        imgs_valid = []
+        imgs_warn = {}
+        imgs_error = {}
+        for key in images.keys():
+            try:
+                nextUpload = images[key]
+                nextFileName = nextUpload.raw_filename
+                # TODO: check if raw_filename is compatible with uploads made from Windows
+
+                # check if correct file suffix
+                _, ext = os.path.splitext(nextFileName)
+                if not ext.lower() in VALID_IMAGE_EXTENSIONS:
+                    raise Exception(f'Invalid file type (*{ext})')
+
+                # check if loadable as image
+                cache = io.BytesIO()
+                nextUpload.save(cache)
+                try:
+                    image = Image.open(cache)
+                except Exception:
+                    raise Exception('File is not a valid image.')
+
+                # prepare image(s) to save to disk
+                parent, filename = os.path.split(nextFileName)
+                destFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project, parent)
+                os.makedirs(destFolder, exist_ok=True)
+
+                images = []
+                filenames = []
+
+                if not splitImages:
+
+                    # if image is a _tile.jpg
+                    if (image.indexOf('_tile.jpg') > -1):
+                        # trigger script
+                        # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
+                        tileimages, tilenames = self.gdalogr_createtiles(image, destFolder)
+                        images.extend(tileimages)
+                        filenames.extends(tilenames)
+
+                    else:
+                        # upload the single image directly
+                        images.append(image)
+                        filenames.append(filename)
+
+                else:
+                    # split image into patches instead
+                    images, coords = split_image(image,
+                                                 splitProperties['patchSize'],
+                                                 splitProperties['stride'],
+                                                 splitProperties['tight'])
+                    bareFileName, ext = os.path.splitext(filename)
+                    filenames = [f'{bareFileName}_{c[0]}_{c[1]}{ext}' for c in coords]
+
+                # register and save all the images
+                for i in range(len(images)):
+                    subImage = images[i]
+                    subFilename = filenames[i]
+
+                    absFilePath = os.path.join(destFolder, subFilename)
+
+                    # check if an image with the same name does not already exist
+                    newFileName = subFilename
+                    fileExists = os.path.exists(absFilePath)
+                    if fileExists:
+                        if existingFiles == 'keepExisting':
+                            # rename new file
+                            while (os.path.exists(absFilePath)):
+                                # rename file
+                                fn, ext = os.path.splitext(newFileName)
+                                match = self.countPattern.search(fn)
+                                if match is None:
+                                    newFileName = fn + '_1' + ext
+                                else:
+                                    # parse number
+                                    number = int(fn[match.span()[0] + 1:match.span()[1]])
+                                    newFileName = fn[:match.span()[0]] + '_' + str(number + 1) + ext
+
+                                absFilePath = os.path.join(destFolder, newFileName)
+                                if not os.path.exists(absFilePath):
+                                    imgs_warn[
+                                        key] = 'An image with name "{}" already exists under given path on disk. Image has been renamed to "{}".'.format(
+                                        subFilename, newFileName
+                                    )
+
+                        elif existingFiles == 'skipExisting':
+                            # ignore new file
+                            imgs_warn[key] = f'Image "{newFileName}" already exists on disk and has been skipped.'
+                            imgs_valid.append(key)
+                            imgPaths_valid.append(os.path.join(parent, newFileName))
+                            continue
+
+                        elif existingFiles == 'replaceExisting':
+                            # overwrite new file; first remove metadata
+                            queryStr = sql.SQL('''
+                                DELETE FROM {id_iu}
+                                WHERE image = (
+                                    SELECT id FROM {id_img}
+                                    WHERE filename = %s
+                                );
+                                DELETE FROM {id_anno}
+                                WHERE image = (
+                                    SELECT id FROM {id_img}
+                                    WHERE filename = %s
+                                );
+                                DELETE FROM {id_pred}
+                                WHERE image = (
+                                    SELECT id FROM {id_img}
+                                    WHERE filename = %s
+                                );
+                                DELETE FROM {id_img}
+                                WHERE filename = %s;
+                            ''').format(
+                                id_iu=sql.Identifier(project, 'image_user'),
+                                id_anno=sql.Identifier(project, 'annotation'),
+                                id_pred=sql.Identifier(project, 'prediction'),
+                                id_img=sql.Identifier(project, 'image')
+                            )
+                            self.dbConnector.execute(queryStr,
+                                                     tuple([nextFileName] * 4), None)
+
+                            # remove file
+                            try:
+                                os.remove(absFilePath)
+                                imgs_warn[
+                                    key] = 'Image "{}" already existed on disk and has been overwritten.\n'.format(
+                                    newFileName) + \
+                                           'All metadata (views, annotations, predictions) have been removed from the database.'
+                            except:
+                                imgs_warn[
+                                    key] = 'Image "{}" already existed on disk but could not be overwritten.\n'.format(
+                                    newFileName) + \
+                                           'All metadata (views, annotations, predictions) have been removed from the database.'
+
+                    # write to disk
+                    fileParent, _ = os.path.split(absFilePath)
+                    if len(fileParent):
+                        os.makedirs(fileParent, exist_ok=True)
+                    subImage.save(absFilePath)
+
+                    imgs_valid.append(key)
+                    imgPaths_valid.append(os.path.join(parent, newFileName))
+
+            except Exception as e:
+                imgs_error[key] = str(e)
+
+        # register valid images in database
+        if len(imgPaths_valid):
+            queryStr = sql.SQL('''
+                INSERT INTO {id_img} (filename)
+                VALUES %s
+                ON CONFLICT (filename) DO NOTHING;
+            ''').format(
+                id_img=sql.Identifier(project, 'image')
+            )
+            self.dbConnector.insert(queryStr, [(i,) for i in imgPaths_valid])
+
+        result = {
+            'imgs_valid': imgs_valid,
+            'imgPaths_valid': imgPaths_valid,
+            'imgs_warn': imgs_warn,
+            'imgs_error': imgs_error
+        }
+
+        return result
 
     def scanForImages(self, project):
         '''
@@ -398,7 +635,7 @@ class DataWorker:
             # no folder exists for the project (should not happen due to broadcast at project creation)
             return []
         imgs_disk = listDirectory(projectFolder, recursive=True)
-        
+
         # get all existing file paths from database
         imgs_database = set()
         queryStr = sql.SQL('''
@@ -417,7 +654,6 @@ class DataWorker:
             if imgs_candidates[i].startswith('/'):
                 imgs_candidates[i] = imgs_candidates[i][1:]
         return imgs_candidates
-
 
     def addExistingImages(self, project, imageList=None):
         '''
@@ -469,9 +705,8 @@ class DataWorker:
         )
         result = self.dbConnector.execute(queryStr, (tuple(imgs_add),), 'all')
 
-        status = (0 if result is not None and len(result) else 1)  #TODO
+        status = (0 if result is not None and len(result) else 1)  # TODO
         return status, result
-
 
     def removeImages(self, project, imageList, forceRemove=False, deleteFromDisk=False):
         '''
@@ -485,7 +720,7 @@ class DataWorker:
 
             Returns a list of images that were deleted.
         '''
-        
+
         imageList = tuple([(UUID(i),) for i in imageList])
 
         queryArgs = []
@@ -512,7 +747,7 @@ class DataWorker:
                 id_img=sql.Identifier(project, 'image')
             )
             deleteArgs = tuple([imageList] * 4)
-        
+
         else:
             queryStr = sql.SQL('''
                 SELECT id, filename
@@ -581,7 +816,6 @@ class DataWorker:
 
         return imgs_del
 
-
     def removeOrphanedImages(self, project):
         '''
             Queries the project's image entries in the database and retrieves
@@ -600,7 +834,7 @@ class DataWorker:
             return []
         imgs_disk = listDirectory(projectFolder, recursive=True)
         imgs_disk = set(imgs_disk)
-        
+
         # get orphaned images
         imgs_orphaned = []
         for i in imgs_DB:
@@ -609,7 +843,7 @@ class DataWorker:
         # imgs_orphaned = list(set(imgs_DB).difference(imgs_disk))
         if not len(imgs_orphaned):
             return []
-        
+
         # remove
         self.dbConnector.execute(sql.SQL('''
             DELETE FROM {id_iu} WHERE image IN %s;
@@ -625,9 +859,8 @@ class DataWorker:
 
         return imgs_orphaned
 
-
-
-    def prepareDataDownload(self, project, dataType='annotation', userList=None, dateRange=None, extraFields=None, segmaskFilenameOptions=None, segmaskEncoding='rgb'):
+    def prepareDataDownload(self, project, dataType='annotation', userList=None, dateRange=None, extraFields=None,
+                            segmaskFilenameOptions=None, segmaskEncoding='rgb'):
         '''
             Polls the database for project data according to the
             specified restrictions:
@@ -662,7 +895,7 @@ class DataWorker:
             dateRange = []
         elif len(dateRange) == 1:
             dateRange = [dateRange, now]
-        
+
         if extraFields is None or not isinstance(extraFields, dict):
             extraFields = {
                 'meta': False
@@ -670,7 +903,7 @@ class DataWorker:
         else:
             if not 'meta' in extraFields or not isinstance(extraFields['meta'], bool):
                 extraFields['meta'] = False
-        
+
         if segmaskFilenameOptions is None:
             segmaskFilenameOptions = {
                 'baseName': 'filename',
@@ -679,7 +912,7 @@ class DataWorker:
             }
         else:
             if not 'baseName' in segmaskFilenameOptions or \
-                segmaskFilenameOptions['baseName'] not in ('filename', 'id'):
+                    segmaskFilenameOptions['baseName'] not in ('filename', 'id'):
                 segmaskFilenameOptions['baseName'] = 'filename'
             try:
                 segmaskFilenameOptions['prefix'] = str(segmaskFilenameOptions['prefix'])
@@ -705,9 +938,9 @@ class DataWorker:
                 SELECT {} FROM aide_admin.project
                 WHERE shortname = %s;
             '''.format(metaField),
-            (project,),
-            1
-        )[0][metaField]
+                                            (project,),
+                                            1
+                                            )[0][metaField]
 
         if metaType.lower() == 'segmentationmasks':
             is_segmentation = True
@@ -720,7 +953,7 @@ class DataWorker:
                     labelClasses = self.dbConnector.execute(sql.SQL('''
                             SELECT idx, color FROM {id_lc} ORDER BY idx ASC;
                         ''').format(id_lc=sql.Identifier(project, 'labelclass')),
-                        None, 'all')
+                                                            None, 'all')
                     currentIndex = 1
                     for lc in labelClasses:
                         if lc['idx'] == 0:
@@ -728,13 +961,13 @@ class DataWorker:
                             continue
                         while currentIndex < lc['idx']:
                             # gaps in label classes; fill with zeros
-                            indexedColors.extend([0,0,0])
+                            indexedColors.extend([0, 0, 0])
                             currentIndex += 1
                         color = lc['color']
                         if color is None:
                             # no color specified; add from defaults
-                            #TODO
-                            indexedColors.extend([0,0,0])
+                            # TODO
+                            indexedColors.extend([0, 0, 0])
                         else:
                             # convert to RGB format
                             indexedColors.extend(hexToRGB(color))
@@ -747,7 +980,7 @@ class DataWorker:
 
         else:
             is_segmentation = False
-            fileExtension = '.txt'      #TODO: support JSON?
+            fileExtension = '.txt'  # TODO: support JSON?
 
         # prepare output file
         filename = 'aide_query_{}'.format(now.strftime('%Y-%m-%d_%H-%M-%S')) + fileExtension
@@ -762,7 +995,8 @@ class DataWorker:
         iuStr = sql.SQL('')
         dateStr = sql.SQL('')
         queryFields = [
-            'filename', 'isGoldenQuestion', 'date_image_added', 'last_requested_image', 'image_corrupt'     # default image fields
+            'filename', 'isGoldenQuestion', 'date_image_added', 'last_requested_image', 'image_corrupt'
+            # default image fields
         ]
         if dataType == 'annotation':
             iuStr = sql.SQL('''
@@ -775,9 +1009,10 @@ class DataWorker:
             if len(userList):
                 userStr = sql.SQL('WHERE username IN %s')
                 queryArgs.append(tuple(userList))
-            
+
             queryFields.extend(getattr(QueryStrings_annotation, metaType).value)
-            queryFields.extend(['username', 'viewcount', 'last_checked', 'last_time_required']) #TODO: make customizable
+            queryFields.extend(
+                ['username', 'viewcount', 'last_checked', 'last_time_required'])  # TODO: make customizable
 
         else:
             queryFields.extend(getattr(QueryStrings_prediction, metaType).value)
@@ -849,12 +1084,13 @@ class DataWorker:
                     else:
                         innerFilename = b['filename']
                         parent, innerFilename = os.path.split(innerFilename)
-                    finalFilename = os.path.join(parent, segmaskFilenameOptions['prefix'] + innerFilename + segmaskFilenameOptions['suffix'] +'.tif')
+                    finalFilename = os.path.join(parent, segmaskFilenameOptions['prefix'] + innerFilename +
+                                                 segmaskFilenameOptions['suffix'] + '.tif')
                     segmask_filename += finalFilename
 
                     segmask = base64ToImage(b['segmentationmask'], b['width'], b['height'])
 
-                    if indexedColors is not None and len(indexedColors)>0:
+                    if indexedColors is not None and len(indexedColors) > 0:
                         # convert to indexed color and add color palette from label classes
                         segmask = segmask.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=3)
                         segmask.putpalette(indexedColors)
@@ -871,7 +1107,7 @@ class DataWorker:
                         continue
                     metaLine += '{}; '.format(b[field.lower()])
                 metaStr += metaLine + '\n'
-        
+
         if is_segmentation:
             mainFile.writestr('query.txt', metaStr)
         else:
@@ -901,8 +1137,6 @@ class DataWorker:
 
         return filename
 
-
-
     def watchImageFolders(self):
         '''
             Queries all projects that have the image folder watch functionality
@@ -926,13 +1160,12 @@ class DataWorker:
                 if p['watch_folder_remove_missing_enabled']:
                     imgs_orphaned = self.removeOrphanedImages(pName)
                     if len(imgs_added) or len(imgs_orphaned):
-                        print(f'[Project {pName}] {len(imgs_added)} new images found and added, {len(imgs_orphaned)} orphaned images removed from database.')
+                        print(
+                            f'[Project {pName}] {len(imgs_added)} new images found and added, {len(imgs_orphaned)} orphaned images removed from database.')
 
                 elif len(imgs_added):
                     print(f'[Project {pName}] {len(imgs_added)} new images found and added.')
 
-
-    
     def deleteProject(self, project, deleteFiles=False):
         '''
             Irreproducibly deletes a project, including all data and metadata, from the database.
@@ -949,11 +1182,11 @@ class DataWorker:
             WHERE project = %s;
             DELETE FROM aide_admin.project
             WHERE shortname = %s;
-        ''', (project, project,), None)     # already done by DataAdministration.middleware, but we do it again to be sure
+        ''', (project, project,), None)  # already done by DataAdministration.middleware, but we do it again to be sure
 
         self.dbConnector.execute('''
             DROP SCHEMA IF EXISTS "{}" CASCADE;
-        '''.format(project), None, None)        #TODO: Identifier?
+        '''.format(project), None, None)  # TODO: Identifier?
 
         if deleteFiles:
             print('\tRemoving files...')
@@ -964,15 +1197,17 @@ class DataWorker:
 
             if os.path.isdir(projectPath) or os.path.islink(projectPath):
                 def _onError(function, path, excinfo):
-                    #TODO
+                    # TODO
                     from celery.contrib import rdb
                     rdb.set_trace()
                     messages.append(str(excinfo))
+
                 try:
-                    shutil.rmtree(os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project), onerror=_onError)
+                    shutil.rmtree(os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project),
+                                  onerror=_onError)
                 except Exception as e:
                     messages.append(str(e))
 
             return messages
-        
+
         return 0

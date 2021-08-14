@@ -246,13 +246,13 @@ class MapOlElement extends AbstractRenderElement {
                 format: new ol.format.GeoJSON(),
             }),
             // style: canadaStyle
-            style: function( feature) {
+            style: function (feature) {
                 // set current tile/annotation selected
                 var props = feature.getProperties();
                 var location = props['Location'];
                 var labels = window.dataHandler.tileLabels(location);
                 var xstyle = canadaStyle;
-                if( labels.size > 0 ) {
+                if (labels.size > 0) {
                     xstyle = canadaStyleAnnoted;
                 }
                 return xstyle;
@@ -266,7 +266,7 @@ class MapOlElement extends AbstractRenderElement {
         });
         var clickInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerClick,
-            style: function( feature) {
+            style: function (feature) {
                 // set current tile/annotation selected
                 var props = feature.getProperties();
                 var location = props['Location'];
