@@ -366,7 +366,7 @@ class DataWorker:
                     imgPaths_valid.append(os.path.join(parent, newFileName))
 
                     # VLF is this image need to be split into tiles ?
-                    self.uploadImagesEx(project, subFilename, destFolder)
+                    self.uploadImagesEx(project, subFilename, destFolder, parent)
 
             except Exception as e:
                 imgs_error[key] = str(e)
@@ -391,11 +391,11 @@ class DataWorker:
 
         return result
 
-    def gdalogr_createtiles(self, image, destFolder):
+    def gdalogr_createtiles(self, image, destFolder, parent):
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
 
-        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder],
+        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent],
                               stdin=subprocess.DEVNULL,
                               stdout=subprocess.PIPE,
                               stderr=subprocess.DEVNULL,
@@ -411,14 +411,14 @@ class DataWorker:
 
         return tilenames
 
-    def uploadImagesEx(self, project, filename, destFolder):
+    def uploadImagesEx(self, project, filename, destFolder, parent):
 
         if (filename.find('_tile.jpg') == -1): return None
 
         # if image is a _tile.jpg
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
-        filenames = self.gdalogr_createtiles(filename, destFolder)
+        filenames = self.gdalogr_createtiles(filename, destFolder, parent)
 
         if filenames == None: return
 

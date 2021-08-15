@@ -169,8 +169,12 @@ class MapOlElement extends AbstractRenderElement {
 
     constructor(id, image) {
         super(id, null);
-        this.image = image.currentSrc;
-        this.geojson = this.image.replace('jpg', 'geojson');
+        this.imageOrg = image.currentSrc;
+        // this is a hack : the image to be loaded is inside the subfolder where with the name of the image without the extension.
+        this.URLImageParts = this.imageOrg.split('\\').pop().split('/');
+        this.filenameParts = this.URLImageParts.slice(-1).pop().split('.');
+        this.image = this.imageOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
+        this.geojson = this.image.replace('.jpg', '.geojson');
         this.timeCreated = new Date();
     }
 

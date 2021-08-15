@@ -9,11 +9,14 @@
 
 # -x to exit immediately when an error occured
 # -e to display more information
-#set -x
-set echo off
+# set -x
+# set echo off
 
-imgFilename='test_266_tile.jpg'
-srcDir='/tmp/test/gdal'
+# imgFilename='test_266_tile.jpg'
+# srcDir='/tmp/test/gdal'
+imgFilename=$1
+srcDir=$2
+parentDir=$3
 extension="${imgFilename##*.}"
 filename="${imgFilename%.*}"
 destDir="${srcDir}/${filename}"
@@ -58,7 +61,7 @@ for f in ${destDir}/*.tif; do
   jpg="${f%.*}.jpg"
   # output and error piped to /dev/null
   gdal_translate -of JPEG -scale -co worldfile=yes ${f} ${jpg} > /dev/null 2>&1
-  tiles+=(${jpg})
+  tiles+=(${parentDir}/${filename}/$(basename -- "${jpg}"))
 done
 
 # change .tif to .jpg into the .geojson
