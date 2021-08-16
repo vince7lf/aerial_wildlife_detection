@@ -328,97 +328,97 @@ class UIControlHandler {
 
 
 
-        /*
-            Key stroke listener
-        */
-        $(window).keyup(function(event) {
-            if(window.uiBlocked || window.shortcutsDisabled) return;
-            
-            if(event.which === 16) {
-                // shift key
-                self.dataHandler.setPredictionsVisible(true);
-                self.dataHandler.setMinimapVisible(true);
-
-            } else if(event.which === 17) {
-                // ctrl key
-                self.dataHandler.setAnnotationsVisible(true);
-                self.dataHandler.setMinimapVisible(true);
-
-            } else if(event.which === 27) {
-                // esc key
-                self.setAction(ACTIONS.DO_NOTHING);
-
-            } else if(event.which === 37) {
-                // left arrow key
-                prevBatchCallback();
-
-            } else if(event.which === 39) {
-                // right arrow key
-                nextBatchCallback();
-
-            } else if(event.which === 46 || event.which === 8) {
-                // Del/backspace key; remove all active annotations
-                self.dataHandler.removeActiveAnnotations();
-
-            } else {
-                // decode char keys
-                var ccode = String.fromCharCode(event.which);
-                if(ccode === 'A') {
-                    self.dataHandler.assignLabelToAll();
-
-                } else if(ccode === 'B') {
-                    self.toggleLoupe();
-
-                } else if(ccode === 'C') {
-                    self.dataHandler.clearLabelInAll();
-
-                } else if(ccode === 'E') {
-                    self.resetZoom();
-
-                } else if(ccode === 'F') {
-                    $('#labelclass-search-box').focus();
-
-                } else if(ccode === 'I') {
-                    self.setAction(ACTIONS.ZOOM_IN);
-
-                } else if(ccode === 'M') {
-                    if(burstModeCallback)
-                        burstModeCallback();
-
-                } else if(ccode === 'O') {
-                    self.setAction(ACTIONS.ZOOM_OUT);
-                
-                } else if(ccode === 'P') {
-                    self.setAction(ACTIONS.PAN);
-
-                } else if(ccode === 'R') {
-                    removeAnnoCallback();
-
-                } else if(ccode === 'S') {
-                    self.setAction(ACTIONS.DO_NOTHING);
-
-                } else if(ccode === 'U') {
-                    self.dataHandler.toggleActiveAnnotationsUnsure();
-
-                } else if(ccode === 'W') {
-                    self.setAction(ACTIONS.ADD_ANNOTATION);
-
-                } else if(ccode === 'Z') {
-                    self.setAction(ACTIONS.ZOOM_AREA);
-                }
-            }
-        });
-
-        $(window).keydown(function(event) {
-            if(window.uiBlocked || window.shortcutsDisabled) return;
-            if(event.which === 16) {
-                self.dataHandler.setPredictionsVisible(false);
-                self.dataHandler.setMinimapVisible(false);
-            } else if(event.which === 17) {
-                self.dataHandler.setAnnotationsVisible(false);
-                self.dataHandler.setMinimapVisible(false);
-            }
-        });
+        // /*
+        //     Key stroke listener
+        // */
+        // $(window).keyup(function(event) {
+        //     if(window.uiBlocked || window.shortcutsDisabled) return;
+        //
+        //     if(event.which === 16) {
+        //         // shift key
+        //         self.dataHandler.setPredictionsVisible(true);
+        //         self.dataHandler.setMinimapVisible(true);
+        //
+        //     } else if(event.which === 17) {
+        //         // ctrl key
+        //         self.dataHandler.setAnnotationsVisible(true);
+        //         self.dataHandler.setMinimapVisible(true);
+        //
+        //     } else if(event.which === 27) {
+        //         // esc key
+        //         self.setAction(ACTIONS.DO_NOTHING);
+        //
+        //     } else if(event.which === 37) {
+        //         // left arrow key
+        //         prevBatchCallback();
+        //
+        //     } else if(event.which === 39) {
+        //         // right arrow key
+        //         nextBatchCallback();
+        //
+        //     } else if(event.which === 46 || event.which === 8) {
+        //         // Del/backspace key; remove all active annotations
+        //         self.dataHandler.removeActiveAnnotations();
+        //
+        //     } else {
+        //         // decode char keys
+        //         var ccode = String.fromCharCode(event.which);
+        //         if(ccode === 'A') {
+        //             self.dataHandler.assignLabelToAll();
+        //
+        //         } else if(ccode === 'B') {
+        //             self.toggleLoupe();
+        //
+        //         } else if(ccode === 'C') {
+        //             self.dataHandler.clearLabelInAll();
+        //
+        //         } else if(ccode === 'E') {
+        //             self.resetZoom();
+        //
+        //         } else if(ccode === 'F') {
+        //             $('#labelclass-search-box').focus();
+        //
+        //         } else if(ccode === 'I') {
+        //             self.setAction(ACTIONS.ZOOM_IN);
+        //
+        //         } else if(ccode === 'M') {
+        //             if(burstModeCallback)
+        //                 burstModeCallback();
+        //
+        //         } else if(ccode === 'O') {
+        //             self.setAction(ACTIONS.ZOOM_OUT);
+        //
+        //         } else if(ccode === 'P') {
+        //             self.setAction(ACTIONS.PAN);
+        //
+        //         } else if(ccode === 'R') {
+        //             removeAnnoCallback();
+        //
+        //         } else if(ccode === 'S') {
+        //             self.setAction(ACTIONS.DO_NOTHING);
+        //
+        //         } else if(ccode === 'U') {
+        //             self.dataHandler.toggleActiveAnnotationsUnsure();
+        //
+        //         } else if(ccode === 'W') {
+        //             self.setAction(ACTIONS.ADD_ANNOTATION);
+        //
+        //         } else if(ccode === 'Z') {
+        //             self.setAction(ACTIONS.ZOOM_AREA);
+        //         }
+        //     }
+        // });
+        //
+        // $(window).keydown(function(event) {
+        //     if(window.uiBlocked || window.shortcutsDisabled) return;
+        //     if(event.which === 16) {
+        //         self.dataHandler.setPredictionsVisible(false);
+        //         self.dataHandler.setMinimapVisible(false);
+        //     } else if(event.which === 17) {
+        //         self.dataHandler.setAnnotationsVisible(false);
+        //         self.dataHandler.setMinimapVisible(false);
+        //     }
+        // });
 
 
         // Annotation Reviewing
