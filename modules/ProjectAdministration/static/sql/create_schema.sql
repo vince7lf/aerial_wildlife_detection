@@ -174,3 +174,12 @@ CREATE TABLE IF NOT EXISTS {id_taskHistory} (
     FOREIGN KEY (launchedBy) REFERENCES aide_admin.user (name),
     FOREIGN KEY (abortedBy) REFERENCES aide_admin.user (name)
 );
+
+CREATE TABLE IF NOT EXISTS {id_annotation_label}
+(
+    annotation uuid NOT NULL,
+    label uuid NOT NULL,
+    PRIMARY KEY (annotation, label),
+    FOREIGN KEY (label) REFERENCES {id_labelclass} (id),
+    FOREIGN KEY (annotation) REFERENCES {id_annotation} (id)
+)

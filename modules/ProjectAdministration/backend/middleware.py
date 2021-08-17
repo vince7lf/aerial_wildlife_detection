@@ -427,6 +427,7 @@ class ProjectConfigMiddleware:
                 id_workflowHistory=sql.Identifier(shortname, 'workflowhistory'),
                 id_filehierarchy=sql.Identifier(shortname, 'filehierarchy'),
                 id_taskHistory=sql.Identifier(shortname, 'taskhistory'),
+                id_annotation_label=sql.Identifier(shortname, 'annotation_label'),
                 annotation_fields=sql.SQL(', ').join([sql.SQL(field) for field in annotationFields]),
                 prediction_fields=sql.SQL(', ').join([sql.SQL(field) for field in predictionFields])
             ),

@@ -9,7 +9,7 @@
 	"defaultBoxSize_h": 100,
 	"minBoxSize_w": 20,
 	"minBoxSize_h": 20,
-	"numImagesPerBatch": 1,
+	"numImagesPerBatch": 9999,
 	"minImageWidth": 512,
 	"numImageColumns_max": 1,
 	"defaultImage_w": 800,
