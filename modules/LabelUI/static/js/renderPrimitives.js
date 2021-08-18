@@ -176,6 +176,7 @@ class MapOlElement extends AbstractRenderElement {
         this.image = this.imageOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
         this.geojson = this.image.replace('.jpg', '.geojson');
         this.timeCreated = new Date();
+        this.createMap();
     }
 
     getTimeCreated() {
@@ -183,9 +184,16 @@ class MapOlElement extends AbstractRenderElement {
     }
 
     render() {
-        var map, view, staticImage, vectorLayer1;
+        // this.vectorLayer1.clear(true);
+        // this.vectorLayer1.redraw(true);
+        this.vectorLayerSource.refresh({force: true});
+    }
+
+    createMap() {
+        var map, view, staticImage;
         var image = this.image;
         var geojson = this.geojson;
+        var self = this;
 
         var canadaStyle = new ol.style.Style({
             fill: new ol.style.Fill({
@@ -198,22 +206,11 @@ class MapOlElement extends AbstractRenderElement {
             })
         });
 
-        var canadaStyleSelect = new ol.style.Style({
-            // fill: new ol.style.Fill({
-            //     color: [0, 0, 255, 0.2]
-            // }),
-            stroke: new ol.style.Stroke({
-                color: [177, 163, 148, 0.5],
-                width: 4,
-                lineCap: 'round'
-            })
-        });
         var canadaStyleAnnoted = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: [148, 162, 177, 0.5]
             }),
             stroke: new ol.style.Stroke({
-                // color: [177, 163, 148, 0.5],
                 color: [255, 0, 0, 0.8],
                 width: 1,
                 lineCap: 'round'
@@ -224,9 +221,6 @@ class MapOlElement extends AbstractRenderElement {
                 color: 'rgba(200,20,20,0.8)',
                 width: 4,
             }),
-            // fill: new ol.style.Fill({
-            //     color: 'rgba(200,20,20,0.4)',
-            // }),
         });
 
         var extent = [0, -3040, 4056, 0];
@@ -244,11 +238,12 @@ class MapOlElement extends AbstractRenderElement {
 
         });
 
-        vectorLayer1 = new ol.layer.Vector({
-            source: new ol.source.Vector({
-                url: geojson,
-                format: new ol.format.GeoJSON(),
-            }),
+        this.vectorLayerSource = new ol.source.Vector({
+            url: geojson,
+            format: new ol.format.GeoJSON(),
+        });
+        this.vectorLayer1 = new ol.layer.Vector({
+            source: this.vectorLayerSource,
             // style: canadaStyle
             style: function (feature) {
                 // set current tile/annotation selected
@@ -265,8 +260,9 @@ class MapOlElement extends AbstractRenderElement {
         });
         var selectInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerMove,
-            // style: canadaStyleSelect
-            style: selectedCountry
+            style: function () {
+                return selectedCountry;
+            }
         });
         var clickInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerClick,
@@ -275,6 +271,7 @@ class MapOlElement extends AbstractRenderElement {
                 var props = feature.getProperties();
                 var location = props['Location'];
                 window.dataHandler.tileSelected(location);
+                self.render();
                 return selectedCountry;
             }
         });
@@ -288,13 +285,13 @@ class MapOlElement extends AbstractRenderElement {
         map = new ol.Map({
             target: 'gallery',
             // Add the created layer to the Map
-            layers: [staticImage, vectorLayer1]
+            layers: [staticImage, this.vectorLayer1]
         });
 
         // Set the view for the map
         map.setView(view);
-        map.addInteraction(selectInteraction)
-        map.addInteraction(clickInteraction)
+        map.addInteraction(selectInteraction);
+        map.addInteraction(clickInteraction);
     }
 }
 
