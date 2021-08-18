@@ -128,7 +128,7 @@ class UIControlHandler {
             
             this.staticButtons[ACTIONS.ADD_ANNOTATION] = addAnnoBtn;
             
-            dtControls.append(addAnnoBtn);
+            // dtControls.append(addAnnoBtn);
         }
 
 
@@ -144,7 +144,7 @@ class UIControlHandler {
         var removeAnnoBtn = $('<button id="remove-annotation" class="btn btn-sm btn-primary" title="Remove Annotation (R)">-</button>');
         removeAnnoBtn.click(removeAnnoCallback);
         this.staticButtons[ACTIONS.REMOVE_ANNOTATIONS] = removeAnnoBtn;
-        dtControls.append(removeAnnoBtn);
+        // dtControls.append(removeAnnoBtn);
 
         // burst mode checkbox
         var burstModeCallback = function() {
@@ -159,7 +159,7 @@ class UIControlHandler {
         let burstModeCheckContainer = $('<div class="custom-control custom-switch inline-control"></div>');
         burstModeCheckContainer.append(burstModeCheck);
         burstModeCheckContainer.append($('<label for="burst-mode-check" class="custom-control-label inline-control" style="margin-left:0px;margin-right:10px;color:white;cursor:pointer;" title="Enable burst mode (M)">burst mode</label>'));
-        dtControls.append(burstModeCheckContainer);
+        // dtControls.append(burstModeCheckContainer);
 
         if(window.enableEmptyClass) {
             var clearAllCallback = function() {
@@ -167,7 +167,7 @@ class UIControlHandler {
             }
             var clearAllBtn = $('<button class="btn btn-sm btn-warning" id="clearAll-button" title="Clear all Annotations (C)">Clear All</button>');
             clearAllBtn.click(clearAllCallback);
-            dtControls.append(clearAllBtn);
+            // dtControls.append(clearAllBtn);
         }
         
         if(window.annotationType != 'segmentationMasks') {
@@ -180,10 +180,10 @@ class UIControlHandler {
             }
             var labelAllBtn = $('<button class="btn btn-sm btn-primary" id="labelAll-button" title="Assign label to all Annotations (A)">Label All</button>');
             labelAllBtn.click(labelAllCallback);
-            dtControls.append(labelAllBtn);
+            // dtControls.append(labelAllBtn);
             var unsureBtn = $('<button class="btn btn-sm btn-warning" id="unsure-button" title="Toggle Unsure flag for Annotation (U)">Unsure</button>');
             unsureBtn.click(unsureCallback);
-            dtControls.append(unsureBtn);
+            // dtControls.append(unsureBtn);
 
             // prediction threshold controls
             let predThreshContainer = $('<div class="inline-control" id="prediction-threshold-container"></div>');
@@ -261,7 +261,7 @@ class UIControlHandler {
             ptrc_convert.append(rangeTd_convert);
             predThreshRangeContainer.append(ptrc_convert);
             predThreshContainer.append(predThreshRangeContainer);
-            dtControls.append(predThreshContainer);
+            // dtControls.append(predThreshContainer);
         }
 
         // semantic segmentation controls
@@ -308,9 +308,8 @@ class UIControlHandler {
             segControls.append($('<span style="margin-left:5px;color:white">px</span>'));
             segControls.append($('<span style="margin-left:10px;margin-right:5px;color:white">Opacity:</span>'));
             segControls.append(this.segmentation_controls.opacity);
-            dtControls.append(segControls);
+            // dtControls.append(segControls);
         }
-
 
         // next and previous batch buttons
         var nextBatchCallback = function() {
@@ -321,12 +320,18 @@ class UIControlHandler {
         }
         var prevBatchBtn = $('<button id="previous-button" class="btn btn-sm btn-primary float-left">Previous</button>');
         prevBatchBtn.click(prevBatchCallback);
-        dtControls.append(prevBatchBtn);
+        // dtControls.append(prevBatchBtn);
         var nextBatchBtn = $('<button id="next-button" class="btn btn-sm btn-primary float-right">Next</button>');
         nextBatchBtn.click(nextBatchCallback);
-        dtControls.append(nextBatchBtn);
+        // dtControls.append(nextBatchBtn);
 
-
+        // save batch buttons
+        var saveBatchCallback = function() {
+            self.dataHandler.saveBatch();
+        }
+        var saveBatchBtn = $('<button id="save-button" class="btn btn-sm btn-primary float-right">Save</button>');
+        saveBatchBtn.click(saveBatchCallback);
+        dtControls.append(saveBatchBtn);
 
         // /*
         //     Key stroke listener

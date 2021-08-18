@@ -582,6 +582,15 @@ class DataHandler {
         });
     }
 
+    saveBatch() {
+        if (window.uiBlocked) return;
+
+        var _save_batch = function () {
+            this._submitAnnotations();
+        }
+        this._showConfirmationDialog((_save_batch).bind(this));
+    }
+
 
     nextBatch() {
         if (window.uiBlocked) return;
