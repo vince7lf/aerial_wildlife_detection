@@ -617,20 +617,12 @@ class AbstractDataEntryEx {
         var self = this;
         this.imageEntry = null;
         if (!(this instanceof ClassificationTileEntry)) {
-            this._setup_viewport();
-            this._setup_markup();
+            this._parseLabels(properties);
         }
         this.loadingPromise = this._loadImage(this.getImageURI()).then(image => {
             // TODO check if geojson file exists
             if (this instanceof ClassificationTileEntry) {
-                // if( image.src.indexOf('test_retile.jpg') > -1 )  {
-                // if so create the MapOlEntry
-                // otherwise create ML image
                 self._createMapOlEntry(image);
-                //self._parseLabels(properties);
-            } else {
-                self._createImageEntry(image);
-                self._parseLabels(properties);
             }
             self.startTime = new Date();
             self.render();
@@ -745,24 +737,6 @@ class AbstractDataEntryEx {
         })
     }
 
-    _setup_viewport() {
-        var self = this;
-        if (window.dataType === 'images') {
-            // create canvas
-            this.canvas = $('<canvas id="' + this.canvasID + '" width="' + window.defaultImage_w + '" height="' + window.defaultImage_h + '"></canvas>');
-            this.canvas.ready(function () {
-                self.viewport.resetViewport();
-            });
-            this.canvas.css('cursor', window.uiControlHandler.getDefaultCursor());
-
-            this.viewport = new ImageViewport(this.canvas, this.disableInteractions);
-
-        } else {
-            // maps
-            throw Error('Maps not yet implemented.');
-        }
-    }
-
     _addElement(element) {
         if (typeof (this.annotations) !== 'object') {
             // not yet initialized; abort
@@ -776,8 +750,6 @@ class AbstractDataEntryEx {
         } else if (element['type'] === 'prediction' && window.showPredictions) {
             this.predictions[key] = element;
         }
-        if (!(this instanceof ClassificationTileEntry))
-            this.viewport.addRenderElement(element.getRenderElement());
     }
 
     _updateElement(element) {
@@ -787,17 +759,9 @@ class AbstractDataEntryEx {
         } else if (element['type'] === 'prediction') {
             this.predictions[key] = element;
         }
-        if (!(this instanceof ClassificationTileEntry)) {
-            this.viewport.updateRenderElement(
-                this.viewport.indexOfRenderElement(element.getRenderElement()),
-                element.getRenderElement()
-            );
-        }
     }
 
     _removeElement(element) {
-        if (!(this instanceof ClassificationTileEntry))
-            this.viewport.removeRenderElement(element.getRenderElement());
         if (element['type'] === 'annotation') {
             delete this.annotations[element['annotationID']];
         } else if (element['type'] === 'prediction') {
@@ -971,83 +935,20 @@ class AbstractDataEntryEx {
     _loadImage(imageURI) {
         return new Promise(resolve => {
             const image = new Image();
-            image.addEventListener('load', () => {
+                image.addEventListener('load', () => {
+                    resolve(image);
+                });
+            if( imageURI.indexOf('_tile.jpg') > -1 ) {
+                image.src = imageURI;
+            } else {
                 resolve(image);
-            });
-            image.src = imageURI;
+            }
         });
     }
 
     _createMapOlEntry(image) {
         this.imageEntry = new MapOlElement(this.entryID + '_image', image);
         // this.viewport.addRenderElement(this.imageEntry);
-    }
-
-    _createImageEntry(image) {
-        this.imageEntry = new ImageElement(this.entryID + '_image', image, this.viewport);
-        this.viewport.addRenderElement(this.imageEntry);
-    }
-
-    _setup_markup() {
-        this.markup = $('<div class="entry"></div>');
-
-        let self = this;
-
-        this.markup.append(this.canvas);
-
-        let imageFooterDiv = $('<div class="image-footer"></div>');
-
-        // file name (if enabled)
-        if (window.showImageNames) {
-
-            if (window.showImageURIs) {
-                imageFooterDiv.append($('<a href="' + this.getImageURI() + '" target="_blank">' + this.fileName + '</a>'));
-            } else {
-                imageFooterDiv.append($('<span style="color:white">' + this.fileName + '</span>'));
-            }
-        }
-
-        if (!this.disableInteractions)
-            this.markup.on('click', (self._click).bind(self));
-
-        let flagContainer = $('<div class="flag-container"></div>');
-        imageFooterDiv.append(flagContainer);
-
-        // flag for golden questions (if admin)
-        if (window.isAdmin && !window.demoMode) {
-            this.flag = $('<img class="golden-question-flag" title="toggle golden question" />');
-            if (self.isGoldenQuestion) {
-                this.flag.attr('src', '/static/interface/img/controls/flag_active.svg');
-            } else {
-                this.flag.attr('src', '/static/interface/img/controls/flag.svg');
-            }
-            if (!this.disableInteractions) {
-                this.flag.click(function () {
-                    // toggle golden question on server
-                    self._toggleGoldenQuestion();
-                });
-            }
-            flagContainer.append(this.flag);
-        }
-
-        // flag for bookmarking
-        if (!window.demoMode) {
-            this.bookmark = $('<img class="bookmark" title="toggle bookmark" />');
-            if (this.isBookmarked) {
-                this.bookmark.attr('src', '/static/interface/img/controls/bookmark_active.svg');
-            } else {
-                this.bookmark.attr('src', '/static/interface/img/controls/bookmark.svg');
-            }
-            if (!this.disableInteractions) {
-                this.bookmark.click(function () {
-                    // toggle bookmark on server
-                    self._toggleBookmark();
-                });
-            }
-            flagContainer.append(this.bookmark);
-        }
-
-        this.markup.append(imageFooterDiv);
     }
 
     getImageURI() {
@@ -1199,9 +1100,7 @@ class AbstractDataEntryEx {
     }
 
     render() {
-        if (!(this instanceof ClassificationTileEntry))
-            this.viewport.render();
-        else {
+        if (this instanceof ClassificationTileEntry) {
             if (this.imageEntry)
                 this.imageEntry.render();
         }
@@ -1264,8 +1163,6 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
                     'unsure': unsure
                 }, 'labels', element['type']);
                 this.annotations[key] = anno;
-                if (!(this instanceof ClassificationTileEntry))
-                    this.viewport.addRenderElement(anno.getRenderElement());
                 this.labelInstance = anno;
             }
 
@@ -1279,8 +1176,6 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
 
         } else if (element['type'] === 'prediction' && window.showPredictions) {
             this.predictions[key] = element;
-            if (!(this instanceof ClassificationTileEntry))
-                this.viewport.addRenderElement(element.getRenderElement());
         }
 
         window.dataHandler.updatePresentClasses();
