@@ -55,7 +55,6 @@ To launch AIDE (or parts of it, depending on the environment variables set) on t
     export PYTHONPATH=.
     ./AIDE.sh start
 ```
-
 This launches the Gunicorn HTTP web server, and/or a Celery message broker consumer, depending on the `AIDE_MODULES` environment variable set:
 
 | Module | HTTP web server | Celery |
@@ -76,4 +75,25 @@ If, for some reason, this fails, the processes can be forcefully stopped manuall
 ```
     pkill -f celery;
     pkill -f gunicorn;
+```
+
+## Launching AIDE from PyCharm
+
+Launch launch_celery.sh first, and then from Pycharm launch assemble_server.py: 
+```
+# On the server host, as normal user, not as root
+    cd /app/aerial_wildlife_detection
+    conda activate aide
+    export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
+    export AIDE_MODULES=LabelUI,AIController,FileServer,AIWorker
+    export PYTHONPATH=.
+    ./launch_celery.sh &
+    ## be a bit patient, it can take more than 30 sec to launch and some output to appear
+
+# Now launch assemble_server.py from PyCharm on your laptop. Make sure the last code has been copied/deployed
+script path: setup\assemble_server.py
+parameters: --launch=1 --check_v1=0 --migrate_db=0 --force_migrate=0 --verbose=1
+Environment variables: PYTHONUNBUFFERED=1;AIDE_CONFIG_PATH=/tmp/pycharm_remote_debug_vlf/aerial_wildlife_detection/config/settings.ini;AIDE_MODULES=LabelUI,FileServer,AIController,AIWorker
+Python interpreter: sftp://user@host:22/app/anaconda3//envs/aide/bin/python3.7
+Working directory: \tmp\pycharm_remote_debug_vlf\aerial_wildlife_detection
 ```
