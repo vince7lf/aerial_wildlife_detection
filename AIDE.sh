@@ -6,7 +6,7 @@
 # * AIDE_MODULES
 # 
 # 2020-21 Benjamin Kellenberger
-
+set -x 
 function start {
 
     IFS=',' read -ra ADDR <<< "$AIDE_MODULES"
@@ -35,9 +35,9 @@ function start {
         # folder watching interval specified; enable Celery beat
         tempDir="$(python util/configDef.py --section=FileServer --parameter=tempfiles_dir --fallback=/tmp)/aide/celery/";
         mkdir -p $tempDir;
-        celery -A celery_worker worker -B -s $tempDir --hostname aide@%h
+        celery -A celery_worker worker -B -s $tempDir --hostname aide@%h &
     else
-        celery -A celery_worker worker --hostname aide@%h
+        celery -A celery_worker worker --hostname aide@%h &
     fi
     # fi
 
@@ -52,7 +52,7 @@ function start {
 
     if [ $numHTTPmodules -gt 0 ]; then
         # perform verbose pre-flight checks
-        python setup/assemble_server.py --migrate_db 1
+        python setup/assemble_server.py --migrate_db 0
 
         if [ $? -eq 0 ]; then
             # pre-flight checks succeeded; get host and port from configuration file

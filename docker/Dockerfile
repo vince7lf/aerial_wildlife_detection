@@ -58,7 +58,22 @@ RUN pip install --no-cache-dir -U -r docker/requirements.txt
 #RUN pip install -U git+https://github.com/facebookresearch/fvcore.git
 #RUN pip install git+https://github.com/facebookresearch/detectron2.git
 
-# ============================ DB SERVER ONLY BEGINS ======================================
+# Install gdal ogr
+# pre-requirement to use add-apt-repository
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
+    && apt-get update \
+    && apt-get install -y gdal-bin \
+    && apt-get install -y libgdal-dev \
+    && apt-get install -y python3-pip \
+    && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
+    && export C_INCLUDE_PATH=/usr/include/gdal \
+    && ogrinfo --version \
+    && pip3 install GDAL==2.4.2
+
 # Setup PostgreSQL database
 ENV LOC_REGION=Europe
 ENV LOC_TIMEZONE=London
@@ -111,14 +126,14 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
 # download AIDE source code (from local repository)
 COPY . .
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
+RUN cp scripts/sh/gdalogr_createtiles.sh /usr/local/bin && ls -al /usr/local/bin/gdalogr_createtiles.sh && chmod a+rx /usr/local/bin/gdalogr_createtiles.sh
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 
-CMD bash /home/aide/app/docker/container_init.sh \
-    && bash AIDE.sh start
+CMD bash docker/container_init.sh && bash AIDE.sh start
 
 # Temporary command to prevent container from stopping if no command is privided
 # CMD tail -f /dev/null

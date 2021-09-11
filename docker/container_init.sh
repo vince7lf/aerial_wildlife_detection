@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 sudo systemctl enable redis-server.service
 sudo service redis-server start 
