@@ -66,7 +66,7 @@ function start {
             else
                 debug="";
             fi
-            gunicorn application:app --bind=$host:$port --workers=$numWorkers $debug
+            gunicorn application:app --bind=$host:$port --workers=$numWorkers $debug --timeout=300
         else
             echo -e "\033[0;31mPre-flight checks failed; aborting launch of AIDE.\033[0m"
         fi
