@@ -41,6 +41,10 @@ $(document).ready(function() {
         }
     }
 
+    window.filterSelectedLabels = function(e) {
+        window.labelClassHandler.filterSelectedLabels();
+    }
+
     // // Levenshtein distance for word comparison
     // window.levDist = function(s, t) {
     //     var d = []; //2d matrix

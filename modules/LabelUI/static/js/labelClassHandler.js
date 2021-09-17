@@ -181,6 +181,23 @@ class LabelClass {
         }
         return { dist: minLevDist, bestMatch: this };
     }
+
+    filterSelectedLabel() {
+
+        let labelSelected = false;
+        if( $('#labelLegend_'+this.classID).hasClass('legend-inactive') )  {
+            labelSelected = true;
+        }
+        if(labelSelected === true) {
+            if(this.markup != null) {
+                this.markup.show();
+            }
+            if(this.markup_alt != null) {
+                this.markup_alt.show();
+            }
+            return { match: this };
+        }
+    }
 }
 
 
@@ -279,6 +296,21 @@ class LabelClassGroup {
         if(childVisible) this.markup.show();
         else this.markup.hide();
         return { dist: minLevDist, bestMatch: argMin };
+    }
+
+    filterSelectedLabels() {
+        var childVisible = false;
+        for(var c=0; c<this.children.length; c++) {
+            var result = this.children[c].filter();
+            if(result != null) {
+                childVisible = true;
+            }
+        }
+
+        // show or hide group depending on children's visibility
+        if(childVisible) this.markup.show();
+        else this.markup.hide();
+        return result;
     }
 }
 
@@ -449,6 +481,12 @@ class LabelClassHandler {
         }
     }
 
+    filterSelectedLabels() {
+        for(var c=0; c<this.items.length; c++) {
+            let result = this.items[c].filterSelectedLabels();
+            this.setActiveClass(result.match);
+        }
+    }
 
     getByIndex(index) {
         /*
