@@ -185,7 +185,7 @@ class LabelClass {
     filterSelectedLabel() {
 
         let labelSelected = false;
-        if( $('#labelLegend_'+this.classID).hasClass('legend-inactive') )  {
+        if( !$('#labelLegend_'+this.classID).hasClass('legend-inactive') )  {
             labelSelected = true;
         }
         if(labelSelected === true) {
@@ -197,10 +197,19 @@ class LabelClass {
             }
             return { match: this };
         }
-    }
+
+        // invisible
+        if(this.markup != null) {
+            this.markup.hide();
+        }
+        if(this.markup_alt != null) {
+            this.markup_alt.hide();
+        }
+
+        return { match: this };
+
+    };
 }
-
-
 
 class LabelClassGroup {
     constructor(id, properties, parent) {
@@ -298,10 +307,10 @@ class LabelClassGroup {
         return { dist: minLevDist, bestMatch: argMin };
     }
 
-    filterSelectedLabels() {
+    filterSelectedLabel() {
         var childVisible = false;
         for(var c=0; c<this.children.length; c++) {
-            var result = this.children[c].filter();
+            var result = this.children[c].filterSelectedLabel();
             if(result != null) {
                 childVisible = true;
             }
@@ -481,10 +490,9 @@ class LabelClassHandler {
         }
     }
 
-    filterSelectedLabels() {
+    filterSelectedLabel() {
         for(var c=0; c<this.items.length; c++) {
-            let result = this.items[c].filterSelectedLabels();
-            this.setActiveClass(result.match);
+            this.items[c].filterSelectedLabel();
         }
     }
 

@@ -41,8 +41,8 @@ $(document).ready(function() {
         }
     }
 
-    window.filterSelectedLabels = function(e) {
-        window.labelClassHandler.filterSelectedLabels();
+    window.filterSelectedLabel = function(e) {
+        window.labelClassHandler.filterSelectedLabel();
     }
 
     // // Levenshtein distance for word comparison
