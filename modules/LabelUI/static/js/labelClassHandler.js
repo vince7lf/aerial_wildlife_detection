@@ -4,10 +4,10 @@
     2019-20 Benjamin Kellenberger
 */
 
-window.parseClassdefEntry = function(id, entry, parent) {
-    if(entry.hasOwnProperty('entries') && entry['entries'] != undefined) {
+window.parseClassdefEntry = function (id, entry, parent) {
+    if (entry.hasOwnProperty('entries') && entry['entries'] != undefined) {
         // label class group
-        if(Object.keys(entry['entries']).length > 0) {
+        if (Object.keys(entry['entries']).length > 0) {
             return new LabelClassGroup(id, entry, parent);
         } else {
             // empty group
@@ -19,7 +19,7 @@ window.parseClassdefEntry = function(id, entry, parent) {
     }
 }
 
-window._rainbow = function(numOfSteps, step) {
+window._rainbow = function (numOfSteps, step) {
     // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
     // Adam Cole, 2011-Sept-14
     // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
@@ -28,28 +28,52 @@ window._rainbow = function(numOfSteps, step) {
     var i = ~~(h * 6);
     var f = h * 6 - i;
     var q = 1 - f;
-    switch(i % 6){
-        case 0: r = 1; g = f; b = 0; break;
-        case 1: r = q; g = 1; b = 0; break;
-        case 2: r = 0; g = 1; b = f; break;
-        case 3: r = 0; g = q; b = 1; break;
-        case 4: r = f; g = 0; b = 1; break;
-        case 5: r = 1; g = 0; b = q; break;
+    switch (i % 6) {
+        case 0:
+            r = 1;
+            g = f;
+            b = 0;
+            break;
+        case 1:
+            r = q;
+            g = 1;
+            b = 0;
+            break;
+        case 2:
+            r = 0;
+            g = 1;
+            b = f;
+            break;
+        case 3:
+            r = 0;
+            g = q;
+            b = 1;
+            break;
+        case 4:
+            r = f;
+            g = 0;
+            b = 1;
+            break;
+        case 5:
+            r = 1;
+            g = 0;
+            b = q;
+            break;
     }
-    var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
+    var c = "#" + ("00" + (~~(r * 255)).toString(16)).slice(-2) + ("00" + (~~(g * 255)).toString(16)).slice(-2) + ("00" + (~~(b * 255)).toString(16)).slice(-2);
     return (c);
 }
 
-window.initClassColors = function(numColors) {
+window.initClassColors = function (numColors) {
     window.defaultColors = [];
-    for(var c=0; c<numColors; c++) {
+    for (var c = 0; c < numColors; c++) {
         window.defaultColors.push(
             window._rainbow(numColors, c)
         );
     }
 }
 
-window.getDefaultColor = function(idx) {
+window.getDefaultColor = function (idx) {
     return window.defaultColors[idx % window.defaultColors.length];
 }
 
@@ -57,9 +81,9 @@ window.getDefaultColor = function(idx) {
 class LabelClass {
     constructor(classID, properties, parent) {
         this.classID = classID;
-        this.name = (properties['name']===null || properties['name'] === undefined ? '[Label Class '+this.classID+']' : properties['name']);
+        this.name = (properties['name'] === null || properties['name'] === undefined ? '[Label Class ' + this.classID + ']' : properties['name']);
         this.index = properties['index'];
-        this.color = (properties['color']===null  || properties['color'] === undefined ? window.getDefaultColor(this.index) : properties['color']);
+        this.color = (properties['color'] === null || properties['color'] === undefined ? window.getDefaultColor(this.index) : properties['color']);
         this.colorValues = window.getColorValues(this.color);   // [R, G, B, A]
 
         this.keystroke = properties['keystroke'];
@@ -76,50 +100,50 @@ class LabelClass {
 
     getMarkup(altStyle) {
 
-        if(altStyle) {
-            if(this.markup_alt != undefined && this.markup_alt != null) return this.markup_alt;
+        if (altStyle) {
+            if (this.markup_alt != undefined && this.markup_alt != null) return this.markup_alt;
         } else {
-            if(this.markup != undefined && this.markup != null) return this.markup;
+            if (this.markup != undefined && this.markup != null) return this.markup;
         }
 
         var self = this;
         var name = this.name;
         var hasKeystroke = false;
-        if(this.keystroke != null && this.keystroke != undefined && Number.isInteger(this.keystroke) &&
+        if (this.keystroke != null && this.keystroke != undefined && Number.isInteger(this.keystroke) &&
             this.keystroke > 0 && this.keystroke <= 9) {
             name = '(' + (this.keystroke) + ') ' + this.name;
             hasKeystroke = true;
         }
 
         var foregroundStyle = '';
-        if(altStyle || this.darkForeground) {
+        if (altStyle || this.darkForeground) {
             foregroundStyle = 'color:black;';
         }
         var legendInactive = 'legend-inactive';
-        if(this.parent.getActiveClassID() === this.classID) legendInactive = '';
+        if (this.parent.getActiveClassID() === this.classID) legendInactive = '';
 
         var id = 'labelLegend_' + this.classID;
         var colorStyle = 'background:' + this.color;
-        if(altStyle) {
+        if (altStyle) {
             id = 'labelLegend_alt_' + this.classID;
-            var markup = $('<div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="'+foregroundStyle + '"><div class="legend-color-dot" style="' + colorStyle + '"></div><span class="label-text">'+name+'</span></div>');
+            var markup = $('<div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + '"><div class="legend-color-dot" style="' + colorStyle + '"></div><span class="label-text">' + name + '</span></div>');
         } else {
-            var markup = $('<div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="'+foregroundStyle + colorStyle + '"><span class="label-text">'+name+'</span></div>');
+            var markup = $('<div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + colorStyle + '"><span class="label-text">' + name + '</span></div>');
         }
-        
+
         // setup click handler to activate label class
-        markup.click(function() {
-            if(window.uiBlocked) return;
+        markup.click(function () {
+            if (window.uiBlocked) return;
             self.parent.setActiveClass(self);
         });
 
         // listener for keypress if keystroke defined
-        if(hasKeystroke) {
-            $(window).keyup(function(event) {
-                if(window.uiBlocked || window.shortcutsDisabled) return;
+        if (hasKeystroke) {
+            $(window).keyup(function (event) {
+                if (window.uiBlocked || window.shortcutsDisabled) return;
                 try {
                     var key = parseInt(String.fromCharCode(event.which));
-                    if(key == self.keystroke) {
+                    if (key == self.keystroke) {
                         self.parent.setActiveClass(self);
 
                         window.dataHandler.renderAll();
@@ -131,7 +155,7 @@ class LabelClass {
         }
 
         // save for further use
-        if(altStyle) this.markup_alt = markup;
+        if (altStyle) this.markup_alt = markup;
         else this.markup = markup;
 
         return markup;
@@ -144,69 +168,79 @@ class LabelClass {
             one or more of the keywords specified according to the Leven-
             shtein distance.
         */
-        if(keywords === null || keywords === undefined) {
-            if(this.markup != null) {
+        if (keywords === null || keywords === undefined) {
+            if (this.markup != null) {
                 this.markup.show();
             }
-            if(this.markup_alt != null) {
+            if (this.markup_alt != null) {
                 this.markup_alt.show();
             }
-            return { dist: 0, bestMatch: this };
+            return {dist: 0, bestMatch: this};
         }
         var target = this.name.toLowerCase();
         var minLevDist = 1e9;
-        for(var k=0; k<keywords.length; k++) {
+        for (var k = 0; k < keywords.length; k++) {
             var kw = keywords[k].toLowerCase();
             var levDist = window.levDist(target, kw);
             minLevDist = Math.min(minLevDist, levDist);
-            if(target.includes(kw) || levDist <= 3) {
-                if(this.markup != null) {
+            if (target.includes(kw) || levDist <= 3) {
+                if (this.markup != null) {
                     this.markup.show();
                 }
-                if(this.markup_alt != null) {
+                if (this.markup_alt != null) {
                     this.markup_alt.show();
                 }
-                if(target === kw) minLevDist = 0;
-                else if(target.includes(kw)) minLevDist = 0.5;
-                return { dist: minLevDist, bestMatch: this };
+                if (target === kw) minLevDist = 0;
+                else if (target.includes(kw)) minLevDist = 0.5;
+                return {dist: minLevDist, bestMatch: this};
             }
         }
 
         // invisible
-        if(this.markup != null) {
+        if (this.markup != null) {
             this.markup.hide();
         }
-        if(this.markup_alt != null) {
+        if (this.markup_alt != null) {
             this.markup_alt.hide();
         }
-        return { dist: minLevDist, bestMatch: this };
+        return {dist: minLevDist, bestMatch: this};
     }
 
-    filterSelectedLabel() {
+    filterSelectedLabel(active) {
 
         let labelSelected = false;
-        if( !$('#labelLegend_'+this.classID).hasClass('legend-inactive') )  {
-            labelSelected = true;
-        }
-        if(labelSelected === true) {
-            if(this.markup != null) {
+        if (!active) {
+            if (this.markup != null) {
                 this.markup.show();
             }
-            if(this.markup_alt != null) {
+            if (this.markup_alt != null) {
                 this.markup_alt.show();
             }
-            return { match: this };
+            return {match: this};
+        }
+
+        if (!$('#labelLegend_' + this.classID).hasClass('legend-inactive')) {
+            labelSelected = true;
+        }
+        if (labelSelected === true) {
+            if (this.markup != null) {
+                this.markup.show();
+            }
+            if (this.markup_alt != null) {
+                this.markup_alt.show();
+            }
+            return {match: this};
         }
 
         // invisible
-        if(this.markup != null) {
+        if (this.markup != null) {
             this.markup.hide();
         }
-        if(this.markup_alt != null) {
+        if (this.markup_alt != null) {
             this.markup_alt.hide();
         }
 
-        return { match: this };
+        return {match: this};
 
     };
 }
@@ -226,13 +260,13 @@ class LabelClassGroup {
         this.color = properties['color'];
 
         // append children in order
-        for(var key in properties['entries']) {
+        for (var key in properties['entries']) {
 
             var nextItem = window.parseClassdefEntry(key, properties['entries'][key], this);
-            if(nextItem === null) continue;
+            if (nextItem === null) continue;
 
             this.children.push(nextItem);
-            if(nextItem instanceof LabelClass) {
+            if (nextItem instanceof LabelClass) {
                 this.labelClasses[key] = nextItem;
             } else {
                 // append label class group's entries
@@ -242,22 +276,22 @@ class LabelClassGroup {
     }
 
     getMarkup() {
-        if(this.markup != null) return this.markup;
+        if (this.markup != null) return this.markup;
 
         this.markup = $('<div class="labelGroup"></div>');
         var childrenDiv = $('<div class="labelGroup-children"></div>');
 
         // append all children
-        for(var c=0; c<this.children.length; c++) {
+        for (var c = 0; c < this.children.length; c++) {
             childrenDiv.append($(this.children[c].getMarkup()));
         }
 
         // expand/collapse on header click
-        if(this.name != null && this.name != undefined) {
+        if (this.name != null && this.name != undefined) {
             var markupHeader = $('<h3 class="expanded">' + this.name + '</h3>');
-            markupHeader.click(function() {
+            markupHeader.click(function () {
                 $(this).toggleClass('expanded');
-                if(childrenDiv.is(':visible')) {
+                if (childrenDiv.is(':visible')) {
                     childrenDiv.slideUp();
                 } else {
                     childrenDiv.slideDown();
@@ -290,34 +324,34 @@ class LabelClassGroup {
         var childVisible = false;
         var minLevDist = 1e9;
         var argMin = null;
-        for(var c=0; c<this.children.length; c++) {
+        for (var c = 0; c < this.children.length; c++) {
             var result = this.children[c].filter(keywords);
-            if(result != null && result.dist < minLevDist) {
+            if (result != null && result.dist < minLevDist) {
                 minLevDist = Math.min(result.dist, minLevDist);
                 argMin = result.bestMatch;
-                if(result.dist <= 3) {
+                if (result.dist <= 3) {
                     childVisible = true;
                 }
             }
         }
 
         // show or hide group depending on children's visibility
-        if(childVisible) this.markup.show();
+        if (childVisible) this.markup.show();
         else this.markup.hide();
-        return { dist: minLevDist, bestMatch: argMin };
+        return {dist: minLevDist, bestMatch: argMin};
     }
 
-    filterSelectedLabel() {
+    filterSelectedLabel(active) {
         var childVisible = false;
-        for(var c=0; c<this.children.length; c++) {
-            var result = this.children[c].filterSelectedLabel();
-            if(result != null) {
+        for (var c = 0; c < this.children.length; c++) {
+            var result = this.children[c].filterSelectedLabel(active);
+            if (result != null) {
                 childVisible = true;
             }
         }
 
         // show or hide group depending on children's visibility
-        if(childVisible) this.markup.show();
+        if (childVisible) this.markup.show();
         else this.markup.hide();
         return result;
     }
@@ -338,7 +372,7 @@ class LabelClassHandler {
         this._setupLabelClasses();
 
         this.setActiveClass(this.labelClasses[Object.keys(this.labelClasses)[0]]);
-        
+
     }
 
     _setupLabelClasses() {
@@ -348,12 +382,12 @@ class LabelClassHandler {
         this.labelToColorMapping = {};  // LUT for color hex strings to label classes
 
         // initialize default rainbow colors
-        window.initClassColors(window.classes.numClasses+1)
-        for(var c in window.classes['entries']) {
+        window.initClassColors(window.classes.numClasses + 1)
+        for (var c in window.classes['entries']) {
             var nextItem = window.parseClassdefEntry(c, window.classes['entries'][c], this);
-            if(nextItem === null) continue;
+            if (nextItem === null) continue;
 
-            if(nextItem instanceof LabelClass) {
+            if (nextItem instanceof LabelClass) {
                 this.labelClasses[c] = nextItem;
             } else {
                 // append label class group's entries
@@ -366,7 +400,7 @@ class LabelClassHandler {
         }
 
         // create labelclass color LUT
-        for(var lc in this.labelClasses) {
+        for (var lc in this.labelClasses) {
             var nextItem = this.labelClasses[lc];
             var colorString = window.rgbToHex(nextItem.color);
             this.labelToColorMapping[colorString] = nextItem;
@@ -375,7 +409,7 @@ class LabelClassHandler {
     }
 
     getClass(id) {
-        if(id == '00000000-0000-0000-0000-000000000000') {
+        if (id == '00000000-0000-0000-0000-000000000000') {
             // dummy class for UI tutorial
             return this.dummyClass;
         }
@@ -387,19 +421,19 @@ class LabelClassHandler {
     }
 
     getActiveClassID() {
-        return (this.activeClass == null? null : this.activeClass['classID']);
+        return (this.activeClass == null ? null : this.activeClass['classID']);
     }
 
     getActiveClassName() {
-        return (this.activeClass == null? null : this.activeClass['name']);
+        return (this.activeClass == null ? null : this.activeClass['name']);
     }
 
     getActiveColor() {
-        return (this.activeClass == null? null : this.activeClass['color']);
+        return (this.activeClass == null ? null : this.activeClass['color']);
     }
 
     getColor(classID) {
-        if(classID == '00000000-0000-0000-0000-000000000000') {
+        if (classID == '00000000-0000-0000-0000-000000000000') {
             // dummy class for UI tutorial
             return this.dummyClass['color'];
         }
@@ -407,7 +441,7 @@ class LabelClassHandler {
     }
 
     getColor(classID, defaultColor) {
-        if(classID == '00000000-0000-0000-0000-000000000000') {
+        if (classID == '00000000-0000-0000-0000-000000000000') {
             // dummy class for UI tutorial
             return this.dummyClass['color'];
         }
@@ -419,15 +453,15 @@ class LabelClassHandler {
     }
 
     getName(classID) {
-        if(classID == '00000000-0000-0000-0000-000000000000') {
+        if (classID == '00000000-0000-0000-0000-000000000000') {
             // dummy class for UI tutorial
             return this.dummyClass['name'];
         }
-        return (classID == null || !this.labelClasses.hasOwnProperty(classID)? null : this.labelClasses[classID]['name']);
+        return (classID == null || !this.labelClasses.hasOwnProperty(classID) ? null : this.labelClasses[classID]['name']);
     }
 
-    switchoffLabelClasses(){
-        for(var lc in this.labelClasses) {
+    switchoffLabelClasses() {
+        for (var lc in this.labelClasses) {
             var labelClassInstance = this.labelClasses[lc]
             if (!$('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
                 $('#labelLegend_' + labelClassInstance.classID).addClass('legend-inactive');
@@ -436,26 +470,26 @@ class LabelClassHandler {
         }
     }
 
-    lighthenLabelClass(labelClassInstance){
-        if( $('#labelLegend_'+labelClassInstance.classID).hasClass('legend-inactive') ) {
+    lighthenLabelClass(labelClassInstance) {
+        if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
             $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
         }
     }
 
     setActiveClass(labelClassInstance) {
-        if(window.uiBlocked) return;
+        if (window.uiBlocked) return;
 
         // click on another selected label : unselect it
         this.activeClass = labelClassInstance;
-        if( $('#labelLegend_'+labelClassInstance.classID).hasClass('legend-inactive') )  {
+        if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
             window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
         } else {
             window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
         }
 
-         $('#labelLegend_'+labelClassInstance.classID).toggleClass('legend-inactive');
-         $('#labelLegend_alt_'+labelClassInstance.classID).toggleClass('legend-inactive');
+        $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
+        $('#labelLegend_alt_' + labelClassInstance.classID).toggleClass('legend-inactive');
 
         // // reset style of currently active class
         // if(this.activeClass != null) {
@@ -477,22 +511,22 @@ class LabelClassHandler {
         */
         var minDist = 1e9;
         var bestMatch = null;
-        for(var c=0; c<this.items.length; c++) {
+        for (var c = 0; c < this.items.length; c++) {
             var response = this.items[c].filter(keywords);
-            if(autoActivateBestMatch && response != null && response.dist <= minDist) {
+            if (autoActivateBestMatch && response != null && response.dist <= minDist) {
                 minDist = response.dist;
                 bestMatch = response.bestMatch;
             }
         }
 
-        if(autoActivateBestMatch && bestMatch != null && minDist <= 3) {
+        if (autoActivateBestMatch && bestMatch != null && minDist <= 3) {
             this.setActiveClass(bestMatch);
         }
     }
 
-    filterSelectedLabel() {
-        for(var c=0; c<this.items.length; c++) {
-            this.items[c].filterSelectedLabel();
+    filterSelectedLabel(active) {
+        for (var c = 0; c < this.items.length; c++) {
+            this.items[c].filterSelectedLabel(active);
         }
     }
 

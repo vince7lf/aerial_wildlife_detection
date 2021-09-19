@@ -334,13 +334,16 @@ class UIControlHandler {
         dtControls.append(saveBatchBtn);
 
         // label toolbar filter selected label
-        var filterSelectedLabel = function() {
-            window.labelClassHandler.filterSelectedLabel();
+        var onClickfilterSelectedLabel = function(e) {
+            let hasClass = $('#filter-selected-label').hasClass('active');
+            if( hasClass ) $('#filter-selected-label').removeClass('active')
+            else $('#filter-selected-label').addClass('active')
+            window.labelClassHandler.filterSelectedLabel(!hasClass);
         }
         var labelControl = $('#label-controls');
 
         var filterSelectedLabelBtn = $('<button id="filter-selected-label" class="btn btn-sm btn-primary" title="Filter Selected Labels">FL</button>');
-        filterSelectedLabelBtn.click(filterSelectedLabel);
+        filterSelectedLabelBtn.click(onClickfilterSelectedLabel);
         labelControl.append(filterSelectedLabelBtn);
 
 

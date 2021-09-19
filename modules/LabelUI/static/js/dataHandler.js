@@ -768,6 +768,12 @@ class DataHandler {
         for (var id in this.entriesStack) {
             if (this.entriesStack[id].fileName.indexOf(tilename) !== -1 ) {
                 this.entriesStack[id].click();
+
+                // refresh the filter if active
+                let hasClass = $('#filter-selected-label').hasClass('active');
+                window.labelClassHandler.filterSelectedLabel(hasClass);
+
+                return;
             }
         }
     }
