@@ -243,6 +243,13 @@ class LabelClass {
         return {match: this};
 
     };
+
+    copySelectedLabel() {
+        if (!$('#labelLegend_' + this.classID).hasClass('legend-inactive')) {
+            return 1;
+        }
+        return 0;
+    };
 }
 
 class LabelClassGroup {
@@ -354,6 +361,15 @@ class LabelClassGroup {
         if (childVisible) this.markup.show();
         else this.markup.hide();
         return result;
+    }
+
+    copySelectedLabel() {
+        let selectedLabels = 0;
+        for (var c = 0; c < this.children.length; c++) {
+            selectedLabels += this.children[c].copySelectedLabel();
+        }
+
+        return selectedLabels;
     }
 }
 
@@ -529,6 +545,15 @@ class LabelClassHandler {
             this.items[c].filterSelectedLabel(active);
         }
     }
+
+    copySelectedLabel() {
+        let selectedLabels = 0;
+        for (var c = 0; c < this.items.length; c++) {
+            selectedLabels += this.items[c].copySelectedLabel();
+        }
+        return selectedLabels;
+    }
+
 
     getByIndex(index) {
         /*

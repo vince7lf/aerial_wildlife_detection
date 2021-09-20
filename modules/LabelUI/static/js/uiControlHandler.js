@@ -333,8 +333,8 @@ class UIControlHandler {
         saveBatchBtn.click(saveBatchCallback);
         dtControls.append(saveBatchBtn);
 
-        // label toolbar filter selected label
-        var onClickfilterSelectedLabel = function(e) {
+        // label toolbar filter selected labels
+        var onClickFilterSelectedLabel = function(e) {
             let hasClass = $('#filter-selected-label').hasClass('active');
             if( hasClass ) $('#filter-selected-label').removeClass('active')
             else $('#filter-selected-label').addClass('active')
@@ -343,8 +343,18 @@ class UIControlHandler {
         var labelControl = $('#label-controls');
 
         var filterSelectedLabelBtn = $('<button id="filter-selected-label" class="btn btn-sm btn-primary" title="Filter Selected Labels">FL</button>');
-        filterSelectedLabelBtn.click(onClickfilterSelectedLabel);
+        filterSelectedLabelBtn.click(onClickFilterSelectedLabel);
         labelControl.append(filterSelectedLabelBtn);
+
+        // label toolbar copy selected labels
+        var onClickCopySelectedLabel = function(e) {
+            window.labelClassHandler.copySelectedLabel();
+        }
+        var labelControl = $('#label-controls');
+
+        var copySelectedLabelBtn = $('<button id="copy-selected-label" class="btn btn-sm btn-primary" title="Copy Selected Labels">CP</button>');
+        copySelectedLabelBtn.click(onClickCopySelectedLabel);
+        labelControl.append(copySelectedLabelBtn);
 
 
         // /*
