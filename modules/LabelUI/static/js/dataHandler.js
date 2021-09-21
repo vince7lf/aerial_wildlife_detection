@@ -110,6 +110,20 @@ class DataHandler {
         }
     }
 
+    overwriteActiveAnnotations(labelsObj) {
+        /*
+            Iterates through the data entries and sets all active annotations
+            inactive, unless the globally set active data entry corresponds to
+            the respective data entry's entryID.
+        */
+        for (var i = 0; i < this.dataEntries.length; i++) {
+            if (this.dataEntries[i].entryID == window.activeEntryID) {
+                this.dataEntries[i].overwriteAnnotations(labelsObj);
+            }
+        }
+    }
+
+
     removeActiveAnnotations() {
         if (window.uiBlocked) return 0;
         var numRemoved = 0;

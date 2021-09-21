@@ -525,6 +525,10 @@ class AbstractDataEntry {
         this.render();
     }
 
+    overwriteAnnotations(labelsObj) {
+        // TODO
+    }
+
     removeActiveAnnotations() {
         var numRemoved = 0;
         for (var key in this.annotations) {

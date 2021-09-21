@@ -348,13 +348,23 @@ class UIControlHandler {
 
         // label toolbar copy selected labels
         var onClickCopySelectedLabel = function(e) {
-            window.labelClassHandler.copySelectedLabel();
+            window.labelClassHandler.selectedLabelClasses = window.labelClassHandler.copySelectedLabel();
         }
         var labelControl = $('#label-controls');
 
         var copySelectedLabelBtn = $('<button id="copy-selected-label" class="btn btn-sm btn-primary" title="Copy Selected Labels">CP</button>');
         copySelectedLabelBtn.click(onClickCopySelectedLabel);
         labelControl.append(copySelectedLabelBtn);
+
+        // label toolbar overwrite selected labels
+        var onClickOverwriteSelectedLabel = function(e) {
+            // paste all selected label class to the selected tile
+        }
+        var labelControl = $('#label-controls');
+
+        var overwriteSelectedLabelBtn = $('<button id="overwrite-selected-label" class="btn btn-sm btn-primary" title="Overwite Selected Labels">OW</button>');
+        overwriteSelectedLabelBtn.click(onClickOverwriteSelectedLabel);
+        labelControl.append(overwriteSelectedLabelBtn);
 
 
         // /*

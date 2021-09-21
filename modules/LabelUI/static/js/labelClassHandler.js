@@ -246,9 +246,9 @@ class LabelClass {
 
     copySelectedLabel() {
         if (!$('#labelLegend_' + this.classID).hasClass('legend-inactive')) {
-            return 1;
+            return this;
         }
-        return 0;
+        return null;
     };
 }
 
@@ -364,9 +364,10 @@ class LabelClassGroup {
     }
 
     copySelectedLabel() {
-        let selectedLabels = 0;
-        for (var c = 0; c < this.children.length; c++) {
-            selectedLabels += this.children[c].copySelectedLabel();
+        let selectedLabels = [];
+        for (let c = 0; c < this.children.length; c++) {
+            let result = this.children[c].copySelectedLabel();
+            if( result ) selectedLabels.push(result)
         }
 
         return selectedLabels;
@@ -378,6 +379,7 @@ class LabelClassHandler {
     constructor(classLegendDiv) {
         this.classLegendDiv = classLegendDiv;
         this.items = [];    // may be both labelclasses and groups
+        this.selectedLabelClasses = [];    // may be both labelclasses and groups
         this.dummyClass = new LabelClass('00000000-0000-0000-0000-000000000000',
             {
                 name: 'Label class',
@@ -547,9 +549,10 @@ class LabelClassHandler {
     }
 
     copySelectedLabel() {
-        let selectedLabels = 0;
-        for (var c = 0; c < this.items.length; c++) {
-            selectedLabels += this.items[c].copySelectedLabel();
+        let selectedLabels = [];
+        for (let c = 0; c < this.items.length; c++) {
+            let result  = this.items[c].copySelectedLabel();
+            if( result ) selectedLabels.push(result);
         }
         return selectedLabels;
     }
