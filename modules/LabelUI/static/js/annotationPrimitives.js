@@ -158,6 +158,10 @@ class Annotation {
         return this.geometry.getProperty(propertyName);
     }
 
+    removeAllLabel(){
+        this.label = new Set()
+    }
+
     unsetLabel(value) {
         // remove label
         if( value != null ) {

@@ -489,6 +489,7 @@ class LabelClassHandler {
     }
 
     lighthenLabelClass(labelClassInstance) {
+        if( labelClassInstance == null ) return;
         if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
             $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');

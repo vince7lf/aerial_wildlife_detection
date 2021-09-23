@@ -359,6 +359,7 @@ class UIControlHandler {
         // label toolbar overwrite selected labels
         var onClickOverwriteSelectedLabel = function(e) {
             // paste all selected label class to the selected tile
+            window.dataHandler.overwriteActiveAnnotations(window.labelClassHandler.selectedLabelClasses);
         }
         var labelControl = $('#label-controls');
 

@@ -525,10 +525,6 @@ class AbstractDataEntry {
         this.render();
     }
 
-    overwriteAnnotations(labelsObj) {
-        // TODO
-    }
-
     removeActiveAnnotations() {
         var numRemoved = 0;
         for (var key in this.annotations) {
@@ -1017,6 +1013,23 @@ class AbstractDataEntryEx {
         window.dataHandler.updatePresentClasses();
     }
 
+    overwriteAnnotations(labelsObj) {
+        // removes all labels
+        this.removeAllLabel();
+
+        // loop through the labels
+        labelsObj.forEach( (that, idx) => {
+            this.setLabel(that.classID)
+        });
+
+        // refresh the labels selected
+        this.labelInstance.enlightLabels();
+
+        // refresh the labels selected if fliter active
+        let hasClass = $('#filter-selected-label').hasClass('active');
+        window.labelClassHandler.filterSelectedLabel(hasClass);
+    }
+
     setPredictionsVisible(visible) {
         for (var key in this.predictions) {
             this.predictions[key].setVisible(visible);
@@ -1287,6 +1300,19 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
         let entryKey = Object.keys(this.annotations);
         if (entryKey.length === 0) return null;
         return this.annotations[entryKey[0]].getProperty('label');
+    }
+
+    removeAllLabel() {
+        if (typeof (this.labelInstance) !== 'object') return;
+
+        this.labelInstance.removeAllLabel();
+
+        this.numInteractions++;
+
+        this.render();
+
+        window.dataHandler.updatePresentClasses();
+
     }
 
     unsetLabel(label) {
