@@ -370,7 +370,7 @@ class LabelClassGroup {
             if( result ) selectedLabels.push(result)
         }
 
-        return selectedLabels;
+        return selectedLabels.length == 0 ? null : selectedLabels;
     }
 }
 
@@ -555,7 +555,7 @@ class LabelClassHandler {
             let result  = this.items[c].copySelectedLabel();
             if( result ) selectedLabels.push(result);
         }
-        return selectedLabels;
+        return selectedLabels.length == 0 ? null : selectedLabels;
     }
 
 

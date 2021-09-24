@@ -359,13 +359,24 @@ class UIControlHandler {
         // label toolbar overwrite selected labels
         var onClickOverwriteSelectedLabel = function(e) {
             // paste all selected label class to the selected tile
-            window.dataHandler.overwriteActiveAnnotations(window.labelClassHandler.selectedLabelClasses);
+            window.dataHandler.updateActiveAnnotations(window.labelClassHandler.selectedLabelClasses, true);
         }
         var labelControl = $('#label-controls');
 
         var overwriteSelectedLabelBtn = $('<button id="overwrite-selected-label" class="btn btn-sm btn-primary" title="Overwite Selected Labels">OW</button>');
         overwriteSelectedLabelBtn.click(onClickOverwriteSelectedLabel);
         labelControl.append(overwriteSelectedLabelBtn);
+
+        // label toolbar merge/append selected labels
+        var onClickAppendSelectedLabel = function(e) {
+            // paste all selected label class to the selected tile
+            window.dataHandler.updateActiveAnnotations(window.labelClassHandler.selectedLabelClasses, false);
+        }
+        var labelControl = $('#label-controls');
+
+        var appendSelectedLabelBtn = $('<button id="append-selected-label" class="btn btn-sm btn-primary" title="Append Selected Labels">OW</button>');
+        appendSelectedLabelBtn.click(onClickAppendSelectedLabel);
+        labelControl.append(appendSelectedLabelBtn);
 
 
         // /*

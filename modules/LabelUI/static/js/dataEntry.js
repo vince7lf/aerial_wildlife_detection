@@ -1013,14 +1013,22 @@ class AbstractDataEntryEx {
         window.dataHandler.updatePresentClasses();
     }
 
-    overwriteAnnotations(labelsObj) {
-        // removes all labels
-        this.removeAllLabel();
+    setLabels(labelsObj) {
+        labelsObj.forEach( (that, idx) => {
+            if( Array.isArray(that)) this.setLabels(that);
+            else this.setLabel(that.classID)
+        });
+    }
+
+
+    updateAnnotations(labelsObj, overwrite) {
+        if( overwrite ) {
+            // removes all labels
+            this.removeAllLabel();
+        }
 
         // loop through the labels
-        labelsObj.forEach( (that, idx) => {
-            this.setLabel(that.classID)
-        });
+        this.setLabels(labelsObj);
 
         // refresh the labels selected
         this.labelInstance.enlightLabels();

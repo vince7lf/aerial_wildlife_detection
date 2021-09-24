@@ -110,7 +110,7 @@ class DataHandler {
         }
     }
 
-    overwriteActiveAnnotations(labelsObj) {
+    updateActiveAnnotations(labelsObj, overwrite) {
         /*
             Iterates through the data entries and sets all active annotations
             inactive, unless the globally set active data entry corresponds to
@@ -118,7 +118,7 @@ class DataHandler {
         */
         for (var i = 0; i < this.dataEntries.length; i++) {
             if (this.dataEntries[i].entryID == window.activeEntryID) {
-                this.dataEntries[i].overwriteAnnotations(labelsObj);
+                this.dataEntries[i].updateAnnotations(labelsObj, overwrite);
             }
         }
     }
