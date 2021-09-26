@@ -342,7 +342,7 @@ class UIControlHandler {
         }
         var labelControl = $('#label-controls');
 
-        var filterSelectedLabelBtn = $('<button id="filter-selected-label" class="btn btn-sm btn-primary" title="Filter Selected Labels">FL</button>');
+        var filterSelectedLabelBtn = $('<button id="filter-selected-label" class="btn btn-sm btn-light" title="Filter Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/view-filter.svg" style="height:22px" /></button>');
         filterSelectedLabelBtn.click(onClickFilterSelectedLabel);
         labelControl.append(filterSelectedLabelBtn);
 
@@ -352,7 +352,7 @@ class UIControlHandler {
         }
         var labelControl = $('#label-controls');
 
-        var copySelectedLabelBtn = $('<button id="copy-selected-label" class="btn btn-sm btn-primary" title="Copy Selected Labels">CP</button>');
+        var copySelectedLabelBtn = $('<button id="copy-selected-label" class="btn btn-sm btn-light" title="Copy Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/edit-copy.svg" style="height:22px" /></button>');
         copySelectedLabelBtn.click(onClickCopySelectedLabel);
         labelControl.append(copySelectedLabelBtn);
 
@@ -363,7 +363,7 @@ class UIControlHandler {
         }
         var labelControl = $('#label-controls');
 
-        var overwriteSelectedLabelBtn = $('<button id="overwrite-selected-label" class="btn btn-sm btn-primary" title="Overwite Selected Labels">OW</button>');
+        var overwriteSelectedLabelBtn = $('<button id="overwrite-selected-label" class="btn btn-sm btn-light" title="Overwite Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/document-replace.svg" style="height:22px" /></button>');
         overwriteSelectedLabelBtn.click(onClickOverwriteSelectedLabel);
         labelControl.append(overwriteSelectedLabelBtn);
 
@@ -374,7 +374,7 @@ class UIControlHandler {
         }
         var labelControl = $('#label-controls');
 
-        var appendSelectedLabelBtn = $('<button id="append-selected-label" class="btn btn-sm btn-primary" title="Append Selected Labels">OW</button>');
+        var appendSelectedLabelBtn = $('<button id="append-selected-label" class="btn btn-sm btn-light" title="Append Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/edit-paste.svg" style="height:22px" /></button>');
         appendSelectedLabelBtn.click(onClickAppendSelectedLabel);
         labelControl.append(appendSelectedLabelBtn);
 
