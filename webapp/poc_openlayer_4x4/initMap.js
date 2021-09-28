@@ -25,8 +25,8 @@ function creationCarte() {
             lineCap: 'round'
         })
     });
-    // var extent = [0, -3040, 4056, 0];
-    var extent = [0, -448, 448, 0];
+    //var extent = [0, -3040, 4056, 0];
+    var extent = [0, -880, 882, 0];
     var projection = new ol.proj.Projection({
         code: 'xkcd-image',
         units: 'pixels',
@@ -34,7 +34,7 @@ function creationCarte() {
     });
     staticImage = new ol.layer.Image({
         source: new ol.source.ImageStatic({
-            url: './tile448x448_tile.jpg',
+            url: './2018-Boucherville-13313005-13427550-1_tile.jpg',
             projection: projection,
             imageExtent: extent
         })
@@ -43,7 +43,7 @@ function creationCarte() {
 
     vectorLayer1 = new ol.layer.Vector({
         source: new ol.source.Vector({
-            url: './tile448x448_tile.geojson',
+            url: './2018-Boucherville-13313005-13427550-1_tile.geojson',
             format: new ol.format.GeoJSON(),
         }),
         style: canadaStyle
@@ -55,7 +55,7 @@ function creationCarte() {
     view = new ol.View({
         projection: projection,
 //        center: [2000, -1500],
-        center: [0, 0],
+        center: [400, -401],
         zoom: 1,
     });
 

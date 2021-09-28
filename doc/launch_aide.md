@@ -87,6 +87,10 @@ Launch launch_celery.sh first, and then from Pycharm launch assemble_server.py:
     export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
     export AIDE_MODULES=LabelUI,AIController,FileServer,AIWorker
     export PYTHONPATH=.
+# make sure group and user is ubuntu, and file executable 
+    sudo chown -R ubuntu .
+    sudo chgrp -R ubuntu .
+    chmod +x launch_celery.sh
     ./launch_celery.sh &
     ## be a bit patient, it can take more than 30 sec to launch and some output to appear
 

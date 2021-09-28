@@ -169,12 +169,13 @@ class MapOlElement extends AbstractRenderElement {
 
     constructor(id, image) {
         super(id, null);
-        this.imageOrg = image.currentSrc;
+        this.image = image;
+        this.imageSrcOrg = image.currentSrc;
         // this is a hack : the image to be loaded is inside the subfolder where with the name of the image without the extension.
-        this.URLImageParts = this.imageOrg.split('\\').pop().split('/');
+        this.URLImageParts = this.imageSrcOrg.split('\\').pop().split('/');
         this.filenameParts = this.URLImageParts.slice(-1).pop().split('.');
-        this.image = this.imageOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
-        this.geojson = this.image.replace('.jpg', '.geojson');
+        this.imageUrl = this.imageSrcOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
+        this.geojson = this.imageUrl.replace('.jpg', '.geojson');
         this.timeCreated = new Date();
         this.createMap();
     }
@@ -192,6 +193,7 @@ class MapOlElement extends AbstractRenderElement {
     createMap() {
         var map, view, staticImage;
         var image = this.image;
+        var imageUrl = this.imageUrl;
         var geojson = this.geojson;
         var self = this;
 
@@ -223,7 +225,7 @@ class MapOlElement extends AbstractRenderElement {
             }),
         });
 
-        var extent = [0, -3040, 4056, 0];
+        var extent = [0, -image.height, image.width, 0];
         var projection = new ol.proj.Projection({
             code: 'xkcd-image',
             units: 'pixels',
@@ -231,7 +233,7 @@ class MapOlElement extends AbstractRenderElement {
         });
         staticImage = new ol.layer.Image({
             source: new ol.source.ImageStatic({
-                url: image,
+                url: imageUrl,
                 projection: projection,
                 imageExtent: extent
             })
@@ -277,8 +279,8 @@ class MapOlElement extends AbstractRenderElement {
         });
         view = new ol.View({
             projection: projection,
-            center: [2000, -1500],
-            zoom: 2,
+            center: [image.height/2, -image.width/2],
+            zoom: 1,
         });
 
         // Instanciate a Map, set the object target to the map DOM id
