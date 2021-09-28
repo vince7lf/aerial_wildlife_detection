@@ -280,3 +280,7 @@ www/.gitignore:31:/yarn.lock	www/yarn.lock
 The command also accepts more than one filename as arguments, and the file doesn’t have to exist in your working tree.
 Displaying All Ignored Files The git status command with the --ignored option displays a list of all ignored files:
 git status --ignored
+
+## Credential
+Reference: <https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage>
+```git config --global credential.helper cache```
