@@ -5,25 +5,25 @@
     2019-21 Benjamin Kellenberger
 '''
 
+import json
 import os
 import re
 import secrets
-import json
 import uuid
-from datetime import datetime
 from collections.abc import Iterable
+from datetime import datetime
+
 import requests
-from psycopg2 import sql
 from bottle import request
+from psycopg2 import sql
 
 from modules.DataAdministration.backend import celery_interface as fileServer_interface
 from modules.TaskCoordinator.backend.middleware import TaskCoordinatorMiddleware
-from .db_fields import Fields_annotation, Fields_prediction
 from util.helpers import parse_parameters, check_args, is_localhost
+from .db_fields import Fields_annotation, Fields_prediction
 
 
 class ProjectConfigMiddleware:
-
     # prohibited project shortnames
     PROHIBITED_SHORTNAMES = [
         'con',  # for MS Windows
@@ -98,7 +98,7 @@ class ProjectConfigMiddleware:
         '|',
         '?',
         '*',
-        ':'    # for macOS
+        ':'  # for macOS
     ]
 
     # patterns that are prohibited anywhere for both short and long names (no replacement)
@@ -112,7 +112,6 @@ class ProjectConfigMiddleware:
         '\\'
     ]
 
-    
     def __init__(self, config, dbConnector):
         self.config = config
         self.dbConnector = dbConnector
@@ -123,8 +122,8 @@ class ProjectConfigMiddleware:
             self.defaultUIsettings = json.load(open('config/default_ui_settings.json', 'r'))
         except:
             # resort to built-in styles
-            self.defaultUIsettings = json.load(open('modules/ProjectAdministration/static/json/default_ui_settings.json', 'r'))
-
+            self.defaultUIsettings = json.load(
+                open('modules/ProjectAdministration/static/json/default_ui_settings.json', 'r'))
 
     @staticmethod
     def _recursive_update(dictObject, target):
@@ -139,8 +138,7 @@ class ProjectConfigMiddleware:
                     ProjectConfigMiddleware._recursive_update(dictObject[key], target[key])
                 else:
                     dictObject[key] = target[key]
-    
-    
+
     def getPlatformInfo(self, project, parameters=None):
         '''
             AIDE setup-specific platform metadata.
@@ -176,7 +174,8 @@ class ProjectConfigMiddleware:
                 fsData = json.loads(fsData.text)
                 serverDir = fsData['staticfiles_dir']
             except Exception as e:
-                print(f'WARNING: an error occurred trying to query FileServer for static files directory (message: "{str(e)}").')
+                print(
+                    f'WARNING: an error occurred trying to query FileServer for static files directory (message: "{str(e)}").')
                 print(f'Using value provided in this instance\'s config instead ("{serverDir}").')
 
         response = {}
@@ -189,15 +188,16 @@ class ProjectConfigMiddleware:
                 interval = self.config.getProperty('FileServer', 'watch_folder_interval', type=float, fallback=60)
                 response[param] = interval
             elif param.lower() == 'inference_batch_size_limit':
-                inferenceBsLimit = self.config.getProperty('AIWorker', 'inference_batch_size_limit', type=int, fallback=-1)
+                inferenceBsLimit = self.config.getProperty('AIWorker', 'inference_batch_size_limit', type=int,
+                                                           fallback=-1)
                 response[param] = inferenceBsLimit
             elif param.lower() == 'max_num_concurrent_tasks':
-                maxNumConcurrentTasksLimit = self.config.getProperty('AIWorker', 'max_num_concurrent_tasks', type=int, fallback=2)
+                maxNumConcurrentTasksLimit = self.config.getProperty('AIWorker', 'max_num_concurrent_tasks', type=int,
+                                                                     fallback=2)
                 response[param] = maxNumConcurrentTasksLimit
 
         return response
 
-    
     def getProjectImmutables(self, project):
         queryStr = 'SELECT annotationType, predictionType, demoMode FROM aide_admin.project WHERE shortname = %s;'
         result = self.dbConnector.execute(queryStr, (project,), 1)
@@ -208,7 +208,6 @@ class ProjectConfigMiddleware:
             }
         else:
             return None
-
 
     def getProjectInfo(self, project, parameters=None):
 
@@ -274,7 +273,6 @@ class ProjectConfigMiddleware:
 
         return response
 
-
     def renewSecretToken(self, project):
         '''
             Creates a new secret token, invalidating the old one.
@@ -291,7 +289,6 @@ class ProjectConfigMiddleware:
         except:
             # this normally should not happen, since we checked for the validity of the project
             return None
-
 
     def setPermissions(self, project, userList, privileges):
         '''
@@ -338,9 +335,9 @@ class ProjectConfigMiddleware:
                     RETURNING username;
                 '''
                 result = self.dbConnector.execute(queryStr, (tuple(userList), project), 'all')
-            
+
             if result is None or not len(result):
-                #TODO: provide more sophisticated error response
+                # TODO: provide more sophisticated error response
                 return {
                     'status': 2,
                     'message': f'An error occurred while trying to set permission type "{p}"'
@@ -349,7 +346,6 @@ class ProjectConfigMiddleware:
         return {
             'status': 0
         }
-
 
     def getProjectUsers(self, project):
         '''
@@ -370,7 +366,6 @@ class ProjectConfigMiddleware:
                 user[key] = val
             response.append(user)
         return response
-
 
     def createProject(self, username, properties):
         '''
@@ -404,33 +399,31 @@ class ProjectConfigMiddleware:
         with open('modules/ProjectAdministration/static/sql/create_schema.sql', 'r') as f:
             queryStr = sql.SQL(f.read())
 
-        
         # determine annotation and prediction types and add fields accordingly
         annotationFields = list(getattr(Fields_annotation, properties['annotationType']).value)
         predictionFields = list(getattr(Fields_prediction, properties['predictionType']).value)
 
-
         # create project schema
         self.dbConnector.execute(queryStr.format(
-                id_schema=sql.Identifier(shortname),
-                id_auth=sql.Identifier(self.config.getProperty('Database', 'user')),
-                id_image=sql.Identifier(shortname, 'image'),
-                id_iu=sql.Identifier(shortname, 'image_user'),
-                id_bookmark=sql.Identifier(shortname, 'bookmark'),
-                id_labelclassGroup=sql.Identifier(shortname, 'labelclassgroup'),
-                id_labelclass=sql.Identifier(shortname, 'labelclass'),
-                id_annotation=sql.Identifier(shortname, 'annotation'),
-                id_cnnstate=sql.Identifier(shortname, 'cnnstate'),
-                id_modellc=sql.Identifier(shortname, 'model_labelclass'),
-                id_prediction=sql.Identifier(shortname, 'prediction'),
-                id_workflow=sql.Identifier(shortname, 'workflow'),
-                id_workflowHistory=sql.Identifier(shortname, 'workflowhistory'),
-                id_filehierarchy=sql.Identifier(shortname, 'filehierarchy'),
-                id_taskHistory=sql.Identifier(shortname, 'taskhistory'),
-                id_annotation_label=sql.Identifier(shortname, 'annotation_label'),
-                annotation_fields=sql.SQL(', ').join([sql.SQL(field) for field in annotationFields]),
-                prediction_fields=sql.SQL(', ').join([sql.SQL(field) for field in predictionFields])
-            ),
+            id_schema=sql.Identifier(shortname),
+            id_auth=sql.Identifier(self.config.getProperty('Database', 'user')),
+            id_image=sql.Identifier(shortname, 'image'),
+            id_iu=sql.Identifier(shortname, 'image_user'),
+            id_bookmark=sql.Identifier(shortname, 'bookmark'),
+            id_labelclassGroup=sql.Identifier(shortname, 'labelclassgroup'),
+            id_labelclass=sql.Identifier(shortname, 'labelclass'),
+            id_annotation=sql.Identifier(shortname, 'annotation'),
+            id_cnnstate=sql.Identifier(shortname, 'cnnstate'),
+            id_modellc=sql.Identifier(shortname, 'model_labelclass'),
+            id_prediction=sql.Identifier(shortname, 'prediction'),
+            id_workflow=sql.Identifier(shortname, 'workflow'),
+            id_workflowHistory=sql.Identifier(shortname, 'workflowhistory'),
+            id_filehierarchy=sql.Identifier(shortname, 'filehierarchy'),
+            id_taskHistory=sql.Identifier(shortname, 'taskhistory'),
+            id_annotation_label=sql.Identifier(shortname, 'annotation_label'),
+            annotation_fields=sql.SQL(', ').join([sql.SQL(field) for field in annotationFields]),
+            prediction_fields=sql.SQL(', ').join([sql.SQL(field) for field in predictionFields])
+        ),
             None,
             None
         )
@@ -462,29 +455,30 @@ class ProjectConfigMiddleware:
                 %s
             );
             ''',
-            (
-                shortname,
-                properties['name'],
-                (properties['description'] if 'description' in properties else ''),
-                username,
-                secrets.token_urlsafe(32),
-                False,
-                properties['annotationType'],
-                properties['predictionType'],
-                False, False,
-                'ai.al.builtins.maxconfidence.MaxConfidence',   #TODO: default AL criterion to facilitate auto-training
-                128, 0, 128,            #TODO: default values for automated AI model training
-                json.dumps(self.defaultUIsettings)
-            ),
-            None)
+                                 (
+                                     shortname,
+                                     properties['name'],
+                                     (properties['description'] if 'description' in properties else ''),
+                                     username,
+                                     secrets.token_urlsafe(32),
+                                     False,
+                                     properties['annotationType'],
+                                     properties['predictionType'],
+                                     False, False,
+                                     'ai.al.builtins.maxconfidence.MaxConfidence',
+                                     # TODO: default AL criterion to facilitate auto-training
+                                     128, 0, 128,  # TODO: default values for automated AI model training
+                                     json.dumps(self.defaultUIsettings)
+                                 ),
+                                 None)
 
         # register user in project
         self.dbConnector.execute('''
                 INSERT INTO aide_admin.authentication (username, project, isAdmin)
                 VALUES (%s, %s, true);
             ''',
-            (username, shortname,),
-            None)
+                                 (username, shortname,),
+                                 None)
 
         # notify FileServer instance(s) to set up project folders
         process = fileServer_interface.aide_internal_notify.si({
@@ -493,10 +487,8 @@ class ProjectConfigMiddleware:
         })
         process.apply_async(queue='aide_broadcast',
                             ignore_result=True)
-        
+
         return True
-
-
 
     def updateProjectSettings(self, project, projectSettings):
         '''
@@ -528,8 +520,9 @@ class ProjectConfigMiddleware:
                 ('showImageNames', bool),
                 ('showImageURIs', bool)
             ]
-            uiSettings_new, uiSettingsKeys_new = parse_parameters(projectSettings['ui_settings'], fieldNames, absent_ok=True, escape=True)   #TODO: escape
-            
+            uiSettings_new, uiSettingsKeys_new = parse_parameters(projectSettings['ui_settings'], fieldNames,
+                                                                  absent_ok=True, escape=True)  # TODO: escape
+
             # adopt current settings and replace values accordingly
             uiSettings = self.dbConnector.execute('''SELECT ui_settings
                     FROM aide_admin.project
@@ -537,10 +530,12 @@ class ProjectConfigMiddleware:
                 ''', (project,), 1)
             uiSettings = json.loads(uiSettings[0]['ui_settings'])
             for kIdx in range(len(uiSettingsKeys_new)):
-                if uiSettingsKeys_new[kIdx] not in uiSettings:  #TODO: may be a bit careless, as any new keywords could be added...
+                if uiSettingsKeys_new[
+                    kIdx] not in uiSettings:  # TODO: may be a bit careless, as any new keywords could be added...
                     uiSettings[uiSettingsKeys_new[kIdx]] = uiSettings_new[kIdx]
                 elif isinstance(uiSettings[uiSettingsKeys_new[kIdx]], dict):
-                    ProjectConfigMiddleware._recursive_update(uiSettings[uiSettingsKeys_new[kIdx]], uiSettings_new[kIdx])
+                    ProjectConfigMiddleware._recursive_update(uiSettings[uiSettingsKeys_new[kIdx]],
+                                                              uiSettings_new[kIdx])
                 else:
                     uiSettings[uiSettingsKeys_new[kIdx]] = uiSettings_new[kIdx]
 
@@ -548,7 +543,6 @@ class ProjectConfigMiddleware:
             uiSettings = check_args(uiSettings, self.defaultUIsettings)
 
             projectSettings['ui_settings'] = json.dumps(uiSettings)
-
 
         # parse remaining parameters
         fieldNames = [
@@ -571,15 +565,13 @@ class ProjectConfigMiddleware:
             {}
             WHERE shortname = %s;
             '''
-        ).format(
+                           ).format(
             sql.SQL(',').join([sql.SQL('{} = %s'.format(item)) for item in params])
         )
 
         self.dbConnector.execute(queryStr, tuple(vals), None)
 
         return True
-
-    
 
     def updateClassDefinitions(self, project, classdef, removeMissing=False):
         '''
@@ -596,9 +588,9 @@ class ProjectConfigMiddleware:
                 SELECT annotationType, predictionType FROM aide_admin.project
                 WHERE shortname = %s;
             ''',
-            (project,),
-            1
-        )[0]
+                                            (project,),
+                                            1
+                                            )[0]
         is_segmentation = any(['segmentationmasks' in m.lower() for m in metaType.values()])
         if is_segmentation:
             removeMissing = False
@@ -624,12 +616,12 @@ class ProjectConfigMiddleware:
                     db_classes[r['id']] = r
                 if r['lcgid'] is not None:
                     if not r['lcgid'] in db_groups:
-                        db_groups[r['lcgid']] = {**r, **{'num_children':0}}
+                        db_groups[r['lcgid']] = {**r, **{'num_children': 0}}
                     elif not 'lcgid' in db_groups[r['lcgid']]:
                         db_groups[r['lcgid']] = {**db_groups[r['lcgid']], **r}
                 if r['labelclassgroup'] is not None:
                     if not r['labelclassgroup'] in db_groups:
-                        db_groups[r['labelclassgroup']] = {'num_children':1}
+                        db_groups[r['labelclassgroup']] = {'num_children': 1}
                     else:
                         db_groups[r['labelclassgroup']]['num_children'] += 1
 
@@ -637,6 +629,7 @@ class ProjectConfigMiddleware:
         unique_keystrokes = set()
         classes_update = []
         classgroups_update = []
+
         def _parse_item(item, parent=None):
             # get or create ID for item
             try:
@@ -650,6 +643,9 @@ class ProjectConfigMiddleware:
                 'id': itemID,
                 'name': item['name'],
                 'color': (None if not 'color' in item else item['color']),
+                'external_id': (None if not 'external_id' in item else item['external_id']),
+                'alias_fr':  (None if not 'alias_fr' in item else item['alias_fr']),
+                'alias_en': (None if not 'alias_en' in item else item['alias_en']),
                 'keystroke': None,
                 'labelclassgroup': parent
             }
@@ -667,7 +663,7 @@ class ProjectConfigMiddleware:
 
         for item in classdef:
             _parse_item(item, None)
-        
+
         # apply changes
         if removeMissing:
             queryArgs = []
@@ -697,7 +693,7 @@ class ProjectConfigMiddleware:
                 lcgSpec=lcgSpec
             )
             self.dbConnector.execute(queryStr, tuple(queryArgs), None)
-        
+
         # add/update in order (groups, set their parents, label classes)
         groups_new = [(g['id'], g['name'], g['color'],) for g in classgroups_update]
         queryStr = sql.SQL('''
@@ -706,13 +702,14 @@ class ProjectConfigMiddleware:
             ON CONFLICT (id) DO UPDATE SET
                 name = EXCLUDED.name,
                 color = EXCLUDED.color;
-        ''').format(        #TODO: on conflict(name)
+        ''').format(  # TODO: on conflict(name)
             id_lcg=sql.Identifier(project, 'labelclassgroup')
         )
         self.dbConnector.insert(queryStr, groups_new)
 
         # set parents
-        groups_parents = [(g['id'], g['labelclassgroup'],) for g in classgroups_update if ('labelclassgroup' in g and g['labelclassgroup'] is not None)]
+        groups_parents = [(g['id'], g['labelclassgroup'],) for g in classgroups_update if
+                          ('labelclassgroup' in g and g['labelclassgroup'] is not None)]
         queryStr = sql.SQL('''
             UPDATE {id_lcg} AS lcg
             SET parent = q.parent
@@ -724,23 +721,22 @@ class ProjectConfigMiddleware:
         self.dbConnector.insert(queryStr, groups_parents)
 
         # insert/update label classes
-        lcdata = [(l['id'], l['name'], l['color'], l['keystroke'], l['labelclassgroup'],) for l in classes_update]
+        lcdata = [(l['id'], l['name'], l['color'], l['keystroke'], l['external_id'], l['alias_fr'], l['alias_en'],
+                   l['labelclassgroup'],) for l in classes_update]
         queryStr = sql.SQL('''
-            INSERT INTO {id_lc} (id, name, color, keystroke, labelclassgroup)
+            INSERT INTO {id_lc} (id, name, color, keystroke, external_id, alias_fr, alias_en, labelclassgroup)
             VALUES %s
             ON CONFLICT (id) DO UPDATE
             SET name = EXCLUDED.name,
             color = EXCLUDED.color,
             keystroke = EXCLUDED.keystroke,
             labelclassgroup = EXCLUDED.labelclassgroup;
-        ''').format(    #TODO: on conflict(name)
+        ''').format(  # TODO: on conflict(name)
             id_lc=sql.Identifier(project, 'labelclass')
         )
         self.dbConnector.insert(queryStr, lcdata)
 
         return True
-
-    
 
     def getModelToProjectClassMapping(self, project, aiModelID=None):
         '''
@@ -765,7 +761,7 @@ class ProjectConfigMiddleware:
                     if not isinstance(aiModelID[aIdx], uuid.UUID):
                         aiModelID[aIdx] = uuid.UUID(aiModelID)
             libStr = sql.SQL('WHERE marketplace_origin_id IN (%s)')
-        
+
         response = {}
         result = self.dbConnector.execute(sql.SQL(
             'SELECT * FROM {id_modellc} {libStr};'
@@ -782,8 +778,6 @@ class ProjectConfigMiddleware:
                 response[modelID].append((r['labelclass_id_model'], r['labelclass_name_model'], lcProj))
         return response
 
-
-    
     def saveModelToProjectClassMapping(self, project, mapping):
         '''
             Receives a dict of tuples of tuples, organized by AI model library, and saves
@@ -803,7 +797,7 @@ class ProjectConfigMiddleware:
                 sourceName = row[1]
                 targetID = (uuid.UUID(row[2]) if isinstance(row[2], str) else None)
                 values.append((uuid.UUID(aiModelID), sourceID, sourceName, targetID))
-        
+
         # perform insertion
         self.dbConnector.insert(sql.SQL('''
             DELETE FROM {id_modellc} WHERE
@@ -811,7 +805,7 @@ class ProjectConfigMiddleware:
         ''').format(
             id_modellc=sql.Identifier(project, 'model_labelclass')
         ),
-        (tuple(aiModelIDs),))
+            (tuple(aiModelIDs),))
         self.dbConnector.insert(sql.SQL('''
             INSERT INTO {id_modellc} (marketplace_origin_id, labelclass_id_model, labelclass_name_model,
             labelclass_id_project)
@@ -819,10 +813,8 @@ class ProjectConfigMiddleware:
         ''').format(
             id_modellc=sql.Identifier(project, 'model_labelclass')
         ),
-        tuple(values))
+            tuple(values))
         return 0
-
-
 
     def getProjectNameAvailable(self, projectName):
         '''
@@ -835,7 +827,8 @@ class ProjectConfigMiddleware:
             return False
 
         # check if name matches prohibited AIDE keywords (we do not replace long names)
-        if projectName_stripped in self.PROHIBITED_STRICT or any([p in projectName_stripped for p in self.PROHIBITED_STRICT]):
+        if projectName_stripped in self.PROHIBITED_STRICT or any(
+                [p in projectName_stripped for p in self.PROHIBITED_STRICT]):
             return False
         if projectName_stripped in self.PROHIBITED_NAMES:
             return False
@@ -847,14 +840,13 @@ class ProjectConfigMiddleware:
             FROM aide_admin.project
             WHERE name = %s;
             ''',
-            (projectName,),
-            1)
-        
+                                          (projectName,),
+                                          1)
+
         if result is None or not len(result):
             return True
         else:
             return result[0]['result'] != 1
-
 
     def getProjectShortNameAvailable(self, projectName):
         '''
@@ -870,7 +862,8 @@ class ProjectConfigMiddleware:
             return False
 
         # check if name matches prohibited AIDE keywords; replace where possible
-        if projectName_stripped in self.PROHIBITED_STRICT or any([p in projectName_stripped for p in self.PROHIBITED_STRICT]):
+        if projectName_stripped in self.PROHIBITED_STRICT or any(
+                [p in projectName_stripped for p in self.PROHIBITED_STRICT]):
             return False
         if projectName_stripped in self.PROHIBITED_NAMES or projectName_stripped in self.PROHIBITED_SHORTNAMES:
             return False
@@ -892,8 +885,8 @@ class ProjectConfigMiddleware:
             SELECT 1 FROM aide_admin.project
             WHERE shortname ilike %s;
             ''',
-            (projectName,projectName,),
-            2)
+                                          (projectName, projectName,),
+                                          2)
 
         if result is None or not len(result):
             return True
@@ -904,7 +897,6 @@ class ProjectConfigMiddleware:
             return result[0]['result'] != 1
         else:
             return True
-
 
     def getProjectArchived(self, project, username):
         '''
@@ -927,15 +919,15 @@ class ProjectConfigMiddleware:
             ) AS usr
             ON auth.username = usr.name
         ''', (project, username), 1)
-        
+
         if isAuthenticated is None or not len(isAuthenticated) or \
-            (isAuthenticated[0]['username'] is None and not isAuthenticated[0]['issuperuser']):
+                (isAuthenticated[0]['username'] is None and not isAuthenticated[0]['issuperuser']):
             # project does not exist or user is neither member nor super user
             return {
                 'status': 2,
                 'message': 'User cannot view project details.'
             }
-        
+
         isArchived = self.dbConnector.execute('''
             SELECT archived FROM aide_admin.project
             WHERE shortname = %s;
@@ -951,7 +943,6 @@ class ProjectConfigMiddleware:
             'status': 0,
             'archived': isArchived[0]['archived']
         }
-        
 
     def setProjectArchived(self, project, username, archived):
         '''
@@ -974,9 +965,9 @@ class ProjectConfigMiddleware:
             FROM aide_admin.user
             WHERE name = %s;
         ''', (username, project, username), 2)
-        
+
         if not isAuthenticated[0]['result'] \
-            and not isAuthenticated[1]['result']:
+                and not isAuthenticated[1]['result']:
             # user is neither project owner nor super user; reject
             return {
                 'status': 2,
@@ -993,7 +984,6 @@ class ProjectConfigMiddleware:
         return {
             'status': 0
         }
-
 
     def deleteProject(self, project, username, deleteFiles=False):
         '''
@@ -1018,9 +1008,9 @@ class ProjectConfigMiddleware:
             FROM aide_admin.user
             WHERE name = %s;
         ''', (username, project, username), 2)
-        
+
         if not isAuthenticated[0]['result'] \
-            and not isAuthenticated[1]['result']:
+                and not isAuthenticated[1]['result']:
             # user is neither project owner nor super user; reject
             return {
                 'status': 2,
@@ -1041,10 +1031,9 @@ class ProjectConfigMiddleware:
             }
 
         # stop ongoing tasks
-        #TODO: make more elegant
+        # TODO: make more elegant
         tc = TaskCoordinatorMiddleware(self.config, self.dbConnector)
         tc.revokeAllJobs(project, username, includeAItasks=True)
-
 
         # remove rows from database
         self.dbConnector.execute('''
@@ -1053,12 +1042,12 @@ class ProjectConfigMiddleware:
             DELETE FROM aide_admin.project
             WHERE shortname = %s;
         ''', (project, project,), None)
-        
+
         # dispatch Celery task to remove DB schema and files (if requested)
         process = fileServer_interface.deleteProject.si(project, deleteFiles)
-        process.apply_async(queue='FileServer')       #TODO: task ID? Progress monitoring?
+        process.apply_async(queue='FileServer')  # TODO: task ID? Progress monitoring?
 
-        #TODO: return Celery task ID?
+        # TODO: return Celery task ID?
         return {
-                'status': 0
-            }
+            'status': 0
+        }

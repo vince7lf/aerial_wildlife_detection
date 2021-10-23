@@ -154,8 +154,7 @@
             for (var child in entry['entries']) {
                 children.push(parseClassEntry(entry['entries'][child], child));
             }
-            treeEntry['children'] = children;
-        }
+            treeEntry['children'] = children;}
 
         return treeEntry;
     }
@@ -436,6 +435,14 @@
                             if (color !== undefined) {
                                 treeEntry['color'] = color;
                             }
+                        } else if (key.toLowerCase() === 'external_id' ) {
+                            treeEntry['external_id'] = entry[key];
+
+                        } else if (key.toLowerCase() === 'alias_fr' ) {
+                            treeEntry['alias_fr'] = entry[key];
+
+                        } else if (key.toLowerCase() === 'alias_en' ) {
+                            treeEntry['alias_en'] = entry[key];
 
                         } else if (key.toLowerCase() === 'children') {
                             var children = entry[key];
