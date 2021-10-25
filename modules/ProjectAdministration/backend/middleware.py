@@ -644,8 +644,10 @@ class ProjectConfigMiddleware:
                 'name': item['name'],
                 'color': (None if not 'color' in item else item['color']),
                 'external_id': (None if not 'external_id' in item else item['external_id']),
-                'alias_fr':  (None if not 'alias_fr' in item else item['alias_fr']),
+                'alias_fr': (None if not 'alias_fr' in item else item['alias_fr']),
                 'alias_en': (None if not 'alias_en' in item else item['alias_en']),
+                'cat1': (None if not 'cat1' in item else item['cat1']),
+                'cat2': (None if not 'cat2' in item else item['cat2']),
                 'keystroke': None,
                 'labelclassgroup': parent
             }
@@ -722,7 +724,7 @@ class ProjectConfigMiddleware:
 
         # insert/update label classes
         lcdata = [(l['id'], l['name'], l['color'], l['keystroke'], l['external_id'], l['alias_fr'], l['alias_en'],
-                   l['labelclassgroup'],) for l in classes_update]
+                   l['cat1'], l['cat2'], l['labelclassgroup'],) for l in classes_update]
         queryStr = sql.SQL('''
             INSERT INTO {id_lc} (id, name, color, keystroke, external_id, alias_fr, alias_en, labelclassgroup)
             VALUES %s
