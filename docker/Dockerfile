@@ -72,6 +72,8 @@ RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
     && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
     && export C_INCLUDE_PATH=/usr/include/gdal \
     && ogrinfo --version \
+    # fix an error in the installation
+    && pip3 install --upgrade --no-cache-dir setuptools==41.0.0 \
     && pip3 install GDAL==2.4.2
 
 # Setup PostgreSQL database
