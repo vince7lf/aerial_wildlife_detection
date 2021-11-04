@@ -13,7 +13,7 @@ awk -F'\t' '{
   id=_res[0]
 };{
   print id"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7;
-}' Liste\ Sp\ vasculaire\ Qc\ VASCAN.txt | sort | uniq | awk -F"\t" \
+}' Liste\ Sp\ vasculaire\ Qc\ VASCAN.txt | sort -k 2 | uniq | awk -F"\t" \
 'BEGIN {
   print "{"
 }; {
@@ -34,7 +34,7 @@ awk -F'\t' '{
     \"alias_fr\": \""$4"\", \
     \"alias_en\": \""$5"\", \
     \"cat1\": \""$6"\", \
-    \"cat2\": \""$7"\", \
+    \"cat2\": \""$7"\" \
   }"
 };END {
   print "]}"

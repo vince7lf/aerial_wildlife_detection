@@ -69,10 +69,10 @@ CREATE TABLE IF NOT EXISTS {id_labelclass} (
     keystroke SMALLINT UNIQUE,
     hidden BOOLEAN NOT NULL DEFAULT FALSE,
     external_id INT NOT NULL,
-    alias_fr VARCHAR UNIQUE NOT NULL,
-    alias_en VARCHAR UNIQUE NOT NULL,
-    cat1 VARCHAR UNIQUE NOT NULL,
-    cat2 VARCHAR UNIQUE NOT NULL,
+    alias_fr VARCHAR NOT NULL,
+    alias_en VARCHAR NOT NULL,
+    cat1 VARCHAR NOT NULL,
+    cat2 VARCHAR NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (labelclassgroup) REFERENCES {id_labelclassGroup}(id)
 );

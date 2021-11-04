@@ -726,7 +726,7 @@ class ProjectConfigMiddleware:
         lcdata = [(l['id'], l['name'], l['color'], l['keystroke'], l['external_id'], l['alias_fr'], l['alias_en'],
                    l['cat1'], l['cat2'], l['labelclassgroup'],) for l in classes_update]
         queryStr = sql.SQL('''
-            INSERT INTO {id_lc} (id, name, color, keystroke, external_id, alias_fr, alias_en, labelclassgroup)
+            INSERT INTO {id_lc} (id, name, color, keystroke, external_id, alias_fr, alias_en, cat1, cat2, labelclassgroup)
             VALUES %s
             ON CONFLICT (id) DO UPDATE
             SET name = EXCLUDED.name,
