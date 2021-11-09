@@ -30,11 +30,11 @@ awk -F'\t' '{
   print "\t{ \
     \"name\":\""$3"\", \
     \"color\":\"#095797\", \
-    \"external_id\": \""$1"\", \
-    \"alias_fr\": \""$4"\", \
-    \"alias_en\": \""$5"\", \
-    \"cat1\": \""$6"\", \
-    \"cat2\": \""$7"\" \
+    \"vascan_id\": \""$1"\", \
+    \"coleo_vernacular_fr\": \""$4"\", \
+    \"coleo_vernacular_en\": \""$5"\", \
+    \"vascan_port\": \""$6"\", \
+    \"vascan_statut_repartition\": \""$7"\" \
   }"
 };END {
   print "]}"

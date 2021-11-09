@@ -59,23 +59,36 @@ CREATE TABLE IF NOT EXISTS {id_labelclassGroup} (
     PRIMARY KEY (id)
 );
 
+-- https://github.com/ReseauBiodiversiteQuebec/Coleo_DB/blob/master/API-coleo.md
+-- https://data.canadensys.net/vascan/search
+-- timescale db; insert only; ON CONFLICT DO NOTHING
 CREATE TABLE IF NOT EXISTS {id_labelclass} (
     id uuid DEFAULT uuid_generate_v4(),
-    name VARCHAR UNIQUE NOT NULL,
+    name VARCHAR NOT NULL,
     idx SERIAL UNIQUE NOT NULL,
     timeCreated TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    color VARCHAR,
+    color VARCHAR DEFAULT '#095797',
     labelclassgroup uuid,
     keystroke SMALLINT UNIQUE,
     hidden BOOLEAN NOT NULL DEFAULT FALSE,
-    external_id INT NOT NULL,
-    alias_fr VARCHAR NOT NULL,
-    alias_en VARCHAR NOT NULL,
-    cat1 VARCHAR NOT NULL,
-    cat2 VARCHAR NOT NULL,
+    vascan_id INT NOT NULL,
+    bryoquel_id INT DEFAULT NULL,
+    coleo_vernacular_fr VARCHAR DEFAULT NULL,
+    coleo_vernacular_en VARCHAR DEFAULT NULL,
+    vascan_region VARCHAR NOT NULL DEFAULT 'Central',
+    vascan_province VARCHAR NOT NULL DEFAULT 'Québec',
+    vascan_port VARCHAR DEFAULT NULL,
+    vascan_statut_repartition VARCHAR DEFAULT NULL,
+    tsn INT DEFAULT NULL,
+    coleo_category VARCHAR NOT NULL DEFAULT 'plantes',
     PRIMARY KEY (id),
     FOREIGN KEY (labelclassgroup) REFERENCES {id_labelclassGroup}(id)
 );
+CREATE UNIQUE INDEX labelclass_idx
+ON {id_labelclass} (name, vascan_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province, vascan_port, vascan_statut_repartition, coleo_category);
+ALTER TABLE {id_labelclass}
+ADD CONSTRAINT uniq_labelclass
+UNIQUE USING INDEX labelclass_idx;
 
 CREATE TABLE IF NOT EXISTS {id_annotation} (
     id uuid DEFAULT uuid_generate_v4(),

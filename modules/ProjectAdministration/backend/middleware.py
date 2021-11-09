@@ -643,11 +643,11 @@ class ProjectConfigMiddleware:
                 'id': itemID,
                 'name': item['name'],
                 'color': (None if not 'color' in item else item['color']),
-                'external_id': (None if not 'external_id' in item else item['external_id']),
-                'alias_fr': (None if not 'alias_fr' in item else item['alias_fr']),
-                'alias_en': (None if not 'alias_en' in item else item['alias_en']),
-                'cat1': (None if not 'cat1' in item else item['cat1']),
-                'cat2': (None if not 'cat2' in item else item['cat2']),
+                'vascan_id': (None if not 'vascan_id' in item else item['vascan_id']),
+                'coleo_vernacular_fr': (None if not 'coleo_vernacular_fr' in item else item['coleo_vernacular_fr']),
+                'coleo_vernacular_en': (None if not 'coleo_vernacular_en' in item else item['coleo_vernacular_en']),
+                'vascan_port': (None if not 'vascan_port' in item else item['vascan_port']),
+                'vascan_statut_repartition': (None if not 'vascan_statut_repartition' in item else item['vascan_statut_repartition']),
                 'keystroke': None,
                 'labelclassgroup': parent
             }
@@ -723,10 +723,10 @@ class ProjectConfigMiddleware:
         self.dbConnector.insert(queryStr, groups_parents)
 
         # insert/update label classes
-        lcdata = [(l['id'], l['name'], l['color'], l['keystroke'], l['external_id'], l['alias_fr'], l['alias_en'],
-                   l['cat1'], l['cat2'], l['labelclassgroup'],) for l in classes_update]
+        lcdata = [(l['id'], l['name'], l['color'], l['keystroke'], l['vascan_id'], l['coleo_vernacular_fr'], l['coleo_vernacular_en'],
+                   l['vascan_port'], l['vascan_statut_repartition'], l['labelclassgroup'],) for l in classes_update]
         queryStr = sql.SQL('''
-            INSERT INTO {id_lc} (id, name, color, keystroke, external_id, alias_fr, alias_en, cat1, cat2, labelclassgroup)
+            INSERT INTO {id_lc} (id, name, color, keystroke, vascan_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_port, vascan_statut_repartition, labelclassgroup)
             VALUES %s
             ON CONFLICT (id) DO UPDATE
             SET name = EXCLUDED.name,

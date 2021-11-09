@@ -3,20 +3,20 @@
     {
       "name": "×Duarctopoa labradorica",
       "color": "#095797",
-      "external_id": "8015",
-      "alias_fr": "pâturin du Labrador",
-      "alias_en": "Labrador bluegrass",
-      "cat1": "Plante herbacée",
-      "cat2": "Indigène"
+      "vascan_id": "8015",
+      "coleo_vernacular_fr": "pâturin du Labrador",
+      "coleo_vernacular_en": "Labrador bluegrass",
+      "vascan_port": "Plante herbacée",
+      "vascan_statut_repartition": "Indigène"
     },
     {
       "name": "Arctopoa eminens",
       "color": "#095797",
-      "external_id": "7863",
-      "alias_fr": "pâturin superbe",
-      "alias_en": "eminent bluegrass",
-      "cat1": "Plante herbacée",
-      "cat2": "Indigène"
+      "vascan_id": "7863",
+      "coleo_vernacular_fr": "pâturin superbe",
+      "coleo_vernacular_en": "eminent bluegrass",
+      "vascan_port": "Plante herbacée",
+      "vascan_statut_repartition": "Indigène"
     }
   ]
 }
