@@ -90,6 +90,12 @@ ALTER TABLE {id_labelclass}
 ADD CONSTRAINT uniq_labelclass
 UNIQUE USING INDEX labelclass_idx;
 
+CREATE OR REPLACE VIEW {id_active_labelclass} AS
+	SELECT distinct on (lc.name) lc.*
+	FROM {id_active_labelclass} lc
+	INNER JOIN {id_active_labelclass} lc_inner ON lc_inner.id = lc.id
+	ORDER BY lc.name, lc.timeCreated DESC
+
 CREATE TABLE IF NOT EXISTS {id_annotation} (
     id uuid DEFAULT uuid_generate_v4(),
     username VARCHAR NOT NULL,
@@ -201,3 +207,6 @@ CREATE TABLE IF NOT EXISTS {id_annotation_label}
     FOREIGN KEY (label) REFERENCES {id_labelclass} (id),
     FOREIGN KEY (annotation) REFERENCES {id_annotation} (id)
 )
+
+-- C:\Program Files\pgAdmin 4\v5\runtime\pg_dump.exe --file "C:\\Users\\VINCEN~1.LE_\\DOWNLO~1\\LABELC~1.DUM" --host "206.12.94.82" --port "17685" --username "ailabeluser" --no-password --verbose --quote-all-identifiers --role "ailabeluser" --format=p --data-only --inserts --column-inserts --encoding "UTF8" --table "test.labelclass" "ailabeltooldb"
+-- C:\Program Files\pgAdmin 4\v5\runtime\pg_dump.exe --file "C:\\Users\\VINCEN~1.LE_\\DOWNLO~1\\LABELC~1.SQL" --host "206.12.94.82" --port "17685" --username "ailabeluser" --no-password --verbose --quote-all-identifiers --role "ailabeluser" --format=p --data-only --inserts --column-inserts --encoding "UTF8" --table "test.labelclassgroup" "ailabeltooldb"
