@@ -86,3 +86,15 @@ SELECT id, idx, timecreated, name, color, labelclassgroup, keystroke, hidden, va
 FROM test.labelclass
 WHERE name = 'test_name'
 ORDER BY timeCreated DESC
+
+INSERT INTO test.labelclass
+(name, color, labelclassgroup, keystroke, hidden, vascan_id, bryoquel_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province, vascan_port, vascan_statut_repartition, tsn, coleo_category)
+VALUES ('test_name3', '#999999', '324d0e0a-41cf-11ec-a197-fa163e42617b', NULL, false, 9999, NULL, 'test_coleo_vernacular_fr2', 'test_coleo_vernacular_en', 'test_vascan_region2', 'test_vascan_province2', 'test_vascan_port2', 'test_vascan_statut_repartition2', NULL, 'test_coleo_category2');
+
+INSERT INTO test.labelclass
+(name, color, labelclassgroup, keystroke, hidden, vascan_id, bryoquel_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province, vascan_port, vascan_statut_repartition, tsn, coleo_category)
+VALUES ('test_name', '#999999', '324d0e0a-41cf-11ec-a197-fa163e42617b', NULL, false, 9999, NULL, 'test_coleo_vernacular_fr', 'test_coleo_vernacular_en2', 'test_vascan_region2', 'test_vascan_province2', 'test_vascan_port2', 'test_vascan_statut_repartition2', NULL, 'test_coleo_category2');
+
+select * from test.active_labelclass
+where name LIKE 'test%'
+order by timeCreated DESC;
