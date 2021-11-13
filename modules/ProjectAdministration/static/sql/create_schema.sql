@@ -92,9 +92,9 @@ UNIQUE USING INDEX labelclass_idx;
 
 CREATE OR REPLACE VIEW {id_active_labelclass} AS
 	SELECT distinct on (lc.name) lc.*
-	FROM {id_active_labelclass} lc
-	INNER JOIN {id_active_labelclass} lc_inner ON lc_inner.id = lc.id
-	ORDER BY lc.name, lc.timeCreated DESC
+	FROM {id_labelclass} lc
+	INNER JOIN {id_labelclass} lc_inner ON lc_inner.id = lc.id
+	ORDER BY lc.name, lc.timeCreated DESC;
 
 CREATE TABLE IF NOT EXISTS {id_annotation} (
     id uuid DEFAULT uuid_generate_v4(),
