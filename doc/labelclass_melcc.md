@@ -1,4 +1,4 @@
-# Structure de la BD AIDE+MELCC
+# Schema de la BD AIDE+MELCC
 
 ## labelclass
 COLUMN_NAME               | TYPE_NAME   | MANDATORY | DEFAULT | REMARKS
