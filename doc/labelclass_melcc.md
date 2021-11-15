@@ -1,4 +1,6 @@
-# Schema de la BD AIDE+MELCC
+# Relations de la table labelclass (AIDE+MELCC) 
+
+<img src="./figures/AIDE+MELCC_labelclass.png" width="488" height="574"/>
 
 ## labelclass
 COLUMN_NAME               | TYPE_NAME   | MANDATORY | DEFAULT | REMARKS
