@@ -49,7 +49,7 @@ cp -rap ${srcDir}/${imgFilename} ${destDir}
 
 # create tile as shapefile
 # output and error piped to /dev/null
-gdal_retile.py -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 224 224 -targetDir ${destDir} ${srcDir}/${imgFilename} > /dev/null 2>&1
+gdal_retile.py -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilename} > /dev/null 2>&1
 
 # create .geojson and generate .tiff tiles
 # output and error piped to /dev/null
