@@ -951,6 +951,69 @@ class AbstractDataEntryEx {
         // this.viewport.addRenderElement(this.imageEntry);
     }
 
+    _setup_markup() {
+        this.markup = $('<div class="entry"></div>');
+
+        let self = this;
+
+        this.markup.append(this.canvas);
+
+        let imageFooterDiv = $('<div class="image-footer"></div>');
+
+        // file name (if enabled)
+        if (window.showImageNames) {
+
+            if (window.showImageURIs) {
+                imageFooterDiv.append($('<a href="' + this.getImageURI() + '" target="_blank">' + this.fileName + '</a>'));
+            } else {
+                imageFooterDiv.append($('<span style="color:white">' + this.fileName + '</span>'));
+            }
+        }
+
+        if (!this.disableInteractions)
+            this.markup.on('click', (self._click).bind(self));
+
+        let flagContainer = $('<div class="flag-container"></div>');
+        imageFooterDiv.append(flagContainer);
+
+        // flag for golden questions (if admin)
+        if (window.isAdmin && !window.demoMode) {
+            this.flag = $('<img class="golden-question-flag" title="toggle golden question" />');
+            if (self.isGoldenQuestion) {
+                this.flag.attr('src', '/static/interface/img/controls/flag_active.svg');
+            } else {
+                this.flag.attr('src', '/static/interface/img/controls/flag.svg');
+            }
+            if (!this.disableInteractions) {
+                this.flag.click(function () {
+                    // toggle golden question on server
+                    self._toggleGoldenQuestion();
+                });
+            }
+            flagContainer.append(this.flag);
+        }
+
+        // flag for bookmarking
+        if (!window.demoMode) {
+            this.bookmark = $('<img class="bookmark" title="toggle bookmark" />');
+            if (this.isBookmarked) {
+                this.bookmark.attr('src', '/static/interface/img/controls/bookmark_active.svg');
+            } else {
+                this.bookmark.attr('src', '/static/interface/img/controls/bookmark.svg');
+            }
+            if (!this.disableInteractions) {
+                this.bookmark.click(function () {
+                    // toggle bookmark on server
+                    self._toggleBookmark();
+                });
+            }
+            flagContainer.append(this.bookmark);
+        }
+
+        this.markup.append(imageFooterDiv);
+    }
+
+
     getImageURI() {
         if (this.fileName.startsWith('/')) {
             // static image; don't prepend data server URI & Co.
@@ -1151,7 +1214,9 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
     constructor(entryID, properties, disableInteractions) {
         super(entryID, properties, disableInteractions);
 
-        // this._setup_markup();
+        //if( this instanceof ClassificationTileEntry )
+            //this._setup_markup();
+            //super._setup_markup();
         this.loadingPromise.then(response => {
             if (this.labelInstance === null) {
                 // add a default, blank instance if nothing has been predicted or annotated yet
