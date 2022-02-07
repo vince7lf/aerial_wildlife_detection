@@ -14,3 +14,6 @@ v1.2 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-07
 - (AIDE+MELCC#5) Choix taille des tuiles; deployed
 - (AIDE+MELCC#7) Show file names below images; deployed
 - (AIDE+MELCC#10) Autres comptes; provided guide 
+
+v1.2 manage_labels vincent.lefalher@usherbrooke.ca
+- initial release
