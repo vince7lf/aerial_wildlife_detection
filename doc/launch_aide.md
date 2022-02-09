@@ -174,3 +174,9 @@ sudo pkill -9 gunicorn
 ```
 
 Refer to <https://docs.celeryproject.org/en/stable/userguide/monitoring.html> for more commands to inspect the queues.
+
+## Debug postgreSQL log
+PosgresSQL logs can be found in :   
+```
+sudo less /var/lib/postgresql/10/main/pg_log/postgresql-2022-02-09_143712.log
+```
