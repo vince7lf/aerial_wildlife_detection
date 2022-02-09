@@ -170,11 +170,17 @@ sudo pkill -9 gunicorn
 ->  aide@tes2: OK
 
 1 node online.
-
 ```
 
 Refer to <https://docs.celeryproject.org/en/stable/userguide/monitoring.html> for more commands to inspect the queues.
 
+## Debug celery queues
+Celery can log in a file. The command is in the script launch_celery.sh 
+```
+celery -A celery_worker worker --hostname aide@%h --loglevel INFO -f /app/logs/celery_worker.log
+
+less /app/logs/celery_worker.log
+```
 ## Debug postgreSQL log
 PosgresSQL logs can be found in :   
 ```

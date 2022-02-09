@@ -874,7 +874,7 @@ class DataWorker:
                     JOIN (SELECT id AS lcID, name AS labelclass_name, idx AS labelclass_index
                         FROM {id_lc}
                     ) AS lc
-                    ON label = lc.lcID
+                    ON al.label = lc.lcID
                 ''').format(
                 id_lc=sql.Identifier(project, 'labelclass')
             )
