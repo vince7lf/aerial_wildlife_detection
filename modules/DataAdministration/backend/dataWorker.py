@@ -835,7 +835,6 @@ class DataWorker:
         # generate query
         queryArgs = []
         tableID = sql.Identifier(project, dataType)
-        annotationLabel = sql.Identifier(project, 'annotation_label')
         userStr = sql.SQL('')
         iuStr = sql.SQL('')
         dateStr = sql.SQL('')
@@ -903,7 +902,7 @@ class DataWorker:
             FROM {tableID} AS t
             
             JOIN (SELECT annotation, label
-                FROM {annotationLabel}
+                FROM {annotation_label}
             ) AS al
             ON t.id = al.annotation
             
@@ -919,6 +918,7 @@ class DataWorker:
                 {dateStr}
             ''').format(
             tableID=tableID,
+            annotation_label=sql.Identifier(project, 'annotation_label'),
             id_img=sql.Identifier(project, 'image'),
             lcStr=lcStr,
             iuStr=iuStr,
