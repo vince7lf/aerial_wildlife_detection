@@ -902,7 +902,7 @@ class DataWorker:
             FROM {tableID} AS t
             
             JOIN (SELECT annotation, label
-                FROM {annotationLabel}
+                FROM {annotation_label}
             ) AS al
             ON t.id = al.annotation
             
