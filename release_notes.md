@@ -9,6 +9,9 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.2.2 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-09
+- (AIDE+MELCC#13) data download; arrange SQL to support multi label annotation export
+
 v1.2.1 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-09
 - (AIDE+MELCC#13) data download; issue with identation in DataWorker.py; commit and push to be able to test remotely within celery
 

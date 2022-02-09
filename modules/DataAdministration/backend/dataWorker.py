@@ -465,7 +465,6 @@ class DataWorker:
 
         return None
 
-
     def scanForImages(self, project):
         '''
             Searches the project image folder on disk for
@@ -499,7 +498,6 @@ class DataWorker:
             if imgs_candidates[i].startswith('/'):
                 imgs_candidates[i] = imgs_candidates[i][1:]
         return imgs_candidates
-
 
     def addExistingImages(self, project, imageList=None):
         '''
@@ -553,7 +551,6 @@ class DataWorker:
 
         status = (0 if result is not None and len(result) else 1)  # TODO
         return status, result
-
 
     def removeImages(self, project, imageList, forceRemove=False, deleteFromDisk=False):
         '''
@@ -663,7 +660,6 @@ class DataWorker:
 
         return imgs_del
 
-
     def removeOrphanedImages(self, project):
         '''
             Queries the project's image entries in the database and retrieves
@@ -706,7 +702,6 @@ class DataWorker:
         ), tuple([tuple(imgs_orphaned)] * 4), None)
 
         return imgs_orphaned
-
 
     def prepareDataDownload(self, project, dataType='annotation', userList=None, dateRange=None, extraFields=None,
                             segmaskFilenameOptions=None, segmaskEncoding='rgb'):
@@ -895,11 +890,28 @@ class DataWorker:
         queryFields = list(queryFields)
 
         queryStr = sql.SQL('''
-                SELECT * FROM {tableID} AS t
-                JOIN (
-                    SELECT id AS imgID, filename, isGoldenQuestion, date_added AS date_image_added, last_requested AS last_requested_image, corrupt AS image_corrupt
-                    FROM {id_img}
-                ) AS img ON t.image = img.imgID
+            SELECT t.id, 
+                t.username, 
+                t.image, 
+                t.meta, 
+                t.autoconverted, 
+                t.timecreated, 
+                t.timerequired, 
+                t.unsure, 
+                al.label, img.*, lc.*, iu.*
+            FROM {tableID} AS t
+            
+            JOIN (SELECT annotation, label
+                FROM "test128"."annotation_label"
+            ) AS al
+            ON t.id = al.annotation
+            
+            JOIN (
+                SELECT id AS imgID, filename, isGoldenQuestion, date_added AS date_image_added, last_requested AS last_requested_image, corrupt AS image_corrupt
+                FROM {id_img}
+            ) AS img 
+            ON t.image = img.imgID
+            
                 {lcStr}
                 {iuStr}
                 {userStr}
@@ -986,7 +998,6 @@ class DataWorker:
 
         return filename
 
-
     def watchImageFolders(self):
         '''
             Queries all projects that have the image folder watch functionality
@@ -1016,7 +1027,6 @@ class DataWorker:
                 elif len(imgs_added):
                     print(f'[Project {pName}] {len(imgs_added)} new images found and added.')
 
-
     def deleteProject(self, project, deleteFiles=False):
         '''
             Irreproducibly deletes a project, including all data and metadata, from the database.
@@ -1033,7 +1043,8 @@ class DataWorker:
                 WHERE project = %s;
                 DELETE FROM aide_admin.project
                 WHERE shortname = %s;
-            ''', (project, project,), None)  # already done by DataAdministration.middleware, but we do it again to be sure
+            ''', (project, project,),
+                                 None)  # already done by DataAdministration.middleware, but we do it again to be sure
 
         self.dbConnector.execute('''
                 DROP SCHEMA IF EXISTS "{}" CASCADE;
