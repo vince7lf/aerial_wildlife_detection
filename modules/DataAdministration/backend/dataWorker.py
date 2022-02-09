@@ -835,6 +835,7 @@ class DataWorker:
         # generate query
         queryArgs = []
         tableID = sql.Identifier(project, dataType)
+        annotationLabel = sql.Identifier(project, 'annotation_label')
         userStr = sql.SQL('')
         iuStr = sql.SQL('')
         dateStr = sql.SQL('')
@@ -902,7 +903,7 @@ class DataWorker:
             FROM {tableID} AS t
             
             JOIN (SELECT annotation, label
-                FROM "test128"."annotation_label"
+                FROM {annotationLabel}
             ) AS al
             ON t.id = al.annotation
             
