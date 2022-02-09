@@ -466,123 +466,234 @@ class DataWorker:
         return None
 
 
-def scanForImages(self, project):
-    '''
-        Searches the project image folder on disk for
-        files that are valid, but have not (yet) been added
-        to the database.
-        Returns a list of paths with files.
-    '''
+    def scanForImages(self, project):
+        '''
+            Searches the project image folder on disk for
+            files that are valid, but have not (yet) been added
+            to the database.
+            Returns a list of paths with files.
+        '''
 
-    # scan disk for files
-    projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
-    if (not os.path.isdir(projectFolder)) and (not os.path.islink(projectFolder)):
-        # no folder exists for the project (should not happen due to broadcast at project creation)
-        return []
-    imgs_disk = listDirectory(projectFolder, recursive=True)
+        # scan disk for files
+        projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
+        if (not os.path.isdir(projectFolder)) and (not os.path.islink(projectFolder)):
+            # no folder exists for the project (should not happen due to broadcast at project creation)
+            return []
+        imgs_disk = listDirectory(projectFolder, recursive=True)
 
-    # get all existing file paths from database
-    imgs_database = set()
-    queryStr = sql.SQL('''
-            SELECT filename FROM {id_img};
-        ''').format(
-        id_img=sql.Identifier(project, 'image')
-    )
-    result = self.dbConnector.execute(queryStr, None, 'all')
-    for r in range(len(result)):
-        imgs_database.add(result[r]['filename'])
-
-    # filter
-    imgs_candidates = imgs_disk.difference(imgs_database)
-    imgs_candidates = list(imgs_candidates)
-    for i in range(len(imgs_candidates)):
-        if imgs_candidates[i].startswith('/'):
-            imgs_candidates[i] = imgs_candidates[i][1:]
-    return imgs_candidates
-
-
-def addExistingImages(self, project, imageList=None):
-    '''
-        Scans the project folder on the file system
-        for images that are physically saved, but not
-        (yet) added to the database.
-        Adds them to the project's database schema.
-        If an imageList iterable is provided, only
-        the intersection between identified images on
-        disk and in the iterable are added.
-
-        If 'imageList' is a string with contents 'all',
-        all untracked images will be added.
-
-        Returns a list of image IDs and file names that
-        were eventually added to the project database schema.
-    '''
-    # get all images on disk that are not in database
-    imgs_candidates = self.scanForImages(project)
-
-    if imageList is None or (isinstance(imageList, str) and imageList.lower() == 'all'):
-        imgs_add = imgs_candidates
-    else:
-        if isinstance(imageList, dict):
-            imageList = list(imageList.keys())
-        for i in range(len(imageList)):
-            if imageList[i].startswith('/'):
-                imageList[i] = imageList[i][1:]
-        imgs_add = list(set(imgs_candidates).intersection(set(imageList)))
-
-    if not len(imgs_add):
-        return 0, []
-
-    # add to database
-    queryStr = sql.SQL('''
-            INSERT INTO {id_img} (filename)
-            VALUES %s;
-        ''').format(
-        id_img=sql.Identifier(project, 'image')
-    )
-    self.dbConnector.insert(queryStr, tuple([(i,) for i in imgs_add]))
-
-    # get IDs of newly added images
-    queryStr = sql.SQL('''
-            SELECT id, filename FROM {id_img}
-            WHERE filename IN %s;
-        ''').format(
-        id_img=sql.Identifier(project, 'image')
-    )
-    result = self.dbConnector.execute(queryStr, (tuple(imgs_add),), 'all')
-
-    status = (0 if result is not None and len(result) else 1)  # TODO
-    return status, result
-
-
-def removeImages(self, project, imageList, forceRemove=False, deleteFromDisk=False):
-    '''
-        Receives an iterable of image IDs and removes them
-        from the project database schema, including associated
-        user views, annotations, and predictions made.
-        Only removes entries if no user views, annotations, and
-        predictions exist, or else if "forceRemove" is True.
-        If "deleteFromDisk" is True, the image files are also
-        deleted from the project directory on the file system.
-
-        Returns a list of images that were deleted.
-    '''
-
-    imageList = tuple([(UUID(i),) for i in imageList])
-
-    queryArgs = []
-    deleteArgs = []
-    if forceRemove:
+        # get all existing file paths from database
+        imgs_database = set()
         queryStr = sql.SQL('''
-                SELECT id, filename
-                FROM {id_img}
-                WHERE id IN %s;
+                SELECT filename FROM {id_img};
             ''').format(
             id_img=sql.Identifier(project, 'image')
         )
-        queryArgs = tuple([imageList])
+        result = self.dbConnector.execute(queryStr, None, 'all')
+        for r in range(len(result)):
+            imgs_database.add(result[r]['filename'])
 
-        deleteStr = sql.SQL('''
+        # filter
+        imgs_candidates = imgs_disk.difference(imgs_database)
+        imgs_candidates = list(imgs_candidates)
+        for i in range(len(imgs_candidates)):
+            if imgs_candidates[i].startswith('/'):
+                imgs_candidates[i] = imgs_candidates[i][1:]
+        return imgs_candidates
+
+
+    def addExistingImages(self, project, imageList=None):
+        '''
+            Scans the project folder on the file system
+            for images that are physically saved, but not
+            (yet) added to the database.
+            Adds them to the project's database schema.
+            If an imageList iterable is provided, only
+            the intersection between identified images on
+            disk and in the iterable are added.
+
+            If 'imageList' is a string with contents 'all',
+            all untracked images will be added.
+
+            Returns a list of image IDs and file names that
+            were eventually added to the project database schema.
+        '''
+        # get all images on disk that are not in database
+        imgs_candidates = self.scanForImages(project)
+
+        if imageList is None or (isinstance(imageList, str) and imageList.lower() == 'all'):
+            imgs_add = imgs_candidates
+        else:
+            if isinstance(imageList, dict):
+                imageList = list(imageList.keys())
+            for i in range(len(imageList)):
+                if imageList[i].startswith('/'):
+                    imageList[i] = imageList[i][1:]
+            imgs_add = list(set(imgs_candidates).intersection(set(imageList)))
+
+        if not len(imgs_add):
+            return 0, []
+
+        # add to database
+        queryStr = sql.SQL('''
+                INSERT INTO {id_img} (filename)
+                VALUES %s;
+            ''').format(
+            id_img=sql.Identifier(project, 'image')
+        )
+        self.dbConnector.insert(queryStr, tuple([(i,) for i in imgs_add]))
+
+        # get IDs of newly added images
+        queryStr = sql.SQL('''
+                SELECT id, filename FROM {id_img}
+                WHERE filename IN %s;
+            ''').format(
+            id_img=sql.Identifier(project, 'image')
+        )
+        result = self.dbConnector.execute(queryStr, (tuple(imgs_add),), 'all')
+
+        status = (0 if result is not None and len(result) else 1)  # TODO
+        return status, result
+
+
+    def removeImages(self, project, imageList, forceRemove=False, deleteFromDisk=False):
+        '''
+            Receives an iterable of image IDs and removes them
+            from the project database schema, including associated
+            user views, annotations, and predictions made.
+            Only removes entries if no user views, annotations, and
+            predictions exist, or else if "forceRemove" is True.
+            If "deleteFromDisk" is True, the image files are also
+            deleted from the project directory on the file system.
+
+            Returns a list of images that were deleted.
+        '''
+
+        imageList = tuple([(UUID(i),) for i in imageList])
+
+        queryArgs = []
+        deleteArgs = []
+        if forceRemove:
+            queryStr = sql.SQL('''
+                    SELECT id, filename
+                    FROM {id_img}
+                    WHERE id IN %s;
+                ''').format(
+                id_img=sql.Identifier(project, 'image')
+            )
+            queryArgs = tuple([imageList])
+
+            deleteStr = sql.SQL('''
+                    DELETE FROM {id_iu} WHERE image IN %s;
+                    DELETE FROM {id_anno} WHERE image IN %s;
+                    DELETE FROM {id_pred} WHERE image IN %s;
+                    DELETE FROM {id_img} WHERE id IN %s;
+                ''').format(
+                id_iu=sql.Identifier(project, 'image_user'),
+                id_anno=sql.Identifier(project, 'annotation'),
+                id_pred=sql.Identifier(project, 'prediction'),
+                id_img=sql.Identifier(project, 'image')
+            )
+            deleteArgs = tuple([imageList] * 4)
+
+        else:
+            queryStr = sql.SQL('''
+                    SELECT id, filename
+                    FROM {id_img}
+                    WHERE id IN %s
+                    AND id NOT IN (
+                        SELECT image FROM {id_iu}
+                        WHERE image IN %s
+                        UNION ALL
+                        SELECT image FROM {id_anno}
+                        WHERE image IN %s
+                        UNION ALL
+                        SELECT image FROM {id_pred}
+                        WHERE image IN %s
+                    );
+                ''').format(
+                id_img=sql.Identifier(project, 'image'),
+                id_iu=sql.Identifier(project, 'image_user'),
+                id_anno=sql.Identifier(project, 'annotation'),
+                id_pred=sql.Identifier(project, 'prediction')
+            )
+            queryArgs = tuple([imageList] * 4)
+
+            deleteStr = sql.SQL('''
+                    DELETE FROM {id_img}
+                    WHERE id IN %s
+                    AND id NOT IN (
+                        SELECT image FROM {id_iu}
+                        WHERE image IN %s
+                        UNION ALL
+                        SELECT image FROM {id_anno}
+                        WHERE image IN %s
+                        UNION ALL
+                        SELECT image FROM {id_pred}
+                        WHERE image IN %s
+                    );
+                ''').format(
+                id_img=sql.Identifier(project, 'image'),
+                id_iu=sql.Identifier(project, 'image_user'),
+                id_anno=sql.Identifier(project, 'annotation'),
+                id_pred=sql.Identifier(project, 'prediction')
+            )
+            deleteArgs = tuple([imageList] * 4)
+
+        # retrieve images to be deleted
+        imgs_del = self.dbConnector.execute(queryStr, queryArgs, 'all')
+
+        if imgs_del is None:
+            imgs_del = []
+
+        if len(imgs_del):
+            # delete images
+            self.dbConnector.execute(deleteStr, deleteArgs, None)
+
+            if deleteFromDisk:
+                projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
+                if os.path.isdir(projectFolder) or os.path.islink(projectFolder):
+                    for i in imgs_del:
+                        filePath = os.path.join(projectFolder, i['filename'])
+                        if os.path.isfile(filePath):
+                            os.remove(filePath)
+
+            # convert UUID
+            for idx in range(len(imgs_del)):
+                imgs_del[idx]['id'] = str(imgs_del[idx]['id'])
+
+        return imgs_del
+
+
+    def removeOrphanedImages(self, project):
+        '''
+            Queries the project's image entries in the database and retrieves
+            entries for which no image can be found on disk anymore. Removes
+            and returns those entries and all associated (meta-) data from the
+            database.
+        '''
+        imgs_DB = self.dbConnector.execute(sql.SQL('''
+                SELECT id, filename FROM {id_img};
+            ''').format(
+            id_img=sql.Identifier(project, 'image')
+        ), None, 'all')
+
+        projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
+        if (not os.path.isdir(projectFolder)) and (not os.path.islink(projectFolder)):
+            return []
+        imgs_disk = listDirectory(projectFolder, recursive=True)
+        imgs_disk = set(imgs_disk)
+
+        # get orphaned images
+        imgs_orphaned = []
+        for i in imgs_DB:
+            if i['filename'] not in imgs_disk:
+                imgs_orphaned.append(i['id'])
+        # imgs_orphaned = list(set(imgs_DB).difference(imgs_disk))
+        if not len(imgs_orphaned):
+            return []
+
+        # remove
+        self.dbConnector.execute(sql.SQL('''
                 DELETE FROM {id_iu} WHERE image IN %s;
                 DELETE FROM {id_anno} WHERE image IN %s;
                 DELETE FROM {id_pred} WHERE image IN %s;
@@ -592,473 +703,362 @@ def removeImages(self, project, imageList, forceRemove=False, deleteFromDisk=Fal
             id_anno=sql.Identifier(project, 'annotation'),
             id_pred=sql.Identifier(project, 'prediction'),
             id_img=sql.Identifier(project, 'image')
-        )
-        deleteArgs = tuple([imageList] * 4)
+        ), tuple([tuple(imgs_orphaned)] * 4), None)
 
-    else:
-        queryStr = sql.SQL('''
-                SELECT id, filename
-                FROM {id_img}
-                WHERE id IN %s
-                AND id NOT IN (
-                    SELECT image FROM {id_iu}
-                    WHERE image IN %s
-                    UNION ALL
-                    SELECT image FROM {id_anno}
-                    WHERE image IN %s
-                    UNION ALL
-                    SELECT image FROM {id_pred}
-                    WHERE image IN %s
-                );
-            ''').format(
-            id_img=sql.Identifier(project, 'image'),
-            id_iu=sql.Identifier(project, 'image_user'),
-            id_anno=sql.Identifier(project, 'annotation'),
-            id_pred=sql.Identifier(project, 'prediction')
-        )
-        queryArgs = tuple([imageList] * 4)
-
-        deleteStr = sql.SQL('''
-                DELETE FROM {id_img}
-                WHERE id IN %s
-                AND id NOT IN (
-                    SELECT image FROM {id_iu}
-                    WHERE image IN %s
-                    UNION ALL
-                    SELECT image FROM {id_anno}
-                    WHERE image IN %s
-                    UNION ALL
-                    SELECT image FROM {id_pred}
-                    WHERE image IN %s
-                );
-            ''').format(
-            id_img=sql.Identifier(project, 'image'),
-            id_iu=sql.Identifier(project, 'image_user'),
-            id_anno=sql.Identifier(project, 'annotation'),
-            id_pred=sql.Identifier(project, 'prediction')
-        )
-        deleteArgs = tuple([imageList] * 4)
-
-    # retrieve images to be deleted
-    imgs_del = self.dbConnector.execute(queryStr, queryArgs, 'all')
-
-    if imgs_del is None:
-        imgs_del = []
-
-    if len(imgs_del):
-        # delete images
-        self.dbConnector.execute(deleteStr, deleteArgs, None)
-
-        if deleteFromDisk:
-            projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
-            if os.path.isdir(projectFolder) or os.path.islink(projectFolder):
-                for i in imgs_del:
-                    filePath = os.path.join(projectFolder, i['filename'])
-                    if os.path.isfile(filePath):
-                        os.remove(filePath)
-
-        # convert UUID
-        for idx in range(len(imgs_del)):
-            imgs_del[idx]['id'] = str(imgs_del[idx]['id'])
-
-    return imgs_del
+        return imgs_orphaned
 
 
-def removeOrphanedImages(self, project):
-    '''
-        Queries the project's image entries in the database and retrieves
-        entries for which no image can be found on disk anymore. Removes
-        and returns those entries and all associated (meta-) data from the
-        database.
-    '''
-    imgs_DB = self.dbConnector.execute(sql.SQL('''
-            SELECT id, filename FROM {id_img};
-        ''').format(
-        id_img=sql.Identifier(project, 'image')
-    ), None, 'all')
+    def prepareDataDownload(self, project, dataType='annotation', userList=None, dateRange=None, extraFields=None,
+                            segmaskFilenameOptions=None, segmaskEncoding='rgb'):
+        '''
+            Polls the database for project data according to the
+            specified restrictions:
+            - dataType: "annotation" or "prediction"
+            - userList: for type "annotation": None (all users) or
+                        an iterable of user names
+            - dateRange: None (all dates) or two values for a mini-
+                         mum and maximum timestamp
+            - extraFields: None (no field) or dict of keywords and bools for
+                           additional fields (e.g. browser meta) to be queried.
+            - segmaskFilenameOptions: customization parameters for segmentation
+                                      mask images' file names.
+            - segmaskEncoding: encoding of the segmentation mask pixel
+                               values ("rgb" or "indexed")
 
-    projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
-    if (not os.path.isdir(projectFolder)) and (not os.path.islink(projectFolder)):
-        return []
-    imgs_disk = listDirectory(projectFolder, recursive=True)
-    imgs_disk = set(imgs_disk)
+            Creates a file in this machine's temporary directory
+            and returns the file name to it.
+            Note that in some cases (esp. for semantic segmentation),
+            the number of queryable entries may be limited due to
+            file size and free disk space restrictions. An upper cei-
+            ling is specified in the configuration *.ini file ('TODO')
+        '''
 
-    # get orphaned images
-    imgs_orphaned = []
-    for i in imgs_DB:
-        if i['filename'] not in imgs_disk:
-            imgs_orphaned.append(i['id'])
-    # imgs_orphaned = list(set(imgs_DB).difference(imgs_disk))
-    if not len(imgs_orphaned):
-        return []
+        now = datetime.now(tz=pytz.utc)
 
-    # remove
-    self.dbConnector.execute(sql.SQL('''
-            DELETE FROM {id_iu} WHERE image IN %s;
-            DELETE FROM {id_anno} WHERE image IN %s;
-            DELETE FROM {id_pred} WHERE image IN %s;
-            DELETE FROM {id_img} WHERE id IN %s;
-        ''').format(
-        id_iu=sql.Identifier(project, 'image_user'),
-        id_anno=sql.Identifier(project, 'annotation'),
-        id_pred=sql.Identifier(project, 'prediction'),
-        id_img=sql.Identifier(project, 'image')
-    ), tuple([tuple(imgs_orphaned)] * 4), None)
+        # argument check
+        if userList is None:
+            userList = []
+        elif isinstance(userList, str):
+            userList = [userList]
+        if dateRange is None:
+            dateRange = []
+        elif len(dateRange) == 1:
+            dateRange = [dateRange, now]
 
-    return imgs_orphaned
+        if extraFields is None or not isinstance(extraFields, dict):
+            extraFields = {
+                'meta': False
+            }
+        else:
+            if not 'meta' in extraFields or not isinstance(extraFields['meta'], bool):
+                extraFields['meta'] = False
 
-
-def prepareDataDownload(self, project, dataType='annotation', userList=None, dateRange=None, extraFields=None,
-                        segmaskFilenameOptions=None, segmaskEncoding='rgb'):
-    '''
-        Polls the database for project data according to the
-        specified restrictions:
-        - dataType: "annotation" or "prediction"
-        - userList: for type "annotation": None (all users) or
-                    an iterable of user names
-        - dateRange: None (all dates) or two values for a mini-
-                     mum and maximum timestamp
-        - extraFields: None (no field) or dict of keywords and bools for
-                       additional fields (e.g. browser meta) to be queried.
-        - segmaskFilenameOptions: customization parameters for segmentation
-                                  mask images' file names.
-        - segmaskEncoding: encoding of the segmentation mask pixel
-                           values ("rgb" or "indexed")
-
-        Creates a file in this machine's temporary directory
-        and returns the file name to it.
-        Note that in some cases (esp. for semantic segmentation),
-        the number of queryable entries may be limited due to
-        file size and free disk space restrictions. An upper cei-
-        ling is specified in the configuration *.ini file ('TODO')
-    '''
-
-    now = datetime.now(tz=pytz.utc)
-
-    # argument check
-    if userList is None:
-        userList = []
-    elif isinstance(userList, str):
-        userList = [userList]
-    if dateRange is None:
-        dateRange = []
-    elif len(dateRange) == 1:
-        dateRange = [dateRange, now]
-
-    if extraFields is None or not isinstance(extraFields, dict):
-        extraFields = {
-            'meta': False
-        }
-    else:
-        if not 'meta' in extraFields or not isinstance(extraFields['meta'], bool):
-            extraFields['meta'] = False
-
-    if segmaskFilenameOptions is None:
-        segmaskFilenameOptions = {
-            'baseName': 'filename',
-            'prefix': '',
-            'suffix': ''
-        }
-    else:
-        if not 'baseName' in segmaskFilenameOptions or \
-                segmaskFilenameOptions['baseName'] not in ('filename', 'id'):
-            segmaskFilenameOptions['baseName'] = 'filename'
-        try:
-            segmaskFilenameOptions['prefix'] = str(segmaskFilenameOptions['prefix'])
-        except:
-            segmaskFilenameOptions['prefix'] = ''
-        try:
-            segmaskFilenameOptions['suffix'] = str(segmaskFilenameOptions['suffix'])
-        except:
-            segmaskFilenameOptions['suffix'] = ''
-
-        for char in FILENAMES_PROHIBITED_CHARS:
-            segmaskFilenameOptions['prefix'] = segmaskFilenameOptions['prefix'].replace(char, '_')
-            segmaskFilenameOptions['suffix'] = segmaskFilenameOptions['suffix'].replace(char, '_')
-
-    # check metadata type: need to deal with segmentation masks separately
-    if dataType == 'annotation':
-        metaField = 'annotationtype'
-    elif dataType == 'prediction':
-        metaField = 'predictiontype'
-    else:
-        raise Exception('Invalid dataType specified ({})'.format(dataType))
-    metaType = self.dbConnector.execute('''
-                SELECT {} FROM aide_admin.project
-                WHERE shortname = %s;
-            '''.format(metaField),
-                                        (project,),
-                                        1
-                                        )[0][metaField]
-
-    if metaType.lower() == 'segmentationmasks':
-        is_segmentation = True
-        fileExtension = '.zip'
-
-        # create indexed color palette for segmentation masks
-        if segmaskEncoding == 'indexed':
+        if segmaskFilenameOptions is None:
+            segmaskFilenameOptions = {
+                'baseName': 'filename',
+                'prefix': '',
+                'suffix': ''
+            }
+        else:
+            if not 'baseName' in segmaskFilenameOptions or \
+                    segmaskFilenameOptions['baseName'] not in ('filename', 'id'):
+                segmaskFilenameOptions['baseName'] = 'filename'
             try:
-                indexedColors = []
-                labelClasses = self.dbConnector.execute(sql.SQL('''
-                            SELECT idx, color FROM {id_lc} ORDER BY idx ASC;
-                        ''').format(id_lc=sql.Identifier(project, 'labelclass')),
-                                                        None, 'all')
-                currentIndex = 1
-                for lc in labelClasses:
-                    if lc['idx'] == 0:
-                        # background class
-                        continue
-                    while currentIndex < lc['idx']:
-                        # gaps in label classes; fill with zeros
-                        indexedColors.extend([0, 0, 0])
-                        currentIndex += 1
-                    color = lc['color']
-                    if color is None:
-                        # no color specified; add from defaults
-                        # TODO
-                        indexedColors.extend([0, 0, 0])
-                    else:
-                        # convert to RGB format
-                        indexedColors.extend(hexToRGB(color))
-
+                segmaskFilenameOptions['prefix'] = str(segmaskFilenameOptions['prefix'])
             except:
-                # an error occurred; don't convert segmentation mask to indexed colors
-                indexedColors = None
-        else:
-            indexedColors = None
-
-    else:
-        is_segmentation = False
-        fileExtension = '.txt'  # TODO: support JSON?
-
-    # prepare output file
-    filename = 'aide_query_{}'.format(now.strftime('%Y-%m-%d_%H-%M-%S')) + fileExtension
-    destPath = os.path.join(self.tempDir, 'aide/downloadRequests', project)
-    os.makedirs(destPath, exist_ok=True)
-    destPath = os.path.join(destPath, filename)
-
-    # generate query
-    queryArgs = []
-    tableID = sql.Identifier(project, dataType)
-    userStr = sql.SQL('')
-    iuStr = sql.SQL('')
-    dateStr = sql.SQL('')
-    queryFields = [
-        'filename', 'isGoldenQuestion', 'date_image_added', 'last_requested_image', 'image_corrupt'
-        # default image fields
-    ]
-    if dataType == 'annotation':
-        iuStr = sql.SQL('''
-                JOIN (SELECT image AS iu_image, username AS iu_username, viewcount, last_checked, last_time_required FROM {id_iu}) AS iu
-                ON t.image = iu.iu_image
-                AND t.username = iu.iu_username
-            ''').format(
-            id_iu=sql.Identifier(project, 'image_user')
-        )
-        if len(userList):
-            userStr = sql.SQL('WHERE username IN %s')
-            queryArgs.append(tuple(userList))
-
-        queryFields.extend(getattr(QueryStrings_annotation, metaType).value)
-        queryFields.extend(
-            ['username', 'viewcount', 'last_checked', 'last_time_required'])  # TODO: make customizable
-
-    else:
-        queryFields.extend(getattr(QueryStrings_prediction, metaType).value)
-
-    if len(dateRange):
-        if len(userStr.string):
-            dateStr = sql.SQL(' AND timecreated >= to_timestamp(%s) AND timecreated <= to_timestamp(%s)')
-        else:
-            dateStr = sql.SQL('WHERE timecreated >= to_timestamp(%s) AND timecreated <= to_timestamp(%s)')
-        queryArgs.extend(dateRange)
-
-    if not is_segmentation:
-        # join label classes
-        lcStr = sql.SQL('''
-                JOIN (SELECT id AS lcID, name AS labelclass_name, idx AS labelclass_index
-                    FROM {id_lc}
-                ) AS lc
-                ON label = lc.lcID
-            ''').format(
-            id_lc=sql.Identifier(project, 'labelclass')
-        )
-        queryFields.extend(['labelclass_name', 'labelclass_index'])
-    else:
-        lcStr = sql.SQL('')
-
-    # remove redundant query fields
-    queryFields = set(queryFields)
-    for key in extraFields.keys():
-        if key in queryFields and not extraFields[key]:
-            queryFields.remove(key)
-    queryFields = list(queryFields)
-
-    queryStr = sql.SQL('''
-            SELECT * FROM {tableID} AS t
-            JOIN (
-                SELECT id AS imgID, filename, isGoldenQuestion, date_added AS date_image_added, last_requested AS last_requested_image, corrupt AS image_corrupt
-                FROM {id_img}
-            ) AS img ON t.image = img.imgID
-            {lcStr}
-            {iuStr}
-            {userStr}
-            {dateStr}
-        ''').format(
-        tableID=tableID,
-        id_img=sql.Identifier(project, 'image'),
-        lcStr=lcStr,
-        iuStr=iuStr,
-        userStr=userStr,
-        dateStr=dateStr
-    )
-
-    # query and process data
-    if is_segmentation:
-        mainFile = zipfile.ZipFile(destPath, 'w', zipfile.ZIP_DEFLATED)
-    else:
-        mainFile = open(destPath, 'w')
-    metaStr = '; '.join(queryFields) + '\n'
-
-    allData = self.dbConnector.execute(queryStr, tuple(queryArgs), 'all')
-    if allData is not None and len(allData):
-        for b in allData:
-            if is_segmentation:
-                # convert and store segmentation mask separately
-                segmask_filename = 'segmentation_masks/'
-
-                if segmaskFilenameOptions['baseName'] == 'id':
-                    innerFilename = b['image']
-                    parent = ''
-                else:
-                    innerFilename = b['filename']
-                    parent, innerFilename = os.path.split(innerFilename)
-                finalFilename = os.path.join(parent, segmaskFilenameOptions['prefix'] + innerFilename +
-                                             segmaskFilenameOptions['suffix'] + '.tif')
-                segmask_filename += finalFilename
-
-                segmask = base64ToImage(b['segmentationmask'], b['width'], b['height'])
-
-                if indexedColors is not None and len(indexedColors) > 0:
-                    # convert to indexed color and add color palette from label classes
-                    segmask = segmask.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=3)
-                    segmask.putpalette(indexedColors)
-
-                # save
-                bio = io.BytesIO()
-                segmask.save(bio, 'TIFF')
-                mainFile.writestr(segmask_filename, bio.getvalue())
-
-            # store metadata
-            metaLine = ''
-            for field in queryFields:
-                if field.lower() == 'segmentationmask':
-                    continue
-                metaLine += '{}; '.format(b[field.lower()])
-            metaStr += metaLine + '\n'
-
-    if is_segmentation:
-        mainFile.writestr('query.txt', metaStr)
-    else:
-        mainFile.write(metaStr)
-
-    if is_segmentation:
-        # append separate text file for label classes
-        labelclassQuery = sql.SQL('''
-                SELECT id, name, color, labelclassgroup, idx AS labelclass_index
-                FROM {id_lc};
-            ''').format(
-            id_lc=sql.Identifier(project, 'labelclass')
-        )
-        result = self.dbConnector.execute(labelclassQuery, None, 'all')
-        lcStr = 'id,name,color,labelclassgroup,labelclass_index\n'
-        for r in result:
-            lcStr += '{},{},{},{},{}\n'.format(
-                r['id'],
-                r['name'],
-                r['color'],
-                r['labelclassgroup'],
-                r['labelclass_index']
-            )
-        mainFile.writestr('labelclasses.csv', lcStr)
-
-    mainFile.close()
-
-    return filename
-
-
-def watchImageFolders(self):
-    '''
-        Queries all projects that have the image folder watch functionality
-        enabled and updates the projects, one by one, with the latest image
-        changes.
-    '''
-    projects = self.dbConnector.execute('''
-                SELECT shortname, watch_folder_remove_missing_enabled
-                FROM aide_admin.project
-                WHERE watch_folder_enabled IS TRUE;
-            ''', None, 'all')
-
-    if projects is not None and len(projects):
-        for p in projects:
-            pName = p['shortname']
-
-            # add new images
-            _, imgs_added = self.addExistingImages(pName, None)
-
-            # remove orphaned images (if enabled)
-            if p['watch_folder_remove_missing_enabled']:
-                imgs_orphaned = self.removeOrphanedImages(pName)
-                if len(imgs_added) or len(imgs_orphaned):
-                    print(
-                        f'[Project {pName}] {len(imgs_added)} new images found and added, {len(imgs_orphaned)} orphaned images removed from database.')
-
-            elif len(imgs_added):
-                print(f'[Project {pName}] {len(imgs_added)} new images found and added.')
-
-
-def deleteProject(self, project, deleteFiles=False):
-    '''
-        Irreproducibly deletes a project, including all data and metadata, from the database.
-        If "deleteFiles" is True, then any data on disk (images, etc.) are also deleted.
-
-        This cannot be undone.
-    '''
-    print(f'Deleting project with shortname "{project}"...')
-
-    # remove database entries
-    print('\tRemoving database entries...')
-    self.dbConnector.execute('''
-            DELETE FROM aide_admin.authentication
-            WHERE project = %s;
-            DELETE FROM aide_admin.project
-            WHERE shortname = %s;
-        ''', (project, project,), None)  # already done by DataAdministration.middleware, but we do it again to be sure
-
-    self.dbConnector.execute('''
-            DROP SCHEMA IF EXISTS "{}" CASCADE;
-        '''.format(project), None, None)  # TODO: Identifier?
-
-    if deleteFiles:
-        print('\tRemoving files...')
-
-        messages = []
-
-        projectPath = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
-
-        if os.path.isdir(projectPath) or os.path.islink(projectPath):
-            def _onError(function, path, excinfo):
-                # TODO
-                from celery.contrib import rdb
-                rdb.set_trace()
-                messages.append(str(excinfo))
-
+                segmaskFilenameOptions['prefix'] = ''
             try:
-                shutil.rmtree(os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project),
-                              onerror=_onError)
-            except Exception as e:
-                messages.append(str(e))
+                segmaskFilenameOptions['suffix'] = str(segmaskFilenameOptions['suffix'])
+            except:
+                segmaskFilenameOptions['suffix'] = ''
 
-        return messages
+            for char in FILENAMES_PROHIBITED_CHARS:
+                segmaskFilenameOptions['prefix'] = segmaskFilenameOptions['prefix'].replace(char, '_')
+                segmaskFilenameOptions['suffix'] = segmaskFilenameOptions['suffix'].replace(char, '_')
 
-    return 0
+        # check metadata type: need to deal with segmentation masks separately
+        if dataType == 'annotation':
+            metaField = 'annotationtype'
+        elif dataType == 'prediction':
+            metaField = 'predictiontype'
+        else:
+            raise Exception('Invalid dataType specified ({})'.format(dataType))
+        metaType = self.dbConnector.execute('''
+                    SELECT {} FROM aide_admin.project
+                    WHERE shortname = %s;
+                '''.format(metaField),
+                                            (project,),
+                                            1
+                                            )[0][metaField]
+
+        if metaType.lower() == 'segmentationmasks':
+            is_segmentation = True
+            fileExtension = '.zip'
+
+            # create indexed color palette for segmentation masks
+            if segmaskEncoding == 'indexed':
+                try:
+                    indexedColors = []
+                    labelClasses = self.dbConnector.execute(sql.SQL('''
+                                SELECT idx, color FROM {id_lc} ORDER BY idx ASC;
+                            ''').format(id_lc=sql.Identifier(project, 'labelclass')),
+                                                            None, 'all')
+                    currentIndex = 1
+                    for lc in labelClasses:
+                        if lc['idx'] == 0:
+                            # background class
+                            continue
+                        while currentIndex < lc['idx']:
+                            # gaps in label classes; fill with zeros
+                            indexedColors.extend([0, 0, 0])
+                            currentIndex += 1
+                        color = lc['color']
+                        if color is None:
+                            # no color specified; add from defaults
+                            # TODO
+                            indexedColors.extend([0, 0, 0])
+                        else:
+                            # convert to RGB format
+                            indexedColors.extend(hexToRGB(color))
+
+                except:
+                    # an error occurred; don't convert segmentation mask to indexed colors
+                    indexedColors = None
+            else:
+                indexedColors = None
+
+        else:
+            is_segmentation = False
+            fileExtension = '.txt'  # TODO: support JSON?
+
+        # prepare output file
+        filename = 'aide_query_{}'.format(now.strftime('%Y-%m-%d_%H-%M-%S')) + fileExtension
+        destPath = os.path.join(self.tempDir, 'aide/downloadRequests', project)
+        os.makedirs(destPath, exist_ok=True)
+        destPath = os.path.join(destPath, filename)
+
+        # generate query
+        queryArgs = []
+        tableID = sql.Identifier(project, dataType)
+        userStr = sql.SQL('')
+        iuStr = sql.SQL('')
+        dateStr = sql.SQL('')
+        queryFields = [
+            'filename', 'isGoldenQuestion', 'date_image_added', 'last_requested_image', 'image_corrupt'
+            # default image fields
+        ]
+        if dataType == 'annotation':
+            iuStr = sql.SQL('''
+                    JOIN (SELECT image AS iu_image, username AS iu_username, viewcount, last_checked, last_time_required FROM {id_iu}) AS iu
+                    ON t.image = iu.iu_image
+                    AND t.username = iu.iu_username
+                ''').format(
+                id_iu=sql.Identifier(project, 'image_user')
+            )
+            if len(userList):
+                userStr = sql.SQL('WHERE username IN %s')
+                queryArgs.append(tuple(userList))
+
+            queryFields.extend(getattr(QueryStrings_annotation, metaType).value)
+            queryFields.extend(
+                ['username', 'viewcount', 'last_checked', 'last_time_required'])  # TODO: make customizable
+
+        else:
+            queryFields.extend(getattr(QueryStrings_prediction, metaType).value)
+
+        if len(dateRange):
+            if len(userStr.string):
+                dateStr = sql.SQL(' AND timecreated >= to_timestamp(%s) AND timecreated <= to_timestamp(%s)')
+            else:
+                dateStr = sql.SQL('WHERE timecreated >= to_timestamp(%s) AND timecreated <= to_timestamp(%s)')
+            queryArgs.extend(dateRange)
+
+        if not is_segmentation:
+            # join label classes
+            lcStr = sql.SQL('''
+                    JOIN (SELECT id AS lcID, name AS labelclass_name, idx AS labelclass_index
+                        FROM {id_lc}
+                    ) AS lc
+                    ON label = lc.lcID
+                ''').format(
+                id_lc=sql.Identifier(project, 'labelclass')
+            )
+            queryFields.extend(['labelclass_name', 'labelclass_index'])
+        else:
+            lcStr = sql.SQL('')
+
+        # remove redundant query fields
+        queryFields = set(queryFields)
+        for key in extraFields.keys():
+            if key in queryFields and not extraFields[key]:
+                queryFields.remove(key)
+        queryFields = list(queryFields)
+
+        queryStr = sql.SQL('''
+                SELECT * FROM {tableID} AS t
+                JOIN (
+                    SELECT id AS imgID, filename, isGoldenQuestion, date_added AS date_image_added, last_requested AS last_requested_image, corrupt AS image_corrupt
+                    FROM {id_img}
+                ) AS img ON t.image = img.imgID
+                {lcStr}
+                {iuStr}
+                {userStr}
+                {dateStr}
+            ''').format(
+            tableID=tableID,
+            id_img=sql.Identifier(project, 'image'),
+            lcStr=lcStr,
+            iuStr=iuStr,
+            userStr=userStr,
+            dateStr=dateStr
+        )
+
+        # query and process data
+        if is_segmentation:
+            mainFile = zipfile.ZipFile(destPath, 'w', zipfile.ZIP_DEFLATED)
+        else:
+            mainFile = open(destPath, 'w')
+        metaStr = '; '.join(queryFields) + '\n'
+
+        allData = self.dbConnector.execute(queryStr, tuple(queryArgs), 'all')
+        if allData is not None and len(allData):
+            for b in allData:
+                if is_segmentation:
+                    # convert and store segmentation mask separately
+                    segmask_filename = 'segmentation_masks/'
+
+                    if segmaskFilenameOptions['baseName'] == 'id':
+                        innerFilename = b['image']
+                        parent = ''
+                    else:
+                        innerFilename = b['filename']
+                        parent, innerFilename = os.path.split(innerFilename)
+                    finalFilename = os.path.join(parent, segmaskFilenameOptions['prefix'] + innerFilename +
+                                                 segmaskFilenameOptions['suffix'] + '.tif')
+                    segmask_filename += finalFilename
+
+                    segmask = base64ToImage(b['segmentationmask'], b['width'], b['height'])
+
+                    if indexedColors is not None and len(indexedColors) > 0:
+                        # convert to indexed color and add color palette from label classes
+                        segmask = segmask.convert('RGB').convert('P', palette=Image.ADAPTIVE, colors=3)
+                        segmask.putpalette(indexedColors)
+
+                    # save
+                    bio = io.BytesIO()
+                    segmask.save(bio, 'TIFF')
+                    mainFile.writestr(segmask_filename, bio.getvalue())
+
+                # store metadata
+                metaLine = ''
+                for field in queryFields:
+                    if field.lower() == 'segmentationmask':
+                        continue
+                    metaLine += '{}; '.format(b[field.lower()])
+                metaStr += metaLine + '\n'
+
+        if is_segmentation:
+            mainFile.writestr('query.txt', metaStr)
+        else:
+            mainFile.write(metaStr)
+
+        if is_segmentation:
+            # append separate text file for label classes
+            labelclassQuery = sql.SQL('''
+                    SELECT id, name, color, labelclassgroup, idx AS labelclass_index
+                    FROM {id_lc};
+                ''').format(
+                id_lc=sql.Identifier(project, 'labelclass')
+            )
+            result = self.dbConnector.execute(labelclassQuery, None, 'all')
+            lcStr = 'id,name,color,labelclassgroup,labelclass_index\n'
+            for r in result:
+                lcStr += '{},{},{},{},{}\n'.format(
+                    r['id'],
+                    r['name'],
+                    r['color'],
+                    r['labelclassgroup'],
+                    r['labelclass_index']
+                )
+            mainFile.writestr('labelclasses.csv', lcStr)
+
+        mainFile.close()
+
+        return filename
+
+
+    def watchImageFolders(self):
+        '''
+            Queries all projects that have the image folder watch functionality
+            enabled and updates the projects, one by one, with the latest image
+            changes.
+        '''
+        projects = self.dbConnector.execute('''
+                    SELECT shortname, watch_folder_remove_missing_enabled
+                    FROM aide_admin.project
+                    WHERE watch_folder_enabled IS TRUE;
+                ''', None, 'all')
+
+        if projects is not None and len(projects):
+            for p in projects:
+                pName = p['shortname']
+
+                # add new images
+                _, imgs_added = self.addExistingImages(pName, None)
+
+                # remove orphaned images (if enabled)
+                if p['watch_folder_remove_missing_enabled']:
+                    imgs_orphaned = self.removeOrphanedImages(pName)
+                    if len(imgs_added) or len(imgs_orphaned):
+                        print(
+                            f'[Project {pName}] {len(imgs_added)} new images found and added, {len(imgs_orphaned)} orphaned images removed from database.')
+
+                elif len(imgs_added):
+                    print(f'[Project {pName}] {len(imgs_added)} new images found and added.')
+
+
+    def deleteProject(self, project, deleteFiles=False):
+        '''
+            Irreproducibly deletes a project, including all data and metadata, from the database.
+            If "deleteFiles" is True, then any data on disk (images, etc.) are also deleted.
+
+            This cannot be undone.
+        '''
+        print(f'Deleting project with shortname "{project}"...')
+
+        # remove database entries
+        print('\tRemoving database entries...')
+        self.dbConnector.execute('''
+                DELETE FROM aide_admin.authentication
+                WHERE project = %s;
+                DELETE FROM aide_admin.project
+                WHERE shortname = %s;
+            ''', (project, project,), None)  # already done by DataAdministration.middleware, but we do it again to be sure
+
+        self.dbConnector.execute('''
+                DROP SCHEMA IF EXISTS "{}" CASCADE;
+            '''.format(project), None, None)  # TODO: Identifier?
+
+        if deleteFiles:
+            print('\tRemoving files...')
+
+            messages = []
+
+            projectPath = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
+
+            if os.path.isdir(projectPath) or os.path.islink(projectPath):
+                def _onError(function, path, excinfo):
+                    # TODO
+                    from celery.contrib import rdb
+                    rdb.set_trace()
+                    messages.append(str(excinfo))
+
+                try:
+                    shutil.rmtree(os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project),
+                                  onerror=_onError)
+                except Exception as e:
+                    messages.append(str(e))
+
+            return messages
+
+        return 0
