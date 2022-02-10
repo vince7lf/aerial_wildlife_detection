@@ -81,7 +81,7 @@ If, for some reason, this fails, the processes can be forcefully stopped manuall
 
 Launch launch_celery.sh first, and then from Pycharm launch assemble_server.py: 
 ```
-# On the server host, as normal user, not as root
+# On the remote server host, as normal user, not as root
     cd /app/aerial_wildlife_detection
     conda activate aide
     export AIDE_CONFIG_PATH=/app/aerial_wildlife_detection/config/settings.ini
@@ -93,6 +93,54 @@ Launch launch_celery.sh first, and then from Pycharm launch assemble_server.py:
     chmod +x launch_celery.sh
     ./launch_celery.sh &
     ## be a bit patient, it can take more than 30 sec to launch and some output to appear
+    
+(aide) ubuntu@tes2:/app/aerial_wildlife_detection$ ./launch_celery.sh &
+[1] 11411
+(aide) ubuntu@tes2:/app/aerial_wildlife_detection$
+ -------------- aide@tes2 v5.1.1 (sun-harmonics)
+--- ***** -----
+-- ******* ---- Linux-4.15.0-144-generic-x86_64-with-debian-buster-sid 2022-02-08 20:20:03
+- *** --- * ---
+- ** ---------- [config]
+- ** ---------- .> app:         AIDE:0x7f10711c2310
+- ** ---------- .> transport:   amqp://aide:**@localhost:5672/aide_vhost
+- ** ---------- .> results:     redis://localhost:6379/0
+- *** --- * --- .> concurrency: 2 (prefork)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** -----
+ -------------- [queues]
+                .> AIController     exchange=celery(direct) key=celery
+                .> AIWorker         exchange=celery(direct) key=celery
+                .> FileServer       exchange=celery(direct) key=celery
+                .> ModelMarketplace exchange=celery(direct) key=celery
+                .> aide@tes2        exchange=celery(direct) key=celery
+                .> bcast.2e5eaa8a-c2d0-461e-8690-1b75e842b182 exchange=aide_broadcast(fanout) key=celery
+
+[tasks]
+  . AIController.delete_model_states
+  . AIController.duplicate_model_state
+  . AIController.get_inference_images
+  . AIController.get_model_training_statistics
+  . AIController.get_training_images
+  . AIWorker.aide_internal_notify
+  . AIWorker.call_average_model_states
+  . AIWorker.call_inference
+  . AIWorker.call_train
+  . AIWorker.call_update_model
+  . AIWorker.verify_model_state
+  . DataAdministration.add_existing_images
+  . DataAdministration.delete_project
+  . DataAdministration.list_images
+  . DataAdministration.prepare_data_download
+  . DataAdministration.remove_images
+  . DataAdministration.scan_for_images
+  . DataAdministration.watch_image_folders
+  . ModelMarketplace.importModelDatabase
+  . ModelMarketplace.importModelURI
+  . ModelMarketplace.requestModelDownload
+  . ModelMarketplace.shareModel
+  . general.get_worker_details
+  . modules.DataAdministration.backend.celery_interface.aide_internal_notify
 
 # Now launch assemble_server.py from PyCharm on your laptop. Make sure the last code has been copied/deployed
 script path: setup\assemble_server.py
@@ -100,4 +148,41 @@ parameters: --launch=1 --check_v1=0 --migrate_db=0 --force_migrate=0 --verbose=1
 Environment variables: PYTHONUNBUFFERED=1;AIDE_CONFIG_PATH=/tmp/pycharm_remote_debug_vlf/aerial_wildlife_detection/config/settings.ini;AIDE_MODULES=LabelUI,FileServer,AIController,AIWorker
 Python interpreter: sftp://user@host:22/app/anaconda3//envs/aide/bin/python3.7
 Working directory: \tmp\pycharm_remote_debug_vlf\aerial_wildlife_detection
+```
+
+## Stopping AIDE manually
+
+- stop setup\assemble_server.py debugger session from PyCharm, on your local host
+- login to the remote host server and kill all celery processes
+```
+sudo pkill -9 celery
+```
+- makle sure all gunicorn server are gone also
+```
+sudo pkill -9 gunicorn
+```
+
+## Query celery status
+- launch celery 
+- be in the same Python venv/conda env
+```
+(aide) ubuntu@tes2:/app/aerial_wildlife_detection$ celery -A celery_worker status
+->  aide@tes2: OK
+
+1 node online.
+```
+
+Refer to <https://docs.celeryproject.org/en/stable/userguide/monitoring.html> for more commands to inspect the queues.
+
+## Debug celery queues
+Celery can log in a file. The command is in the script launch_celery.sh 
+```
+celery -A celery_worker worker --hostname aide@%h --loglevel INFO -f /app/logs/celery_worker.log
+
+less /app/logs/celery_worker.log
+```
+## Debug postgreSQL log
+PosgresSQL logs can be found in :   
+```
+sudo less /var/lib/postgresql/10/main/pg_log/postgresql-2022-02-09_143712.log
 ```

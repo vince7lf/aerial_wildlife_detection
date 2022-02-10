@@ -30,6 +30,7 @@ Here's how to install and launch AIDE with Docker on the current machine:
   sudo service docker start
   
   # if an error still occurs with space (snapd) stop docker service and restart it (restart seems not to do the same job)
+  # ERROR: Could not install packages due to an OSError: [Errno 28] No space left on device
 ```
 3. If you want to use a GPU (and only then), you have to install the NVIDIA container toolkit:
 ```bash

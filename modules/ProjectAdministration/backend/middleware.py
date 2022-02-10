@@ -412,6 +412,7 @@ class ProjectConfigMiddleware:
             id_bookmark=sql.Identifier(shortname, 'bookmark'),
             id_labelclassGroup=sql.Identifier(shortname, 'labelclassgroup'),
             id_labelclass=sql.Identifier(shortname, 'labelclass'),
+            id_active_labelclass=sql.Identifier(shortname, 'active_labelclass'),
             id_annotation=sql.Identifier(shortname, 'annotation'),
             id_cnnstate=sql.Identifier(shortname, 'cnnstate'),
             id_modellc=sql.Identifier(shortname, 'model_labelclass'),

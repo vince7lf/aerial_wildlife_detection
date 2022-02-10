@@ -163,7 +163,6 @@ class ElementGroup extends AbstractRenderElement {
     }
 }
 
-
 // ----------------------------------------------------------------------------
 class MapOlElement extends AbstractRenderElement {
 
@@ -279,26 +278,38 @@ class MapOlElement extends AbstractRenderElement {
         });
         view = new ol.View({
             projection: projection,
-            center: [image.height/2, -image.width/2],
+            center: [image.height / 2, -image.width / 2],
             zoom: 1,
         });
+
+        const elImageName = document.createElement('span');
+        elImageName.innerHTML = this.filenameParts[0];
+        const elContainer = document.createElement('div');
+        elContainer.className = 'ol-unselectable ol-control';
+        elContainer.appendChild(elImageName);
+        elContainer.style = "top: 65px; left: .5em;"
+        var myControl = new ol.control.Control({element: elContainer});
 
         // Instanciate a Map, set the object target to the map DOM id
         map = new ol.Map({
             target: 'gallery',
             // Add the created layer to the Map
-            layers: [staticImage, this.vectorLayer1]
+            layers: [staticImage, this.vectorLayer1],
+            controls: ol.control.defaults().extend([myControl]),
         });
 
         // Set the view for the map
         map.setView(view);
+
         map.addInteraction(selectInteraction);
+
         map.addInteraction(clickInteraction);
     }
 }
 
 // ----------------------------------------------------------------------------
-class ImageElement extends AbstractRenderElement {
+class ImageElement
+    extends AbstractRenderElement {
 
     constructor(id, image, viewport, zIndex) {
         super(id, null, zIndex, false);

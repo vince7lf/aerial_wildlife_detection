@@ -128,3 +128,6 @@ nohup.out
 
 # unofficial model tests
 model_tests
+
+# github stuff
+.github/
