@@ -1,0 +1,23 @@
+{
+"type": "FeatureCollection",
+"name": "2018-Boucherville-13313005-13427550-1_tile",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_1_1.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 0.0, 0.0 ], [ 224.0, 0.0 ], [ 224.0, -224.0 ], [ 0.0, -224.0 ], [ 0.0, 0.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_1_2.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 224.0, 0.0 ], [ 448.0, 0.0 ], [ 448.0, -224.0 ], [ 224.0, -224.0 ], [ 224.0, 0.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_1_3.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 448.0, 0.0 ], [ 672.0, 0.0 ], [ 672.0, -224.0 ], [ 448.0, -224.0 ], [ 448.0, 0.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_1_4.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 672.0, 0.0 ], [ 880.0, 0.0 ], [ 880.0, -224.0 ], [ 672.0, -224.0 ], [ 672.0, 0.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_2_1.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 0.0, -224.0 ], [ 224.0, -224.0 ], [ 224.0, -448.0 ], [ 0.0, -448.0 ], [ 0.0, -224.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_2_2.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 224.0, -224.0 ], [ 448.0, -224.0 ], [ 448.0, -448.0 ], [ 224.0, -448.0 ], [ 224.0, -224.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_2_3.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 448.0, -224.0 ], [ 672.0, -224.0 ], [ 672.0, -448.0 ], [ 448.0, -448.0 ], [ 448.0, -224.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_2_4.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 672.0, -224.0 ], [ 880.0, -224.0 ], [ 880.0, -448.0 ], [ 672.0, -448.0 ], [ 672.0, -224.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_3_1.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 0.0, -448.0 ], [ 224.0, -448.0 ], [ 224.0, -672.0 ], [ 0.0, -672.0 ], [ 0.0, -448.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_3_2.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 224.0, -448.0 ], [ 448.0, -448.0 ], [ 448.0, -672.0 ], [ 224.0, -672.0 ], [ 224.0, -448.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_3_3.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 448.0, -448.0 ], [ 672.0, -448.0 ], [ 672.0, -672.0 ], [ 448.0, -672.0 ], [ 448.0, -448.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_3_4.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 672.0, -448.0 ], [ 880.0, -448.0 ], [ 880.0, -672.0 ], [ 672.0, -672.0 ], [ 672.0, -448.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_4_1.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 0.0, -672.0 ], [ 224.0, -672.0 ], [ 224.0, -882.0 ], [ 0.0, -882.0 ], [ 0.0, -672.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_4_2.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 224.0, -672.0 ], [ 448.0, -672.0 ], [ 448.0, -882.0 ], [ 224.0, -882.0 ], [ 224.0, -672.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_4_3.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 448.0, -672.0 ], [ 672.0, -672.0 ], [ 672.0, -882.0 ], [ 448.0, -882.0 ], [ 448.0, -672.0 ] ] ] } },
+{ "type": "Feature", "properties": { "Location": "2018-Boucherville-13313005-13427550-1_tile_4_4.jpg" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 672.0, -672.0 ], [ 880.0, -672.0 ], [ 880.0, -882.0 ], [ 672.0, -882.0 ], [ 672.0, -672.0 ] ] ] } }
+]
+}

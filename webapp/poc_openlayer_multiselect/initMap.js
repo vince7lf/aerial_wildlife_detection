@@ -110,12 +110,13 @@ function creationCarte() {
 }
 
 // ----------------------------------------------------------------------------
-class MapOlElement extends AbstractRenderElement {
+class MapOlElement {
 
-    constructor(id, image) {
-        super(id, null);
+    constructor(id, image, elTarget) {
         this.image = image;
+        this.elTarget = elTarget;
         this.imageSrcOrg = image.currentSrc;
+        //this.imageSrcOrg = image.src;
         // this is a hack : the image to be loaded is inside the subfolder where with the name of the image without the extension.
         this.URLImageParts = this.imageSrcOrg.split('\\').pop().split('/');
         this.filenameParts = this.URLImageParts.slice(-1).pop().split('.');
@@ -166,9 +167,26 @@ class MapOlElement extends AbstractRenderElement {
         const selectedCountry = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(200,20,20,0.8)',
+                width: 8,
+            }),
+        });
+
+        const highlightStyle = new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'rgba(200,20,20,0.8)',
                 width: 4,
             }),
         });
+        const highlightStyleSelected = new ol.style.Style({
+            fill: new ol.style.Fill({
+                color: '#EEE',
+            }),
+            stroke: new ol.style.Stroke({
+                color: 'rgba(200,20,20,0.8)',
+                width: 2,
+            }),
+        });
+
 
         var extent = [0, -image.height, image.width, 0];
         var projection = new ol.proj.Projection({
@@ -196,32 +214,74 @@ class MapOlElement extends AbstractRenderElement {
                 // set current tile/annotation selected
                 var props = feature.getProperties();
                 var location = props['Location'];
-                var labels = window.dataHandler.tileLabels(location);
+                var labels = "fake label";
                 var xstyle = canadaStyle;
                 if (labels.size > 0) {
                     xstyle = canadaStyleAnnoted;
                 }
                 return xstyle;
             }
-
         });
+        // multiple select feature
+        const selected = [];
+
         var selectInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerMove,
-            style: function () {
-                return selectedCountry;
+            style: function (f) {
+                var style = selectedCountry;
+                const selIndex = selected.indexOf(f);
+                if (selIndex < 0) {
+                    style = highlightStyleSelected;
+                }
+                return style;
             }
         });
+
+        // var clickInteraction = new ol.interaction.Select({
+        //     condition: ol.events.condition.pointerClick,
+        //     style: function (feature) {
+        //         // set current tile/annotation selected
+        //         var props = feature.getProperties();
+        //         var location = props['Location'];
+        //         //window.dataHandler.tileSelected(location);
+        //
+        //         const selIndex = selected.indexOf(feature);
+        //         var style = canadaStyle;
+        //         if (selIndex < 0) {
+        //             selected.push(feature);
+        //             style = highlightStyle;
+        //             feature.setStyle(style);
+        //         } else {
+        //             selected.splice(selIndex, 1);
+        //             feature.setStyle(style);
+        //         }
+        //         self.render();
+        //         return undefined;
+        //     }
+        // });
         var clickInteraction = new ol.interaction.Select({
-            condition: ol.events.condition.pointerClick,
+            condition: ol.events.condition.singleClick,
             style: function (feature) {
                 // set current tile/annotation selected
                 var props = feature.getProperties();
                 var location = props['Location'];
-                window.dataHandler.tileSelected(location);
+                //window.dataHandler.tileSelected(location);
+
+                const selIndex = selected.indexOf(feature);
+                var style = canadaStyle;
+                if (selIndex < 0) {
+                    selected.push(feature);
+                    style = highlightStyle;
+                    // feature.setStyle(style);
+                } else {
+                    selected.splice(selIndex, 1);
+                    // feature.setStyle(style);
+                }
                 self.render();
-                return selectedCountry;
+                return style;
             }
         });
+
         view = new ol.View({
             projection: projection,
             center: [image.height / 2, -image.width / 2],
@@ -238,21 +298,30 @@ class MapOlElement extends AbstractRenderElement {
 
         // Instanciate a Map, set the object target to the map DOM id
         map = new ol.Map({
-            target: 'gallery',
+            target: this.elTarget,
             // Add the created layer to the Map
             layers: [staticImage, this.vectorLayer1],
             controls: ol.control.defaults().extend([myControl]),
         });
 
-        // Set the view for the map
+        map.on('singleclick', function (e) {
+            map.forEachFeatureAtPixel(e.pixel, function (f) {
+                const selIndex = selected.indexOf(f);
+                if (selIndex < 0) {
+                    selected.push(f);
+                    f.setStyle(highlightStyle);
+                } else {
+                    selected.splice(selIndex, 1);
+                    f.setStyle(canadaStyle);
+                }
+
+            });
+        });
+        //Set the view for the map
         map.setView(view);
 
-        map.addInteraction(selectInteraction);
-
-        map.addInteraction(clickInteraction);
+        // map.addInteraction(selectInteraction);
+        //
+        // map.addInteraction(clickInteraction);
     }
 }
-
-const image = new Image();
-image.src = imageURI;
-var mapElement = new MapOlElement()

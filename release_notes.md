@@ -9,6 +9,9 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.2.3 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-14
+- (AIDE+MELCC#6) select multi-tuile; PoC working but not more event/style when mouseOver, just select / singleClick event; there is an issue with the select event after the singleClick, event not propagated anymore
+
 v1.2.2 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-09
 - (AIDE+MELCC#13) data download; arrange SQL to support multi label annotation export
 

@@ -935,9 +935,9 @@ class AbstractDataEntryEx {
     _loadImage(imageURI) {
         return new Promise(resolve => {
             const image = new Image();
-                image.addEventListener('load', () => {
-                    resolve(image);
-                });
+            image.addEventListener('load', () => {
+                resolve(image);
+            });
             if( imageURI.indexOf('_tile.jpg') > -1 ) {
                 image.src = imageURI;
             } else {

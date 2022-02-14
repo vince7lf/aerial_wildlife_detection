@@ -19,8 +19,24 @@
     <script src="initMap.js"></script>
 
     <script>
+        function _loadImage(imageURI) {
+            return new Promise(resolve => {
+                const image = new Image();
+                image.addEventListener('load', () => {
+                    resolve(image);
+                 });
+                 image.src = imageURI;
+            });
+        }
+
         $(document).ready(function () {
-            creationCarte();
+
+            loadingPromise = _loadImage('2018-Boucherville-13313005-13427550-1_tile.jpg').then(image => {
+                var mapElement = new MapOlElement('myid', image, 'map')
+                return true;
+            }).catch(error => {
+                return false;
+            });
 
             $("#selectData").val('');
             $("#selectMosaic").val('');
