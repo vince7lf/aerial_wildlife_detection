@@ -1,0 +1,27 @@
+{
+  "Espèce": [
+    {
+      "name": "×Duarctopoa labradorica",
+      "color": "#095797",
+      "vascan_id": "8015",
+      "coleo_vernacular_fr": "pâturin du Labrador",
+      "coleo_vernacular_en": "Labrador bluegrass",
+      "vascan_port": "Plante herbacée",
+      "vascan_statut_repartition": "Indigène"
+    },
+    {
+      "name": "Arctopoa eminens",
+      "color": "#095797",
+      "vascan_id": "7863",
+      "coleo_vernacular_fr": "pâturin superbe",
+      "coleo_vernacular_en": "eminent bluegrass",
+      "vascan_port": "Plante herbacée",
+      "vascan_statut_repartition": "Indigène"
+    },
+	{     "name":"Carex alopecoidea",     "color":"#095797",     "vascan_id": "4734",     "coleo_vernacular_fr": "carex alopécoïde",     "coleo_vernacular_en": "foxtail sedge",     "vascan_port": "Plante herbacée",     "vascan_statut_repartition": "Indigène"   }
+,
+	{     "name":"Carex annectens",     "color":"#095797",     "vascan_id": "4737",     "coleo_vernacular_fr": "carex à gaine tronquée",     "coleo_vernacular_en": "yellow-fruited sedge",     "vascan_port": "Plante herbacée",     "vascan_statut_repartition": "Indigène"   }
+
+  ]
+}
+ 

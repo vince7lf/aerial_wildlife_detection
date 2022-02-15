@@ -9,6 +9,10 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.2.4 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-15
+- (AIDE+MELCC#6) implement the singleclick event on map; refactor style variable names. Comment the map.on singleclick event. Will create a new branch to handle the annotation multiple.
+- new json to add few labels to the new project; manual label cration do not work anymore
+
 v1.2.3 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-14
 - (AIDE+MELCC#6) select multi-tuile; PoC working but not more event/style when mouseOver, just select / singleClick event; there is an issue with the select event after the singleClick, event not propagated anymore
 

@@ -196,7 +196,7 @@ class MapOlElement extends AbstractRenderElement {
         var geojson = this.geojson;
         var self = this;
 
-        var canadaStyle = new ol.style.Style({
+        var tileStyleRaw = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: [0, 0, 0, 0]
             }),
@@ -207,7 +207,7 @@ class MapOlElement extends AbstractRenderElement {
             })
         });
 
-        var canadaStyleAnnoted = new ol.style.Style({
+        var tileStyleAnnoted = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: [148, 162, 177, 0.5]
             }),
@@ -217,7 +217,7 @@ class MapOlElement extends AbstractRenderElement {
                 lineCap: 'round'
             })
         });
-        const selectedCountry = new ol.style.Style({
+        const tileStyleSelected = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(200,20,20,0.8)',
                 width: 4,
@@ -245,15 +245,15 @@ class MapOlElement extends AbstractRenderElement {
         });
         this.vectorLayer1 = new ol.layer.Vector({
             source: this.vectorLayerSource,
-            // style: canadaStyle
+            // style: tileStyleRaw
             style: function (feature) {
                 // set current tile/annotation selected
                 var props = feature.getProperties();
                 var location = props['Location'];
                 var labels = window.dataHandler.tileLabels(location);
-                var xstyle = canadaStyle;
+                var xstyle = tileStyleRaw;
                 if (labels.size > 0) {
-                    xstyle = canadaStyleAnnoted;
+                    xstyle = tileStyleAnnoted;
                 }
                 return xstyle;
             }
@@ -262,7 +262,7 @@ class MapOlElement extends AbstractRenderElement {
         var selectInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerMove,
             style: function () {
-                return selectedCountry;
+                return tileStyleSelected;
             }
         });
         var clickInteraction = new ol.interaction.Select({
@@ -273,7 +273,7 @@ class MapOlElement extends AbstractRenderElement {
                 var location = props['Location'];
                 window.dataHandler.tileSelected(location);
                 self.render();
-                return selectedCountry;
+                return tileStyleSelected;
             }
         });
         view = new ol.View({
@@ -297,6 +297,32 @@ class MapOlElement extends AbstractRenderElement {
             layers: [staticImage, this.vectorLayer1],
             controls: ol.control.defaults().extend([myControl]),
         });
+
+        // multiple selection of tiles
+        // const selected = [];
+        // map.on('singleclick', function (e) {
+        //     map.forEachFeatureAtPixel(e.pixel, function (f) {
+        //
+        //         // set current tile/annotation selected
+        //         var props = f.getProperties();
+        //         var location = props['Location'];
+        //
+        //         const selIndex = selected.indexOf(f);
+        //         if (selIndex < 0) {
+        //             selected.push(f);
+        //             f.setStyle(tileStyleSelected);
+        //             window.dataHandler.tileSelected(location);
+        //         } else {
+        //             selected.splice(selIndex, 1);
+        //             f.setStyle(tileStyleRaw);
+        //             // window.dataHandler.tileUnselected(location);
+        //         }
+        //
+        //         self.render();
+        //
+        //     });
+        // });
+
 
         // Set the view for the map
         map.setView(view);
