@@ -1481,13 +1481,21 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
     click(entry) {
         // this.toggleUserLabel(false);
         // this._addElement(entry.annotations[0]); // Maybe have to do this ?
-        window.activeEntryID = this.entryID;
         if (window.labelClassHandler.activeLabellingMode == false) {
+            window.activeEntryID = this.entryID;
             // multi-labelling mode, select turn on labels.
             // mono-labelling, just do nothing
             this.labelInstance.enlightLabels();
+        } else {
+            // mono-labelling mode
+            // if selected, unselect
+            if (window.activeEntryID === this.entryID) {
+                window.activeEntryID = null;
+            } else {
+                // if not selected, select
+                window.activeEntryID = this.entryID;
+            }
         }
-
     }
 
     clearSelection() {
@@ -1510,7 +1518,6 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
                 this.imageEntry.render();
         }
     }
-
 }
 
 class ClassificationTileEntry extends ClassificationMLEntry {

@@ -66,7 +66,7 @@ class DataHandler {
         }
     }
 
-    setSelectedFeatures( features ) {
+    setSelectedFeatures(features) {
         for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].setSelectedFeatures(features);
         }
@@ -805,7 +805,30 @@ class DataHandler {
                 } else {
                     // mono-labelling mode
                     // associate the label with the tile
-                    this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), true)
+                    // if
+                    if (this.isActiveTileAssociatedWithActiveLabel() === false) {
+                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), true)
+                    } else {
+                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), false)
+                    }
+
+                    // reset and refresh
+                    // keep active class
+                    var currentActiveClass = window.labelClassHandler.getActiveClass();
+
+                    // unselect all labels
+                    window.labelClassHandler.switchoffLabelClasses();
+
+                    // unselect all tiles
+                    window.dataHandler.clearSelection();
+
+                    // set active class
+                    window.labelClassHandler.setActiveClass(currentActiveClass);
+
+                    // and set a red frame around all tiles with that label
+                    var features = window.dataHandler.getTilesAssociatedWithLabel(window.labelClassHandler.getActiveClassID())
+
+                    window.dataHandler.setSelectedFeatures(features);
 
                 }
                 return;
@@ -822,18 +845,33 @@ class DataHandler {
         }
     }
 
-    getTilesAssociatedWithLabel (labelClassID) {
+    getTilesAssociatedWithLabel(labelClassID) {
         var features = new Set();
         for (var id in this.entriesStack) {
             var labels = this.entriesStack[id].getLabel();
-            if ( !(labels instanceof Set) ) continue;
+            if (!(labels instanceof Set)) continue;
             for (let label of labels) {
-                if( label == labelClassID) {
+                if (label == labelClassID) {
                     features.add(this.entriesStack[id])
                 }
             }
         }
         return features;
     }
+
+    isActiveTileAssociatedWithActiveLabel() {
+        for (var id in this.entriesStack) {
+            var labels = this.entriesStack[id].getLabel();
+            if (!(labels instanceof Set)) continue;
+            for (let label of labels) {
+                if (label === window.labelClassHandler.getActiveClassID()
+                    && window.activeEntryID === this.entriesStack[id].entryID) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
 }
