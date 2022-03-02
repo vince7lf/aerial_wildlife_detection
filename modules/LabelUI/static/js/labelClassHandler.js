@@ -134,7 +134,27 @@ class LabelClass {
         // setup click handler to activate label class
         markup.click(function () {
             if (window.uiBlocked) return;
-            self.parent.setActiveClass(self);
+
+            if (window.labelClassHandler.activeLabellingMode == true) {
+                // mono-labelling
+
+                // unselect all labels
+                window.labelClassHandler.switchoffLabelClasses();
+
+                // unselect all tiles
+                window.dataHandler.clearSelection();
+
+                // multi-labelling
+                self.parent.setActiveClass(self);
+
+                // and set a red frame around all tiles with that label
+                var features = window.dataHandler.getTilesAssociatedWithLabel(self.classID)
+
+                window.dataHandler.setSelectedFeatures(features);
+            } else {
+                // multi-labelling
+                self.parent.setActiveClass(self);
+            }
         });
 
         // listener for keypress if keystroke defined
@@ -387,6 +407,7 @@ class LabelClassHandler {
                 color: '#17a2b8',
                 keystroke: null
             });
+        this.activeLabellingMode = false;
         this._setupLabelClasses();
 
         this.setActiveClass(this.labelClasses[Object.keys(this.labelClasses)[0]]);
