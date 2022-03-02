@@ -36,7 +36,7 @@ class UIControlHandler {
         this.default_cursor = 'pointer';    // changes depending on action
 
         this.burstMode = window.getCookie('burstModeEnabled');             // if true, add and remove annotation buttons stay active upon user interaction
-        if(this.burstMode === undefined || this.burstMode === null) this.burstMode = false;
+        if (this.burstMode === undefined || this.burstMode === null) this.burstMode = false;
         else this.burstMode = window.parseBoolean(this.burstMode);
 
         window.loupeMagnification = 0.11;
@@ -66,7 +66,7 @@ class UIControlHandler {
         var selectButton = $('<button id="select-button" class="btn btn-sm btn-secondary active" title="Select (S)"><img src="/static/interface/img/controls/select.svg" style="height:18px" /></button>');
         this.staticButtons[ACTIONS.DO_NOTHING] = selectButton;
         vpControls.append(selectButton);
-        selectButton.click(function() {
+        selectButton.click(function () {
             self.setAction(ACTIONS.DO_NOTHING);
         });
 
@@ -74,28 +74,28 @@ class UIControlHandler {
         var panButton = $('<button id="pan-button" class="btn btn-sm btn-secondary" title="Pan (P)"><img src="/static/interface/img/controls/pan.svg" style="height:18px" /></button>');
         this.staticButtons[ACTIONS.PAN] = panButton;
         vpControls.append(panButton);
-        panButton.click(function() {
+        panButton.click(function () {
             self.setAction(ACTIONS.PAN);
         });
 
         // zoom buttons
         vpControls.append($('<button id="zoom-in-button" class="btn btn-sm btn-secondary" title="Zoom In (I)"><img src="/static/interface/img/controls/zoom_in.svg" style="height:18px" /></button>'));
-        $('#zoom-in-button').click(function() {
+        $('#zoom-in-button').click(function () {
             self.setAction(ACTIONS.ZOOM_IN);
         });
         vpControls.append($('<button id="zoom-out-button" class="btn btn-sm btn-secondary" title="Zoom Out (O)"><img src="/static/interface/img/controls/zoom_out.svg" style="height:18px" /></button>'));
-        $('#zoom-out-button').click(function() {
+        $('#zoom-out-button').click(function () {
             self.setAction(ACTIONS.ZOOM_OUT);
         });
 
         var zoomAreaButton = $('<button id="zoom-area-button" class="btn btn-sm btn-secondary" title="Zoom to Area (Z)"><img src="/static/interface/img/controls/zoom_area.svg" style="height:18px" /></button>');
         this.staticButtons[ACTIONS.ZOOM_AREA] = zoomAreaButton;
         vpControls.append(zoomAreaButton);
-        zoomAreaButton.click(function() {
+        zoomAreaButton.click(function () {
             self.setAction(ACTIONS.ZOOM_AREA);
         });
         vpControls.append($('<button id="zoom-reset-button" class="btn btn-sm btn-secondary" title="Original Extent (E)"><img src="/static/interface/img/controls/zoom_extent.svg" style="height:18px" /></button>'));
-        $('#zoom-reset-button').click(function() {
+        $('#zoom-reset-button').click(function () {
             self.resetZoom();
         });
 
@@ -103,12 +103,12 @@ class UIControlHandler {
         var loupeMarkup = $('<div style="background:#545b61;border-radius:5px;"></div>');
         vpControls.append(loupeMarkup);
         loupeMarkup.append($('<button id="loupe-button" class="btn btn-sm btn-secondary" title="Toggle Loupe (B)"><img src="/static/interface/img/controls/loupe.svg" style="height:18px" /></button>'));
-        $('#loupe-button').click(function(e) {
+        $('#loupe-button').click(function (e) {
             e.preventDefault();
             self.toggleLoupe();
         });
         loupeMarkup.append($('<div style="width:24px;height:60px;"><input type="range" id="loupe-zoom-range" title="Loupe magnification factor" min="1" max="15" step="any" value="11" style="width:40px;transform-origin:30px 20px;transform:rotate(-90deg)" /></div>'));
-        $('#loupe-zoom-range').on('input', function(e) {
+        $('#loupe-zoom-range').on('input', function (e) {
             let factor = (15 - $(this).val()) / 100;
             self.setLoupeMagnification(factor);
         });
@@ -118,25 +118,25 @@ class UIControlHandler {
         */
         var dtControls = $('#interface-controls');
 
-        if(!(window.annotationType === 'labels')) {
+        if (!(window.annotationType === 'labels')) {
             // add button
-            var addAnnoCallback = function() {
+            var addAnnoCallback = function () {
                 self.setAction(ACTIONS.ADD_ANNOTATION);
             }
             var addAnnoBtn = $('<button id="add-annotation" class="btn btn-sm btn-primary" title="Add Annotation (W)">+</button>');
             addAnnoBtn.click(addAnnoCallback);
-            
+
             this.staticButtons[ACTIONS.ADD_ANNOTATION] = addAnnoBtn;
-            
+
             // dtControls.append(addAnnoBtn);
         }
 
 
         // remove button
-        var removeAnnoCallback = function() {
+        var removeAnnoCallback = function () {
             // remove active annotations
             var numRemoved = self.dataHandler.removeActiveAnnotations();
-            if(numRemoved === 0) {
+            if (numRemoved === 0) {
                 // no active annotation, set action instead
                 self.setAction(ACTIONS.REMOVE_ANNOTATIONS);
             }
@@ -147,7 +147,7 @@ class UIControlHandler {
         // dtControls.append(removeAnnoBtn);
 
         // burst mode checkbox
-        var burstModeCallback = function() {
+        var burstModeCallback = function () {
             var chkbx = $('#burst-mode-check');
             self.burstMode = !self.burstMode;
             chkbx.prop('checked', self.burstMode);
@@ -161,21 +161,21 @@ class UIControlHandler {
         burstModeCheckContainer.append($('<label for="burst-mode-check" class="custom-control-label inline-control" style="margin-left:0px;margin-right:10px;color:white;cursor:pointer;" title="Enable burst mode (M)">burst mode</label>'));
         // dtControls.append(burstModeCheckContainer);
 
-        if(window.enableEmptyClass) {
-            var clearAllCallback = function() {
+        if (window.enableEmptyClass) {
+            var clearAllCallback = function () {
                 self.dataHandler.clearLabelInAll();
             }
             var clearAllBtn = $('<button class="btn btn-sm btn-warning" id="clearAll-button" title="Clear all Annotations (C)">Clear All</button>');
             clearAllBtn.click(clearAllCallback);
             // dtControls.append(clearAllBtn);
         }
-        
-        if(window.annotationType != 'segmentationMasks') {
+
+        if (window.annotationType != 'segmentationMasks') {
             // label all and unsure buttons
-            var labelAllCallback = function() {
+            var labelAllCallback = function () {
                 self.dataHandler.assignLabelToAll();
             }
-            var unsureCallback = function() {
+            var unsureCallback = function () {
                 self.dataHandler.toggleActiveAnnotationsUnsure();
             }
             var labelAllBtn = $('<button class="btn btn-sm btn-primary" id="labelAll-button" title="Assign label to all Annotations (A)">Label All</button>');
@@ -193,9 +193,9 @@ class UIControlHandler {
             ptrc_vis.append($('<td>Visibility</td>'));
             let predThreshRange_vis = $('<input type="range" id="pred-thresh-vis" min="0" max="100" value="50" />');
             predThreshRange_vis.on({
-                'input': function() {
+                'input': function () {
                     let value = 1 - parseFloat($(this).val() / 100.0);
-                    if(isNaN(value)) {
+                    if (isNaN(value)) {
                         value = 0.5;
                         $(this).val(value);
                     }
@@ -207,7 +207,7 @@ class UIControlHandler {
                 'change': function () {
                     let value = parseFloat($(this).val());
                     let cookieVals = window.getCookie('predThreshVis', true);
-                    if(cookieVals === null || typeof(cookieVals) !== 'object') {
+                    if (cookieVals === null || typeof (cookieVals) !== 'object') {
                         cookieVals = {};
                     }
                     cookieVals[window.projectShortname] = value;
@@ -228,9 +228,9 @@ class UIControlHandler {
             ptrc_convert.append($('<td>Conversion</td>'));
             let predThreshRange_convert = $('<input type="range" id="pred-thresh-convert" min="0" max="100" value="95" />');
             predThreshRange_convert.on({
-                'input': function() {
+                'input': function () {
                     let value = 1 - parseFloat($(this).val() / 100.0);
-                    if(isNaN(value)) {
+                    if (isNaN(value)) {
                         value = 0.05;
                         $(this).val(value);
                     }
@@ -240,10 +240,10 @@ class UIControlHandler {
                     // re-convert predictions into annotations
                     self.dataHandler.convertPredictions();
                 },
-                'change': function() {
+                'change': function () {
                     let value = parseFloat($(this).val());
                     let cookieVals = window.getCookie('predThreshConv', true);
-                    if(cookieVals === null || typeof(cookieVals) !== 'object') {
+                    if (cookieVals === null || typeof (cookieVals) !== 'object') {
                         cookieVals = {};
                     }
                     cookieVals[window.projectShortname] = value;
@@ -265,7 +265,7 @@ class UIControlHandler {
         }
 
         // semantic segmentation controls
-        if(window.annotationType === 'segmentationMasks') {
+        if (window.annotationType === 'segmentationMasks') {
             this.segmentation_controls = {
                 brush_rectangle: $('<button class="btn btn-sm btn-secondary inline-control active"><img src="/static/interface/img/controls/rectangle.svg" style="height:18px" title="Square brush" /></button>'),
                 brush_circle: $('<button class="btn btn-sm btn-secondary inline-control"><img src="/static/interface/img/controls/circle.svg" style="height:18px" title="Circular brush" /></button>'),
@@ -273,30 +273,30 @@ class UIControlHandler {
                 opacity: $('<input class="inline-control" type="range" min="0" max="255" value="220" title="Segmentation opacity" style="width:100px" />')        //TODO: make available for other annotation types as well?
             };
 
-            this.segmentation_controls.brush_rectangle.click(function() {
+            this.segmentation_controls.brush_rectangle.click(function () {
                 self.setBrushType('rectangle');
             });
-            this.segmentation_controls.brush_circle.click(function() {
+            this.segmentation_controls.brush_circle.click(function () {
                 self.setBrushType('circle');
             });
             this.segmentation_controls.brush_size.on({
-                change: function() {
+                change: function () {
                     var val = Math.max(1, Math.min(255, this.value));
                     $(this).val(val);
                     self.setBrushSize(val);
                 },
-                focusin: function() {
+                focusin: function () {
                     window.shortcutsDisabled = true;
                 },
-                focusout: function() {
+                focusout: function () {
                     window.shortcutsDisabled = false;
                 }
             });
             this.segmentation_controls.opacity.on({
-                input: function() {
+                input: function () {
                     var val = Math.max(0, Math.min(255, this.value));
                     $(this).val(val);
-                    self.setSegmentationOpacity(parseInt(val)/255.0);
+                    self.setSegmentationOpacity(parseInt(val) / 255.0);
                 }
             });
 
@@ -312,10 +312,10 @@ class UIControlHandler {
         }
 
         // next and previous batch buttons
-        var nextBatchCallback = function() {
+        var nextBatchCallback = function () {
             self.dataHandler.nextBatch();
         }
-        var prevBatchCallback = function() {
+        var prevBatchCallback = function () {
             self.dataHandler.previousBatch();
         }
         var prevBatchBtn = $('<button id="previous-button" class="btn btn-sm btn-primary float-left">Previous</button>');
@@ -326,58 +326,68 @@ class UIControlHandler {
         // dtControls.append(nextBatchBtn);
 
         // save batch buttons
-        var saveBatchCallback = function() {
+        var saveBatchCallback = function () {
             self.dataHandler.saveBatch();
         }
         var saveBatchBtn = $('<button id="save-button" class="btn btn-sm btn-primary float-right">Save</button>');
         saveBatchBtn.click(saveBatchCallback);
         dtControls.append(saveBatchBtn);
 
+        // label toolbar to filter, copy, merge
+        var labelControl = $('#label-controls');
+
+        // label toolbar button to select mono-label or multi-label
+        var onClickMonoMultiLabelling = function (e) {
+            let hasClass = $('#mono-multi-labelling').hasClass('active');
+            if (hasClass) $('#mono-multi-labelling').removeClass('active')
+            else $('#mono-multi-labelling').addClass('active')
+            window.labelClassHandler.setActiveLabellingMode(!hasClass);
+        }
+
+        var monoMultiLabellingBtn = $('<button id="mono-multi-labelling" class="btn btn-sm btn-light" title="Activate Mono or Multi labelling" style="margin-left:10px;"><img src="/static/interface/img/controls/view-filter.svg" style="height:22px" /></button>');
+        monoMultiLabellingBtn.click(onClickMonoMultiLabelling);
+        labelControl.append(monoMultiLabellingBtn);
+
         // label toolbar filter selected labels
-        var onClickFilterSelectedLabel = function(e) {
+        var onClickFilterSelectedLabel = function (e) {
             let hasClass = $('#filter-selected-label').hasClass('active');
-            if( hasClass ) $('#filter-selected-label').removeClass('active')
+            if (hasClass) $('#filter-selected-label').removeClass('active')
             else $('#filter-selected-label').addClass('active')
             window.labelClassHandler.filterSelectedLabel(!hasClass);
         }
-        var labelControl = $('#label-controls');
 
         var filterSelectedLabelBtn = $('<button id="filter-selected-label" class="btn btn-sm btn-light" title="Filter Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/view-filter.svg" style="height:22px" /></button>');
         filterSelectedLabelBtn.click(onClickFilterSelectedLabel);
         labelControl.append(filterSelectedLabelBtn);
 
         // label toolbar copy selected labels
-        var onClickCopySelectedLabel = function(e) {
+        var onClickCopySelectedLabel = function (e) {
             window.labelClassHandler.selectedLabelClasses = window.labelClassHandler.copySelectedLabel();
         }
-        var labelControl = $('#label-controls');
 
         var copySelectedLabelBtn = $('<button id="copy-selected-label" class="btn btn-sm btn-light" title="Copy Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/edit-copy.svg" style="height:22px" /></button>');
         copySelectedLabelBtn.click(onClickCopySelectedLabel);
         labelControl.append(copySelectedLabelBtn);
 
         // label toolbar overwrite selected labels
-        var onClickOverwriteSelectedLabel = function(e) {
+        var onClickOverwriteSelectedLabel = function (e) {
             // paste all selected label class to the selected tile
             window.dataHandler.updateActiveAnnotations(window.labelClassHandler.selectedLabelClasses, true);
         }
-        var labelControl = $('#label-controls');
 
         var overwriteSelectedLabelBtn = $('<button id="overwrite-selected-label" class="btn btn-sm btn-light" title="Overwite Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/document-replace.svg" style="height:22px" /></button>');
         overwriteSelectedLabelBtn.click(onClickOverwriteSelectedLabel);
         labelControl.append(overwriteSelectedLabelBtn);
 
         // label toolbar merge/append selected labels
-        var onClickAppendSelectedLabel = function(e) {
+        var onClickAppendSelectedLabel = function (e) {
             // paste all selected label class to the selected tile
             window.dataHandler.updateActiveAnnotations(window.labelClassHandler.selectedLabelClasses, false);
         }
-        var labelControl = $('#label-controls');
 
         var appendSelectedLabelBtn = $('<button id="append-selected-label" class="btn btn-sm btn-light" title="Append Selected Labels" style="margin-left:10px;"><img src="/static/interface/img/controls/edit-paste.svg" style="height:22px" /></button>');
         appendSelectedLabelBtn.click(onClickAppendSelectedLabel);
         labelControl.append(appendSelectedLabelBtn);
-
 
         // /*
         //     Key stroke listener
@@ -473,9 +483,9 @@ class UIControlHandler {
 
 
         // Annotation Reviewing
-        if(!window.demoMode) {
+        if (!window.demoMode) {
             // set up slider range
-            var initSliderRange = function() {
+            var initSliderRange = function () {
                 var slider = $('#review-timerange');
                 var dateSpan = $('#review-time-text');
                 return $.ajax({
@@ -488,30 +498,30 @@ class UIControlHandler {
                         skipEmpty: $('#review-skip-empty').prop('checked'),
                         goldenQuestionsOnly: $('#review-golden-questions-only').prop('checked')
                     }),
-                    success: function(data) {
-                        if(data.hasOwnProperty('error')) {
+                    success: function (data) {
+                        if (data.hasOwnProperty('error')) {
                             // e.g. no annotations made yet
                             slider.prop('disabled', true);
 
                         } else {
                             slider.prop('disabled', false);
 
-                            if(data.hasOwnProperty('minTimestamp')) {
-                                slider.prop('min', parseInt(data['minTimestamp'])-1);
-                                slider.val(parseInt(data['minTimestamp'])-1);
-                                dateSpan.html(new Date(data['minTimestamp']*1000 - 1).toLocaleString());
+                            if (data.hasOwnProperty('minTimestamp')) {
+                                slider.prop('min', parseInt(data['minTimestamp']) - 1);
+                                slider.val(parseInt(data['minTimestamp']) - 1);
+                                dateSpan.html(new Date(data['minTimestamp'] * 1000 - 1).toLocaleString());
                             }
-                            if(data.hasOwnProperty('maxTimestamp')) {
-                                slider.prop('max', parseInt(data['maxTimestamp'])+1);
+                            if (data.hasOwnProperty('maxTimestamp')) {
+                                slider.prop('max', parseInt(data['maxTimestamp']) + 1);
                             }
                         }
                     }
                 });
             };
-            var onChange = function() {
-                if($('#imorder-review').prop('checked')) {
+            var onChange = function () {
+                if ($('#imorder-review').prop('checked')) {
                     $('#review-controls').slideDown();
-                    initSliderRange().done(function() {
+                    initSliderRange().done(function () {
                         window.dataHandler.nextBatch();
                     });
                 } else {
@@ -525,19 +535,19 @@ class UIControlHandler {
             $('#review-golden-questions-only').change(onChange);
 
             $('#review-timerange').on({
-                'input': function() {
+                'input': function () {
                     var timestamp = parseInt($('#review-timerange').val());
                     $('#review-time-text').html(new Date(timestamp * 1000).toLocaleString());
                 },
-                'change': function() {
-                    if($('#imorder-review').prop('checked')) {
+                'change': function () {
+                    if ($('#imorder-review').prop('checked')) {
                         window.dataHandler.nextBatch();
                     }
                 }
             });
 
             // show user list if admin
-            if(window.isAdmin) {        //if(window.getCookie('isAdmin') === 'y') {
+            if (window.isAdmin) {        //if(window.getCookie('isAdmin') === 'y') {
                 var uTable = $('<table class="limit-users-table"><thead><tr><td><input type="checkbox" id="review-users-checkall" /></td><td>Name</td></tr></thead></table>');
                 this.reviewUsersTable = $('<tbody></tbody>');
                 uTable.append(this.reviewUsersTable);
@@ -548,11 +558,11 @@ class UIControlHandler {
                     method: 'POST',
                     contentType: "application/json; charset=utf-8",
                     dataType: 'json',
-                    success: function(data) {
-                        if(data.hasOwnProperty('users')) {
-                            for(var u=0;u<data['users'].length; u++) {
+                    success: function (data) {
+                        if (data.hasOwnProperty('users')) {
+                            for (var u = 0; u < data['users'].length; u++) {
                                 var uName = data['users'][u];
-                                if(uName === $('#navbar-user-dropdown').html()) {
+                                if (uName === $('#navbar-user-dropdown').html()) {
                                     continue;
                                 }
                                 self.reviewUsersTable.append(
@@ -564,9 +574,9 @@ class UIControlHandler {
                             $('#review-controls').append(uTable);
                             $('#review-controls').append($('<div style="color:gray;font-size:9pt;font-style:italic;white-space:normal;word-wrap:break-word;">If no user is selected, only your own annotations are shown.</div>'));
 
-                            var checkAll = function() {
+                            var checkAll = function () {
                                 var isChecked = $('#review-users-checkall').prop('checked');
-                                self.reviewUsersTable.find(':checkbox').each(function() {
+                                self.reviewUsersTable.find(':checkbox').each(function () {
                                     $(this).prop('checked', isChecked);
                                 });
                                 onChange();
@@ -590,8 +600,8 @@ class UIControlHandler {
         this.action = action;
 
         // adjust buttons
-        if(this.staticButtons.hasOwnProperty(action)) {
-            for(var key in this.staticButtons) {
+        if (this.staticButtons.hasOwnProperty(action)) {
+            for (var key in this.staticButtons) {
                 this.staticButtons[key].removeClass('active');
             }
             this.staticButtons[action].addClass('active');
@@ -605,16 +615,16 @@ class UIControlHandler {
     }
 
     setBrushType(type) {
-        if(type === 'rectangle') {
+        if (type === 'rectangle') {
             this.segmentation_properties.brushType = 'rectangle';
             this.segmentation_controls.brush_rectangle.addClass('active');
             this.segmentation_controls.brush_circle.removeClass('active');
-        } else if(type === 'circle') {
+        } else if (type === 'circle') {
             this.segmentation_properties.brushType = 'circle';
             this.segmentation_controls.brush_rectangle.removeClass('active');
             this.segmentation_controls.brush_circle.addClass('active');
         } else {
-            throw Error('Invalid brush type ('+type+').');
+            throw Error('Invalid brush type (' + type + ').');
         }
     }
 
@@ -643,14 +653,14 @@ class UIControlHandler {
     }
 
     setLoupeMagnification(factor) {
-        if(typeof(factor) === 'number') {
+        if (typeof (factor) === 'number') {
             window.loupeMagnification = Math.max(0.01, Math.min(0.15, factor));
         }
     }
 
     toggleLoupe() {
         this.showLoupe = !this.showLoupe;
-        if(this.showLoupe) {
+        if (this.showLoupe) {
             $('#loupe-button').addClass('active');
         } else {
             $('#loupe-button').removeClass('active');

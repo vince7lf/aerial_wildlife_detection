@@ -60,6 +60,18 @@ class DataHandler {
     }
 
 
+    clearSelection() {
+        for (var i = 0; i < this.dataEntries.length; i++) {
+            this.dataEntries[i].clearSelection();
+        }
+    }
+
+    setSelectedFeatures( features ) {
+        for (var i = 0; i < this.dataEntries.length; i++) {
+            this.dataEntries[i].setSelectedFeatures(features);
+        }
+    }
+
     renderAll() {
         for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].render();
@@ -780,13 +792,22 @@ class DataHandler {
 
     tileSelected(tilename) {
         for (var id in this.entriesStack) {
-            if (this.entriesStack[id].fileName.indexOf(tilename) !== -1 ) {
+            if (this.entriesStack[id].fileName.indexOf(tilename) !== -1) {
+
                 this.entriesStack[id].click();
 
-                // refresh the filter if active
-                let hasClass = $('#filter-selected-label').hasClass('active');
-                window.labelClassHandler.filterSelectedLabel(hasClass);
+                // multi-labelling mode
+                if (window.labelClassHandler.activeLabellingMode == false) {
 
+                    // refresh the filter if active
+                    let hasClass = $('#filter-selected-label').hasClass('active');
+                    window.labelClassHandler.filterSelectedLabel(hasClass);
+                } else {
+                    // mono-labelling mode
+                    // associate the label with the tile
+                    this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), true)
+
+                }
                 return;
             }
         }
@@ -794,11 +815,25 @@ class DataHandler {
 
     tileLabels(tilename) {
         for (var id in this.entriesStack) {
-            if (this.entriesStack[id].fileName.indexOf(tilename) !== -1 ) {
+            if (this.entriesStack[id].fileName.indexOf(tilename) !== -1) {
                 var labels = this.entriesStack[id].getLabel();
                 return labels;
             }
         }
+    }
+
+    getTilesAssociatedWithLabel (labelClassID) {
+        var features = new Set();
+        for (var id in this.entriesStack) {
+            var labels = this.entriesStack[id].getLabel();
+            if ( !(labels instanceof Set) ) continue;
+            for (let label of labels) {
+                if( label == labelClassID) {
+                    features.add(this.entriesStack[id])
+                }
+            }
+        }
+        return features;
     }
 
 }

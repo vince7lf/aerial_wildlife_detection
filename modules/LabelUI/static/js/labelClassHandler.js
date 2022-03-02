@@ -367,7 +367,7 @@ class LabelClassGroup {
         let selectedLabels = [];
         for (let c = 0; c < this.children.length; c++) {
             let result = this.children[c].copySelectedLabel();
-            if( result ) selectedLabels.push(result)
+            if (result) selectedLabels.push(result)
         }
 
         return selectedLabels.length == 0 ? null : selectedLabels;
@@ -488,8 +488,13 @@ class LabelClassHandler {
         }
     }
 
+    lighthenFirstLabelClass() {
+        this.setActiveClass(this.labelClasses[Object.keys(this.labelClasses)[0]]);
+        return this.labelClasses[Object.keys(this.labelClasses)[0]];
+    }
+
     lighthenLabelClass(labelClassInstance) {
-        if( labelClassInstance == null ) return;
+        if (labelClassInstance == null) return;
         if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
             $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
@@ -499,26 +504,61 @@ class LabelClassHandler {
     setActiveClass(labelClassInstance) {
         if (window.uiBlocked) return;
 
-        // click on another selected label : unselect it
-        this.activeClass = labelClassInstance;
-        if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
-            window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
+        // multi-labelling mode
+        if (window.labelClassHandler.activeLabellingMode == false) {
+
+            // is there any tile selected ?
+
+            // click on another selected label : unselect it
+            this.activeClass = labelClassInstance;
+            if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
+                window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
+            } else {
+                window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
+            }
+
+            $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
+            $('#labelLegend_alt_' + labelClassInstance.classID).toggleClass('legend-inactive');
+
+            window.activeClassColor = this.getActiveColor();
         } else {
-            window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
+            // mono-labelling mode
+
+            this.activeClass = labelClassInstance;
+            this.lighthenLabelClass(labelClassInstance)
+
         }
-
-        $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
-        $('#labelLegend_alt_' + labelClassInstance.classID).toggleClass('legend-inactive');
-
-        // // reset style of currently active class
-        // if(this.activeClass != null) {
-        //     $('#labelLegend_'+this.activeClass.classID).toggleClass('legend-inactive');
-        //     $('#labelLegend_alt_'+this.activeClass.classID).toggleClass('legend-inactive');
-        // }
-
-        window.activeClassColor = this.getActiveColor();
     }
 
+    setActiveLabellingMode(labellingMode) {
+        if (window.uiBlocked) return;
+
+        // false (default): multi-labelling; true: mono-labelling
+        this.activeLabellingMode = labellingMode;
+
+        // unselect all labels
+        this.switchoffLabelClasses();
+
+        // unselect all tiles
+        window.dataHandler.clearSelection();
+
+        if (labellingMode == true) {
+            // mono-labelling mode active
+            // activate first label in the list
+            var label = this.lighthenFirstLabelClass();
+
+            // and set a red frame around all tiles with that label
+            var features = window.dataHandler.getTilesAssociatedWithLabel(label.classID)
+
+            window.dataHandler.setSelectedFeatures(features);
+        }
+
+    }
+
+    getActiveLabellingMode() {
+        // false (default): multi-labelling; true: mono-labelling
+        return this.activeLabellingMode;
+    }
 
     filter(keywords, autoActivateBestMatch) {
         /*
@@ -552,8 +592,8 @@ class LabelClassHandler {
     copySelectedLabel() {
         let selectedLabels = [];
         for (let c = 0; c < this.items.length; c++) {
-            let result  = this.items[c].copySelectedLabel();
-            if( result ) selectedLabels.push(result);
+            let result = this.items[c].copySelectedLabel();
+            if (result) selectedLabels.push(result);
         }
         return selectedLabels.length == 0 ? null : selectedLabels;
     }

@@ -938,7 +938,7 @@ class AbstractDataEntryEx {
             image.addEventListener('load', () => {
                 resolve(image);
             });
-            if( imageURI.indexOf('_tile.jpg') > -1 ) {
+            if (imageURI.indexOf('_tile.jpg') > -1) {
                 image.src = imageURI;
             } else {
                 resolve(image);
@@ -1077,15 +1077,15 @@ class AbstractDataEntryEx {
     }
 
     setLabels(labelsObj) {
-        labelsObj.forEach( (that, idx) => {
-            if( Array.isArray(that)) this.setLabels(that);
+        labelsObj.forEach((that, idx) => {
+            if (Array.isArray(that)) this.setLabels(that);
             else this.setLabel(that.classID)
         });
     }
 
 
     updateAnnotations(labelsObj, overwrite) {
-        if( overwrite ) {
+        if (overwrite) {
             // removes all labels
             this.removeAllLabel();
         }
@@ -1186,13 +1186,6 @@ class AbstractDataEntryEx {
         }
         this.render();
     }
-
-    render() {
-        if (this instanceof ClassificationTileEntry) {
-            if (this.imageEntry)
-                this.imageEntry.render();
-        }
-    }
 }
 
 class ClassificationMLEntry extends AbstractDataEntryEx {
@@ -1215,8 +1208,8 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
         super(entryID, properties, disableInteractions);
 
         //if( this instanceof ClassificationTileEntry )
-            //this._setup_markup();
-            //super._setup_markup();
+        //this._setup_markup();
+        //super._setup_markup();
         this.loadingPromise.then(response => {
             if (this.labelInstance === null) {
                 // add a default, blank instance if nothing has been predicted or annotated yet
@@ -1489,8 +1482,35 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
         // this.toggleUserLabel(false);
         // this._addElement(entry.annotations[0]); // Maybe have to do this ?
         window.activeEntryID = this.entryID;
-        this.labelInstance.enlightLabels();
+        if (window.labelClassHandler.activeLabellingMode == false) {
+            // multi-labelling mode, select turn on labels.
+            // mono-labelling, just do nothing
+            this.labelInstance.enlightLabels();
+        }
+
     }
+
+    clearSelection() {
+        if (this instanceof ClassificationTileEntry) {
+            if (this.imageEntry)
+                this.imageEntry.clearSelection();
+        }
+    }
+
+    setSelectedFeatures(features) {
+        if (this instanceof ClassificationTileEntry) {
+            if (this.imageEntry)
+                this.imageEntry.setSelectedFeatures(features);
+        }
+    }
+
+    render() {
+        if (this instanceof ClassificationTileEntry) {
+            if (this.imageEntry)
+                this.imageEntry.render();
+        }
+    }
+
 }
 
 class ClassificationTileEntry extends ClassificationMLEntry {
@@ -1498,6 +1518,7 @@ class ClassificationTileEntry extends ClassificationMLEntry {
     constructor(entryID, properties, disableInteractions) {
         super(entryID, properties, disableInteractions);
     }
+
 }
 
 

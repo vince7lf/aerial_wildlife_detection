@@ -176,27 +176,10 @@ class MapOlElement extends AbstractRenderElement {
         this.imageUrl = this.imageSrcOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
         this.geojson = this.imageUrl.replace('.jpg', '.geojson');
         this.timeCreated = new Date();
-        this.createMap();
-    }
+        this.features = new ol.Collection();
+        this.mlSelectedFeatures = new Set(); // monolabelling mode; selected features for the label selected
 
-    getTimeCreated() {
-        return this.timeCreated;
-    }
-
-    render() {
-        // this.vectorLayer1.clear(true);
-        // this.vectorLayer1.redraw(true);
-        this.vectorLayerSource.refresh({force: true});
-    }
-
-    createMap() {
-        var map, view, staticImage;
-        var image = this.image;
-        var imageUrl = this.imageUrl;
-        var geojson = this.geojson;
-        var self = this;
-
-        var tileStyleRaw = new ol.style.Style({
+        this.tileStyleRaw = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: [0, 0, 0, 0]
             }),
@@ -207,7 +190,7 @@ class MapOlElement extends AbstractRenderElement {
             })
         });
 
-        var tileStyleAnnoted = new ol.style.Style({
+        this.tileStyleAnnoted = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: [148, 162, 177, 0.5]
             }),
@@ -217,12 +200,60 @@ class MapOlElement extends AbstractRenderElement {
                 lineCap: 'round'
             })
         });
-        const tileStyleSelected = new ol.style.Style({
+        this.tileStyleSelected = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(200,20,20,0.8)',
                 width: 4,
             }),
         });
+
+        this.createMap();
+    }
+
+    getTimeCreated() {
+        return this.timeCreated;
+    }
+
+    isSelectedFeature(location) {
+
+        // return false if mode is multi-labelling
+        if (window.labelClassHandler.activeLabellingMode == false) return false;
+
+        for (let selectedFeature of this.mlSelectedFeatures) {
+            let URLImageParts = selectedFeature.fileName.split('\\').pop().split('/');
+            let filenameParts = URLImageParts.slice(-1).pop().split('.');
+
+            if (filenameParts[0] + '.jpg' === location) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    setSelectedFeatures(features) {
+        if (!(features instanceof Set)) return;
+
+        this.mlSelectedFeatures = new Set(features);
+
+        this.render();
+    }
+
+    clearSelection() {
+        // this will clear currently selected features
+        this.features.clear();
+        this.render();
+    }
+
+    render() {
+        this.vectorLayerSource.refresh({force: true});
+    }
+
+    createMap() {
+        var map, view, staticImage;
+        var image = this.image;
+        var imageUrl = this.imageUrl;
+        var geojson = this.geojson;
+        var self = this;
 
         var extent = [0, -image.height, image.width, 0];
         var projection = new ol.proj.Projection({
@@ -241,19 +272,20 @@ class MapOlElement extends AbstractRenderElement {
 
         this.vectorLayerSource = new ol.source.Vector({
             url: geojson,
-            format: new ol.format.GeoJSON(),
+            format: new ol.format.GeoJSON()
         });
         this.vectorLayer1 = new ol.layer.Vector({
             source: this.vectorLayerSource,
-            // style: tileStyleRaw
             style: function (feature) {
                 // set current tile/annotation selected
-                var props = feature.getProperties();
-                var location = props['Location'];
-                var labels = window.dataHandler.tileLabels(location);
-                var xstyle = tileStyleRaw;
-                if (labels.size > 0) {
-                    xstyle = tileStyleAnnoted;
+                let props = feature.getProperties();
+                let location = props['Location'];
+                let labels = window.dataHandler.tileLabels(location);
+                let xstyle = self.tileStyleRaw;
+                if (self.isSelectedFeature(location) === true ) {
+                    xstyle = self.tileStyleSelected;
+                } else if (labels.size > 0) {
+                    xstyle = self.tileStyleAnnoted;
                 }
                 return xstyle;
             }
@@ -261,20 +293,24 @@ class MapOlElement extends AbstractRenderElement {
         });
         var selectInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerMove,
-            style: function () {
-                return tileStyleSelected;
+            style: function (feature) {
+                return self.tileStyleSelected;
             }
         });
         var clickInteraction = new ol.interaction.Select({
             condition: ol.events.condition.pointerClick,
             style: function (feature) {
+
                 // set current tile/annotation selected
                 var props = feature.getProperties();
                 var location = props['Location'];
+
                 window.dataHandler.tileSelected(location);
+
                 self.render();
-                return tileStyleSelected;
-            }
+                return self.tileStyleSelected;
+            },
+            features: self.features
         });
         view = new ol.View({
             projection: projection,
@@ -297,32 +333,6 @@ class MapOlElement extends AbstractRenderElement {
             layers: [staticImage, this.vectorLayer1],
             controls: ol.control.defaults().extend([myControl]),
         });
-
-        // multiple selection of tiles
-        // const selected = [];
-        // map.on('singleclick', function (e) {
-        //     map.forEachFeatureAtPixel(e.pixel, function (f) {
-        //
-        //         // set current tile/annotation selected
-        //         var props = f.getProperties();
-        //         var location = props['Location'];
-        //
-        //         const selIndex = selected.indexOf(f);
-        //         if (selIndex < 0) {
-        //             selected.push(f);
-        //             f.setStyle(tileStyleSelected);
-        //             window.dataHandler.tileSelected(location);
-        //         } else {
-        //             selected.splice(selIndex, 1);
-        //             f.setStyle(tileStyleRaw);
-        //             // window.dataHandler.tileUnselected(location);
-        //         }
-        //
-        //         self.render();
-        //
-        //     });
-        // });
-
 
         // Set the view for the map
         map.setView(view);
