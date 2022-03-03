@@ -1478,9 +1478,7 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
     }
 
     // triggered in the MapOlElement when a tile get selected, the respective ClassificationMLEntry get retrieved and the click function called
-    click(entry) {
-        // this.toggleUserLabel(false);
-        // this._addElement(entry.annotations[0]); // Maybe have to do this ?
+    click() {
         if (window.labelClassHandler.activeLabellingMode == false) {
             window.activeEntryID = this.entryID;
             // multi-labelling mode, select turn on labels.

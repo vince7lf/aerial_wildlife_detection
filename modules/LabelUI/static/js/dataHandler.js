@@ -794,10 +794,10 @@ class DataHandler {
         for (var id in this.entriesStack) {
             if (this.entriesStack[id].fileName.indexOf(tilename) !== -1) {
 
-                this.entriesStack[id].click();
-
                 // multi-labelling mode
                 if (window.labelClassHandler.activeLabellingMode == false) {
+
+                    this.entriesStack[id].click();
 
                     // refresh the filter if active
                     let hasClass = $('#filter-selected-label').hasClass('active');
@@ -805,11 +805,24 @@ class DataHandler {
                 } else {
                     // mono-labelling mode
                     // associate the label with the tile
-                    // if
-                    if (this.isActiveTileAssociatedWithActiveLabel() === false) {
-                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), true)
+                    if (! (typeof window.activeEntryID === "string") ) {
+                        // no active tile
+                        this.entriesStack[id].click();
+                        // is this tile has the label already ?
+                        let isActiveTileAssociatedWithActiveLabel = this.isActiveTileAssociatedWithActiveLabel(window.activeEntryID, window.labelClassHandler.getActiveClassID())
+                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), !isActiveTileAssociatedWithActiveLabel);
+                    } else if (window.activeEntryID === this.entriesStack[id].entryID) {
+                        // same tile clicked again
+                        // is this tile has the label already ?
+                        let isActiveTileAssociatedWithActiveLabel = this.isActiveTileAssociatedWithActiveLabel(window.activeEntryID, window.labelClassHandler.getActiveClassID())
+                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), !isActiveTileAssociatedWithActiveLabel);
+                        this.entriesStack[id].click();
                     } else {
-                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), false)
+                        // another tile clicked
+                        this.entriesStack[id].click();
+                        // is this tile has the label already ?
+                        let isActiveTileAssociatedWithActiveLabel = this.isActiveTileAssociatedWithActiveLabel(window.activeEntryID, window.labelClassHandler.getActiveClassID())
+                        this.updateActiveAnnotationLabel(window.labelClassHandler.getActiveClassID(), !isActiveTileAssociatedWithActiveLabel);
                     }
 
                     // reset and refresh
@@ -826,9 +839,8 @@ class DataHandler {
                     window.labelClassHandler.setActiveClass(currentActiveClass);
 
                     // and set a red frame around all tiles with that label
-                    var features = window.dataHandler.getTilesAssociatedWithLabel(window.labelClassHandler.getActiveClassID())
-
-                    window.dataHandler.setSelectedFeatures(features);
+                    var features = this.getTilesAssociatedWithLabel(window.labelClassHandler.getActiveClassID())
+                    this.setSelectedFeatures(features);
 
                 }
                 return;
@@ -859,13 +871,13 @@ class DataHandler {
         return features;
     }
 
-    isActiveTileAssociatedWithActiveLabel() {
+    isActiveTileAssociatedWithActiveLabel(activeEntryID, activeClassID) {
         for (var id in this.entriesStack) {
             var labels = this.entriesStack[id].getLabel();
             if (!(labels instanceof Set)) continue;
             for (let label of labels) {
-                if (label === window.labelClassHandler.getActiveClassID()
-                    && window.activeEntryID === this.entriesStack[id].entryID) {
+                if (label === activeClassID
+                    && activeEntryID === this.entriesStack[id].entryID) {
                     return true;
                 }
             }

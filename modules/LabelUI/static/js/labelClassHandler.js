@@ -144,12 +144,10 @@ class LabelClass {
                 // unselect all tiles
                 window.dataHandler.clearSelection();
 
-                // multi-labelling
                 self.parent.setActiveClass(self);
 
                 // and set a red frame around all tiles with that label
                 var features = window.dataHandler.getTilesAssociatedWithLabel(self.classID)
-
                 window.dataHandler.setSelectedFeatures(features);
             } else {
                 // multi-labelling
