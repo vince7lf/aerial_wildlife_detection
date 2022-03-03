@@ -275,14 +275,14 @@ class MapOlElement extends AbstractRenderElement {
             format: new ol.format.GeoJSON()
         });
         this.vectorLayer1 = new ol.layer.Vector({
-            source: this.vectorLayerSource,
+            source: self.vectorLayerSource,
             style: function (feature) {
                 // set current tile/annotation selected
                 let props = feature.getProperties();
                 let location = props['Location'];
                 let labels = window.dataHandler.tileLabels(location);
                 let xstyle = self.tileStyleRaw;
-                if (self.isSelectedFeature(location) === true ) {
+                if (self.isSelectedFeature(location) === true) {
                     xstyle = self.tileStyleSelected;
                 } else if (labels.size > 0) {
                     xstyle = self.tileStyleAnnoted;
@@ -330,8 +330,27 @@ class MapOlElement extends AbstractRenderElement {
         map = new ol.Map({
             target: 'gallery',
             // Add the created layer to the Map
-            layers: [staticImage, this.vectorLayer1],
+            layers: [staticImage, self.vectorLayer1],
             controls: ol.control.defaults().extend([myControl]),
+        });
+
+        map.on('singleclick', function (evt) {
+            let myFeature = false;
+            map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+                myFeature = true;
+            });
+            if (myFeature === false) {
+                // click outside of the image; refresh
+                // return false if mode is multi-labelling
+                if (window.labelClassHandler.activeLabellingMode == false) {
+
+                    // unselect all labels
+                    window.labelClassHandler.switchoffLabelClasses();
+
+                    // unselect all tiles
+                    window.dataHandler.clearSelection();
+                }
+            }
         });
 
         // Set the view for the map

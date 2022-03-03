@@ -802,10 +802,12 @@ class DataHandler {
                     // refresh the filter if active
                     let hasClass = $('#filter-selected-label').hasClass('active');
                     window.labelClassHandler.filterSelectedLabel(hasClass);
+
+
                 } else {
                     // mono-labelling mode
                     // associate the label with the tile
-                    if (! (typeof window.activeEntryID === "string") ) {
+                    if (!(typeof window.activeEntryID === "string")) {
                         // no active tile
                         this.entriesStack[id].click();
                         // is this tile has the label already ?
