@@ -203,7 +203,7 @@ class MapOlElement extends AbstractRenderElement {
         this.tileStyleSelected = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(200,20,20,0.8)',
-                width: 4,
+                width: 6,
             }),
         });
 
@@ -217,7 +217,7 @@ class MapOlElement extends AbstractRenderElement {
     isSelectedFeature(location) {
 
         // return false if mode is multi-labelling
-        if (window.labelClassHandler.activeLabellingMode == false) return false;
+        if (window.labelClassHandler.activeLabellingMode === false) return false;
 
         for (let selectedFeature of this.mlSelectedFeatures) {
             let URLImageParts = selectedFeature.fileName.split('\\').pop().split('/');
@@ -275,7 +275,7 @@ class MapOlElement extends AbstractRenderElement {
             format: new ol.format.GeoJSON()
         });
         this.vectorLayer1 = new ol.layer.Vector({
-            source: self.vectorLayerSource,
+            source: this.vectorLayerSource,
             style: function (feature) {
                 // set current tile/annotation selected
                 let props = feature.getProperties();
@@ -298,7 +298,7 @@ class MapOlElement extends AbstractRenderElement {
             }
         });
         var clickInteraction = new ol.interaction.Select({
-            condition: ol.events.condition.pointerClick,
+            condition: ol.events.condition.singleClick,
             style: function (feature) {
 
                 // set current tile/annotation selected
@@ -330,7 +330,7 @@ class MapOlElement extends AbstractRenderElement {
         map = new ol.Map({
             target: 'gallery',
             // Add the created layer to the Map
-            layers: [staticImage, self.vectorLayer1],
+            layers: [staticImage, this.vectorLayer1],
             controls: ol.control.defaults().extend([myControl]),
         });
 
@@ -356,7 +356,7 @@ class MapOlElement extends AbstractRenderElement {
         // Set the view for the map
         map.setView(view);
 
-        map.addInteraction(selectInteraction);
+        // map.addInteraction(selectInteraction);
 
         map.addInteraction(clickInteraction);
     }
