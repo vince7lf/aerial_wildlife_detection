@@ -344,7 +344,7 @@ class UIControlHandler {
             window.labelClassHandler.setActiveLabellingMode(!hasClass);
         }
 
-        var monoMultiLabellingBtn = $('<button id="mono-multi-labelling" class="btn btn-sm btn-light" title="Activate Mono or Multi labelling" style="margin-left:10px;"><img src="/static/interface/img/controls/view-filter.svg" style="height:22px" /></button>');
+        var monoMultiLabellingBtn = $('<button id="mono-multi-labelling" class="btn btn-sm btn-light" title="Activate Mono or Multi labelling" style="margin-left:10px;"><img src="/static/interface/img/controls/media-playlist-repeat.svg" style="height:22px" /></button>');
         monoMultiLabellingBtn.click(onClickMonoMultiLabelling);
         labelControl.append(monoMultiLabellingBtn);
 

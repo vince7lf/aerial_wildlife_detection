@@ -203,7 +203,7 @@ class MapOlElement extends AbstractRenderElement {
         this.tileStyleSelected = new ol.style.Style({
             stroke: new ol.style.Stroke({
                 color: 'rgba(200,20,20,0.8)',
-                width: 6,
+                width: 5,
             }),
         });
 
