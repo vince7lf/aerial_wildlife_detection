@@ -9,6 +9,10 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.1 annotation_single_label vincent.lefalher@usherbrooke.ca 2022-03-03
+- (AIDE+MELCC#6) implement the mono-label to easily associate multiple tiles for a specific label. Documented and tested. No automated testing.  
+- merged and tagged AIDE+MELCC-1.5; backup tag is AIDE+MELCC_20220303T2226 
+
 v1.2.4 manage_labels vincent.lefalher@usherbrooke.ca 2022-02-15
 - (AIDE+MELCC#6) implement the singleclick event on map; refactor style variable names. Comment the map.on singleclick event. Will create a new branch to handle the annotation multiple.
 - new json to add few labels to the new project; manual label cration do not work anymore
