@@ -176,6 +176,7 @@ class MapOlElement extends AbstractRenderElement {
         this.imageUrl = this.imageSrcOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
         this.geojson = this.imageUrl.replace('.jpg', '.geojson');
         this.timeCreated = new Date();
+        this.olmap = null;
         this.features = new ol.Collection();
         this.mlSelectedFeatures = new Set(); // monolabelling mode; selected features for the label selected
 
@@ -249,7 +250,8 @@ class MapOlElement extends AbstractRenderElement {
     }
 
     createMap() {
-        var map, view, staticImage;
+        var map = this.olmap;
+        var view, staticImage;
         var image = this.image;
         var imageUrl = this.imageUrl;
         var geojson = this.geojson;
@@ -307,6 +309,31 @@ class MapOlElement extends AbstractRenderElement {
 
                 window.dataHandler.tileSelected(location);
 
+                // show the origin row/column of the tile
+                var mapControls = self.olmap.getControls();
+                mapControls.forEach(el => {
+                    if (el.element.firstChild.id === "tileRowCol") {
+                        // code snippet from regex101.com
+                        const regex = /.*(\d{2})_(\d{2})\.jpg/gm;
+                        let m;
+                        let colRow = "Row 00 - Col 00"
+                        while ((m = regex.exec(location)) !== null) {
+                            // This is necessary to avoid infinite loops with zero-width matches
+                            if (m.index === regex.lastIndex) {
+                                regex.lastIndex++;
+                            }
+
+                            // The result can be accessed through the `m`-variable.
+                            // Match 0 2018-Boucherville-13571792-13572097-1_tile_24_27.jpg
+                            // Group 1 24
+                            // Group 2 27
+                            colRow = `Row ${m[1]} : Col ${m[2]}`
+                        }
+                        // code snippet from regex101.com
+                        el.element.firstChild.innerHTML = colRow;
+                    }
+                });
+
                 self.render();
                 return self.tileStyleSelected;
             },
@@ -320,21 +347,34 @@ class MapOlElement extends AbstractRenderElement {
 
         const elImageName = document.createElement('span');
         elImageName.innerHTML = this.filenameParts[0];
+        elImageName.id = "imageName"
         const elContainer = document.createElement('div');
         elContainer.className = 'ol-unselectable ol-control';
         elContainer.appendChild(elImageName);
-        elContainer.style = "top: 65px; left: .5em;"
+        elContainer.style = "top: 70px; left: .5em;"
         var myControl = new ol.control.Control({element: elContainer});
 
+        // element to show the image origin row/column
+        const elTileRowCol = document.createElement('span');
+        elTileRowCol.innerHTML = "No tile selected";
+        elTileRowCol.id = "tileRowCol"
+        const elTileRowColCont = document.createElement('div');
+        elTileRowColCont.className = 'ol-unselectable ol-control';
+        elTileRowColCont.appendChild(elTileRowCol);
+        elTileRowColCont.style = "top: 105px; left: .5em; display: block"
+        var imageRowColControl = new ol.control.Control({element: elTileRowColCont});
+
+
         // Instanciate a Map, set the object target to the map DOM id
-        map = new ol.Map({
+        this.olmap = new ol.Map({
             target: 'gallery',
             // Add the created layer to the Map
             layers: [staticImage, this.vectorLayer1],
-            controls: ol.control.defaults().extend([myControl]),
+            controls: ol.control.defaults().extend([myControl, imageRowColControl]),
         });
+        map = this.olmap;
 
-        map.on('singleclick', function (evt) {
+        this.olmap.on('singleclick', function (evt) {
             let myFeature = false;
             map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                 myFeature = true;
@@ -354,11 +394,11 @@ class MapOlElement extends AbstractRenderElement {
         });
 
         // Set the view for the map
-        map.setView(view);
+        this.olmap.setView(view);
 
-        // map.addInteraction(selectInteraction);
+        // this.olmap.addInteraction(selectInteraction);
 
-        map.addInteraction(clickInteraction);
+        this.olmap.addInteraction(clickInteraction);
     }
 }
 
