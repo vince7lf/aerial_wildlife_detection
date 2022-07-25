@@ -9,6 +9,11 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.3 branch tile_image_favorits_groups vincent.lefalher@usherbrooke.ca 2022-07-18 
+- new document and screenshots to setup Pycharm (remote ssh, remote python interpreter, remote debug)
+- updated doc to install AIDE for MELCC (anaconda, ogrgdal)
+- new script to help debug issue with the ogrgdal_createtiles.sh script
+
 v1.1 annotation_single_label vincent.lefalher@usherbrooke.ca 2022-03-03
 - (AIDE+MELCC#6) implement the mono-label to easily associate multiple tiles for a specific label. Documented and tested. No automated testing.  
 - merged and tagged AIDE+MELCC-1.5; backup tag is AIDE+MELCC_20220303T2226 
