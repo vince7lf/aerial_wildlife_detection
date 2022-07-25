@@ -119,20 +119,66 @@ mogrify -format jpg c:/Users/vincent.le_falher/Downloads/AIDEMELCC/gdal_tile/*.t
 # Install gdal/ogr on ubuntu 
 Reference: <https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html>
 
+In a conda venv environment
 ```
-sudo add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update
-sudo apt-get update
-sudo apt-get install gdal-bin
-sudo apt-get install libgdal-dev
-sudo apt install python3-pip
-export CPLUS_INCLUDE_PATH=/usr/include/gdal
-export C_INCLUDE_PATH=/usr/include/gdal
-ogrinfo --version
-GDAL 2.4.2, released 2019/06/28
-pip3 install GDAL==2.4.2
+sudo apt-get update && \
+    sudo apt-get install -y software-properties-common && \
+    sudo rm -rf /var/lib/apt/lists/*
+    
+sudo add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
+    && sudo apt-get install -y gdal-bin \
+    && sudo apt-get install -y libgdal-dev \
+    && sudo apt-get install -y python3-pip \
+    && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
+    && export C_INCLUDE_PATH=/usr/include/gdal \
+    && sudo ogrinfo --version \
+    # fix an error in the installation
+    && pip3 install --upgrade --no-cache-dir setuptools==41.0.0 \
+    && pip3 install GDAL==2.4.2    
 ``` 
 
-Setup new project multilabel with OpenLayer tile
+Some error can occur when installing gdal python module
+
+```
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ pip3 install GDAL==2.4.2
+Error processing line 1 of /home/vince/anaconda3/envs/aide/lib/python3.7/site-packages/distutils-precedence.pth:
+
+  Traceback (most recent call last):
+    File "/home/vince/anaconda3/envs/aide/lib/python3.7/site.py", line 168, in addpackage
+      exec(line)
+    File "<string>", line 1, in <module>
+  ModuleNotFoundError: No module named '_distutils_hack'
+
+Remainder of file ignored
+Collecting GDAL==2.4.2
+  Using cached GDAL-2.4.2.tar.gz (564 kB)
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: GDAL
+  Building wheel for GDAL (setup.py) ... done
+  Created wheel for GDAL: filename=GDAL-2.4.2-cp37-cp37m-linux_x86_64.whl size=2345436 sha256=b2bc1d6e9debc0e8786dc99392c877fd1922634b3e7bc096509aeeb713ac6d38
+  Stored in directory: /home/vince/.cache/pip/wheels/2d/ed/4a/ec59835b868d89864ec563404136ecee6d954370df3d26b68a
+Successfully built GDAL
+Installing collected packages: GDAL
+Successfully installed GDAL-2.4.2
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ vi ~/.profile
+```
+
+# update the .profile file 
+
+.profile file: 
+```
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ cat ~/.profile
+export AIDE_CONFIG_PATH=/home/vince/aerial_wildlife_detection/config/settings.ini
+export AIDE_MODULES=LabelUI,AIController,FileServer,AIWorker
+export PYTHONPATH=/home/vince/aerial_wildlife_detection
+export CPLUS_INCLUDE_PATH=/usr/include/gdal
+export C_INCLUDE_PATH=/usr/include/gdal
+source .bashrc
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$
+```
+
+# Setup new project multilabel with OpenLayer tile
 - create project as annotation
 - load all the classes using json file
 - set the number of images to be displayed equal to the number of images to load (exe : 267 for a 13x13=266 + 1)

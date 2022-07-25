@@ -58,24 +58,36 @@ to use clipboard directly in vim
 
 Install Python 3.7
 ```bash
+# ref : https://linuxize.com/post/how-to-install-python-3-7-on-ubuntu-18-04/
+sudo apt update
+sudo apt install software-properties-common
+sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt-get install curl
-sudo apt install python 3.7
-sudo apt install python 3.8
+sudo apt install python3.7
 Install Python 3.7
 ```
 
 Install anaconda
 ```bash
+# as user, not as root 
+# create /app as root
+sudo mkdir /app
 mkdir repo
 cd repo
-wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
-sudo su - root # install everything as root so no permissions issues
-bash Anaconda3-2021.05-Linux-x86_64.sh
 # anaconda requires +3Gb; makes sure mount drive disk space free > 10Gb (df -lh)
-# installed in /app/anaconda3
 # reference: https://docs.anaconda.com/anaconda/install/linux/
+wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
+sudo bash Anaconda3-2021.05-Linux-x86_64.sh
+# installed in /home/vince, not in a root folder
+# Do you wish the installer to initialize Anaconda3
+# by running conda init? [yes|no]
+# [no] >>> yes
+
 # to avoid conda venv starts when shell starts
 conda config --set auto_activate_base false
+
+# troubleshoot error Conda: command not found
+# https://docs.anaconda.com/anaconda/user-guide/troubleshooting/#conda-command-not-found-on-macos-or-linux
 ```
 
 Run the following code snippets on all machines that run one of the services for AIDE (_LabelUI_, _AIController_, _AIWorker_, etc.).
@@ -83,8 +95,9 @@ It is strongly recommended to run AIDE in a self-contained Python environment, s
 
 ```bash
     # specify the root folder where you wish to install AIDE
-    targetDir=/path/to/desired/source/folder
-
+    # targetDir=/path/to/desired/source/folder
+    targetDir=/app
+    
     # create environment (requires conda or miniconda)
     conda create -y -n aide python=3.7 (with 3.8.8 does not work)
     conda activate aide
@@ -151,7 +164,117 @@ At the moment, previous data management scripts listed [here](import_data.md) on
 file contains all the legacy, project-specific parameters required for the previous version of AIDE.
 New API scripts are under development.
 
+### install ogrgdal 
+Reference: <https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html>
 
+In a conda venv environment
+```
+sudo apt-get update && \
+    sudo apt-get install -y software-properties-common && \
+    sudo rm -rf /var/lib/apt/lists/*
+    
+sudo add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
+    && sudo apt-get install -y gdal-bin \
+    && sudo apt-get install -y libgdal-dev \
+    && sudo apt-get install -y python3-pip \
+    && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
+    && export C_INCLUDE_PATH=/usr/include/gdal \
+    && sudo ogrinfo --version \
+    # fix an error in the installation
+    && pip3 install --upgrade --no-cache-dir setuptools==41.0.0 \
+    && pip3 install GDAL==2.4.2    
+``` 
+
+Some error can occur when installing gdal python module
+
+```
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ pip3 install GDAL==2.4.2
+Error processing line 1 of /home/vince/anaconda3/envs/aide/lib/python3.7/site-packages/distutils-precedence.pth:
+
+  Traceback (most recent call last):
+    File "/home/vince/anaconda3/envs/aide/lib/python3.7/site.py", line 168, in addpackage
+      exec(line)
+    File "<string>", line 1, in <module>
+  ModuleNotFoundError: No module named '_distutils_hack'
+
+Remainder of file ignored
+Collecting GDAL==2.4.2
+  Using cached GDAL-2.4.2.tar.gz (564 kB)
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: GDAL
+  Building wheel for GDAL (setup.py) ... done
+  Created wheel for GDAL: filename=GDAL-2.4.2-cp37-cp37m-linux_x86_64.whl size=2345436 sha256=b2bc1d6e9debc0e8786dc99392c877fd1922634b3e7bc096509aeeb713ac6d38
+  Stored in directory: /home/vince/.cache/pip/wheels/2d/ed/4a/ec59835b868d89864ec563404136ecee6d954370df3d26b68a
+Successfully built GDAL
+Installing collected packages: GDAL
+Successfully installed GDAL-2.4.2
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ vi ~/.profile
+```
+
+### update the .profile file 
+
+.p# Install gdal/ogr on ubuntu 
+Reference: <https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html>
+
+NOT IN a conda venv environment, as the script is not launched from a python venv. So the global python version of the remote dev/lab server and modules will be used. 
+```
+sudo apt-get update && \
+    sudo apt-get install -y software-properties-common && \
+    sudo rm -rf /var/lib/apt/lists/*
+    
+sudo add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
+    && sudo apt-get install -y gdal-bin \
+    && sudo apt-get install -y libgdal-dev \
+    && sudo apt-get install -y python3-pip \
+    && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
+    && export C_INCLUDE_PATH=/usr/include/gdal \
+    && sudo ogrinfo --version \
+    # fix an error in the installation
+    && sudo pip3 install --upgrade --no-cache-dir setuptools==41.0.0 \
+    && sudo pip3 install GDAL==2.4.2    
+``` 
+
+Some error can occur when installing gdal python module
+
+```
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ pip3 install GDAL==2.4.2
+Error processing line 1 of /home/vince/anaconda3/envs/aide/lib/python3.7/site-packages/distutils-precedence.pth:
+
+  Traceback (most recent call last):
+    File "/home/vince/anaconda3/envs/aide/lib/python3.7/site.py", line 168, in addpackage
+      exec(line)
+    File "<string>", line 1, in <module>
+  ModuleNotFoundError: No module named '_distutils_hack'
+
+Remainder of file ignored
+Collecting GDAL==2.4.2
+  Using cached GDAL-2.4.2.tar.gz (564 kB)
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: GDAL
+  Building wheel for GDAL (setup.py) ... done
+  Created wheel for GDAL: filename=GDAL-2.4.2-cp37-cp37m-linux_x86_64.whl size=2345436 sha256=b2bc1d6e9debc0e8786dc99392c877fd1922634b3e7bc096509aeeb713ac6d38
+  Stored in directory: /home/vince/.cache/pip/wheels/2d/ed/4a/ec59835b868d89864ec563404136ecee6d954370df3d26b68a
+Successfully built GDAL
+Installing collected packages: GDAL
+Successfully installed GDAL-2.4.2
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ vi ~/.profile
+```
+
+# update the .profile file 
+
+.profile file: 
+```
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$ cat ~/.profile
+export AIDE_CONFIG_PATH=/home/vince/aerial_wildlife_detection/config/settings.ini
+export AIDE_MODULES=LabelUI,AIController,FileServer,AIWorker
+export PYTHONPATH=/home/vince/aerial_wildlife_detection
+export CPLUS_INCLUDE_PATH=/usr/include/gdal
+export C_INCLUDE_PATH=/usr/include/gdal
+source .bashrc
+(aide) vince@vince-VirtualBox:~/aerial_wildlife_detection$
+```
 
 ### Launch the modules
 
