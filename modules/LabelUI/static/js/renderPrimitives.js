@@ -240,8 +240,19 @@ class MapOlElement extends AbstractRenderElement {
     }
 
     clearSelection() {
+
         // this will clear currently selected features
         this.features.clear();
+
+        // reset the origin row/column of the tile
+        var mapControls = this.olmap.getControls();
+        mapControls.forEach(el => {
+            if (el.element.firstChild.id === "tileRowCol") {
+                let colRow = "No tile selected"
+                el.element.firstChild.innerHTML = colRow;
+            }
+        });
+
         this.render();
     }
 
@@ -316,7 +327,7 @@ class MapOlElement extends AbstractRenderElement {
                         // code snippet from regex101.com
                         const regex = /.*(\d{2})_(\d{2})\.jpg/gm;
                         let m;
-                        let colRow = "Row 00 - Col 00"
+                        let colRow = "No tile selected"
                         while ((m = regex.exec(location)) !== null) {
                             // This is necessary to avoid infinite loops with zero-width matches
                             if (m.index === regex.lastIndex) {
