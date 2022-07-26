@@ -9,6 +9,10 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.3.1 tile_image_favorits_groups vincent.lefalher@usherbrooke.ca 2022-07-26 
+- (AIDE+MELCC#33) Dans l'interface d'annotation ajouter le id de la tuile, et la ligne et colonne
+- Tag AIDE+MELCC-1.6
+
 v1.3 branch tile_image_favorits_groups vincent.lefalher@usherbrooke.ca 2022-07-18 
 - new document and screenshots to setup Pycharm (remote ssh, remote python interpreter, remote debug)
 - updated doc to install AIDE for MELCC (anaconda, ogrgdal)
