@@ -27,7 +27,6 @@ if not 'AIDE_MODULES' in os.environ:
     raise ValueError('Missing system environment variable "AIDE_MODULES".')
 config = Config()
 
-
 # parse AIDE modules and set up queues
 queues = []
 aideModules = os.environ['AIDE_MODULES'].split(',')
@@ -41,37 +40,35 @@ for m in aideModules:
     elif module == 'aiworker':
         queues.append(Queue('AIWorker'))
     elif module == 'labelui':
-        queues.append(Queue('ModelMarketplace'))        #TODO: allow outsourcing? Move to FileServer?
+        queues.append(Queue('ModelMarketplace'))  # TODO: allow outsourcing? Move to FileServer?
 
 queues.extend([
     Broadcast('aide_broadcast'),
-    Queue('aide@'+celery.utils.nodenames.gethostname())
+    Queue('aide@' + celery.utils.nodenames.gethostname())
 ])
 
-
-
 app = Celery('AIDE',
-            broker=config.getProperty('AIController', 'broker_URL'),        #TODO
-            backend=config.getProperty('AIController', 'result_backend'))   #TODO
+             broker=config.getProperty('AIController', 'broker_URL'),  # TODO
+             backend=config.getProperty('AIController', 'result_backend'))  # TODO
 app.conf.update(
-    result_backend=config.getProperty('AIController', 'result_backend'),    #TODO
+    result_backend=config.getProperty('AIController', 'result_backend'),  # TODO
     task_ignore_result=False,
     result_persistent=True,
-    accept_content = ['json'],
-    task_serializer = 'json',
-    result_serializer = 'json',
-    task_track_started = True,
-    broker_pool_limit=None,                 # required to avoid peer connection resets
-    broker_heartbeat = 0,                   # required to avoid peer connection resets
-    worker_max_tasks_per_child = 1,         # required to free memory (also CUDA) after each process
+    accept_content=['json'],
+    task_serializer='json',
+    result_serializer='json',
+    task_track_started=True,
+    broker_pool_limit=None,  # required to avoid peer connection resets
+    broker_heartbeat=0,  # required to avoid peer connection resets
+    worker_max_tasks_per_child=1,  # required to free memory (also CUDA) after each process
     # task_default_rate_limit = 3,            #TODO
-    worker_prefetch_multiplier = 1,         #TODO
-    task_acks_late = True,
-    task_create_missing_queues = True,
-    task_queues = tuple(queues),
-    task_routes = {
+    worker_prefetch_multiplier=1,  # TODO
+    task_acks_late=True,
+    task_create_missing_queues=True,
+    task_queues=tuple(queues),
+    task_routes={
         'general.get_worker_details': {
-            'queue': 'aide@'+celery.utils.nodenames.gethostname(),
+            'queue': 'aide@' + celery.utils.nodenames.gethostname(),
             'routing_key': 'worker_details'
         },
         'AIController.get_training_images': {
@@ -155,9 +152,8 @@ app.conf.update(
             'routing_key': 'requestModelDownload'
         }
     }
-    #task_default_queue = Broadcast('aide_admin')
+    # task_default_queue = Broadcast('aide_admin')
 )
-
 
 # initialize appropriate consumer functionalities
 from util import celeryWorkerCommons
@@ -165,15 +161,19 @@ from util import celeryWorkerCommons
 num_modules = 0
 if 'aicontroller' in aideModules:
     from modules.AIController.backend import celery_interface as aic_int
+
     num_modules += 1
 if 'aiworker' in aideModules:
     from modules.AIWorker.backend import celery_interface as aiw_int
+
     num_modules += 1
 if 'labelui' in aideModules:
     from modules.ModelMarketplace.backend import celery_interface as mm_int
+
     num_modules += 1
 if 'fileserver' in aideModules:
     from modules.DataAdministration.backend import celery_interface as da_int
+
     num_modules += 1
 
     # scanning project folders for new images: set up periodic task
@@ -182,7 +182,6 @@ if 'fileserver' in aideModules:
         @app.on_after_configure.connect
         def setup_periodic_tasks(sender, **kwargs):
             sender.add_periodic_task(scanInterval, da_int.watchImageFolders.s())
-
 
 if __name__ == '__main__':
     # launch Celery consumer

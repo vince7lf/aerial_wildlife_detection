@@ -8,23 +8,22 @@
 
 launchCeleryBeat=false
 
-IFS=',' read -ra ADDR <<< "$AIDE_MODULES"
+IFS=',' read -ra ADDR <<<"$AIDE_MODULES"
 for i in "${ADDR[@]}"; do
-    module="$(echo "$i" | tr '[:upper:]' '[:lower:]')";
-    if [ "$module" == "fileserver" ]; then
-        folderWatchInterval=$(python util/configDef.py --section=FileServer --parameter=watch_folder_interval --fallback=60);
-        if [ $folderWatchInterval -gt 0 ]; then
-            launchCeleryBeat=true;
-        fi
+  module="$(echo "$i" | tr '[:upper:]' '[:lower:]')"
+  if [ "$module" == "fileserver" ]; then
+    folderWatchInterval=$(python util/configDef.py --section=FileServer --parameter=watch_folder_interval --fallback=60)
+    if [ $folderWatchInterval -gt 0 ]; then
+      launchCeleryBeat=true
     fi
+  fi
 done
 
-
 if [ $launchCeleryBeat ]; then
-    # folder watching interval specified; enable Celery beat
-	tempDir="$(python util/configDef.py --section=FileServer --parameter=tempfiles_dir --fallback=/tmp)/aide/celery/";
-    mkdir -p $tempDir;
-    celery -A celery_worker worker -B -s $tempDir --hostname aide@%h --loglevel INFO -f /app/logs/celery_worker.log
+  # folder watching interval specified; enable Celery beat
+  tempDir="$(python util/configDef.py --section=FileServer --parameter=tempfiles_dir --fallback=/tmp)/aide/celery/"
+  mkdir -p $tempDir
+  celery -A celery_worker worker -B -s $tempDir --hostname aide@%h --loglevel INFO -f /home/vince/app/logs/celery_worker.log
 else
-	celery -A celery_worker worker --hostname aide@%h --loglevel INFO -f /app/logs/celery_worker.log
+  celery -A celery_worker worker --hostname aide@%h --loglevel INFO -f /home/vince/app/logs/celery_worker.log
 fi
