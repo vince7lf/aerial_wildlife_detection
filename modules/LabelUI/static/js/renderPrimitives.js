@@ -181,30 +181,28 @@ class MapOlElement extends AbstractRenderElement {
         this.mlSelectedFeatures = new Set(); // monolabelling mode; selected features for the label selected
 
         this.tileStyleRaw = new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: [0, 0, 0, 0]
-            }),
+            // fill: new ol.style.Fill({
+            //     color: [0, 0, 0, 0]
+            // }),
             stroke: new ol.style.Stroke({
-                color: [255, 0, 0, 0.8],
-                width: 1,
-                lineCap: 'round'
+                color: [255, 20, 20, 1],
+                width: 1.5
             })
         });
 
         this.tileStyleAnnoted = new ol.style.Style({
-            fill: new ol.style.Fill({
-                color: [148, 162, 177, 0.5]
-            }),
+            // fill: new ol.style.Fill({
+            //     color: [148, 162, 177, 0.2]
+            // }),
             stroke: new ol.style.Stroke({
-                color: [255, 0, 0, 0.8],
-                width: 1,
-                lineCap: 'round'
-            })
+                color: [20, 20, 255, 0.7],
+                width: 4
+            }),
         });
         this.tileStyleSelected = new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: 'rgba(200,20,20,0.8)',
-                width: 5,
+                color: 'rgba(20, 20, 255, 1)',
+                width: 7
             }),
         });
 
