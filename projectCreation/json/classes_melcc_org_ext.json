@@ -12898,20 +12898,6 @@
       "vascan_statut_repartition": "Indigène"
     },
     {
-      "uuid": "01405024242132312",
-      "name": "Kalmia angustifolia-test-vlf",
-      "color": "#095797",
-      "vascan_id": "-1",
-      "bryoquel_id": "5529",
-      "coleo_vernacular_fr": "kalmia à feuilles étroites",
-      "coleo_vernacular_en": "sheep laurel",
-      "vascan_port": "Arbuste",
-      "vascan_statut_repartition": "Indigène",
-      id3=-1
-      id4=-1
-      id5=-1
-    },
-    {
       "name": "Kalmia polifolia",
       "color": "#095797",
       "vascan_id": "5533",

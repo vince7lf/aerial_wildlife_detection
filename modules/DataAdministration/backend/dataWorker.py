@@ -871,14 +871,14 @@ class DataWorker:
         if not is_segmentation:
             # join label classes
             lcStr = sql.SQL('''
-                    JOIN (SELECT id AS lcID, name AS labelclass_name, idx AS labelclass_index
+                    JOIN (SELECT id AS lcID, name AS labelclass_name, idx AS labelclass_index, vascan_id
                         FROM {id_lc}
                     ) AS lc
                     ON al.label = lc.lcID
                 ''').format(
                 id_lc=sql.Identifier(project, 'labelclass')
             )
-            queryFields.extend(['labelclass_name', 'labelclass_index'])
+            queryFields.extend(['labelclass_name', 'labelclass_index', 'vascan_id'])
         else:
             lcStr = sql.SQL('')
 
