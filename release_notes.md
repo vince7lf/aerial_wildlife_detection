@@ -9,6 +9,9 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.3.2 tile_image_favorits_groups vincent.lefalher@usherbrooke.ca 2022-07-29 
+- (AIDE+MELCC#32) Exporte avec les annotations les champs vascan_id, bryoquel_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province, vascan_port, vascan_statut_repartition, tsn, coleo_category
+
 v1.3.1 tile_image_favorits_groups vincent.lefalher@usherbrooke.ca 2022-07-26 
 - (AIDE+MELCC#33) Dans l'interface d'annotation ajouter le id de la tuile, et la ligne et colonne
 - Tag AIDE+MELCC-1.6
