@@ -9,6 +9,10 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.3.3 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-08-01 
+- (AIDE+MELCC#38) Fix image docker build issue
+- add scripts and comment about launching AIDE+MELCC in GCP 
+
 v1.3.2 tile_image_favorits_groups vincent.lefalher@usherbrooke.ca 2022-07-29 
 - (AIDE+MELCC#32) Exporte avec les annotations les champs vascan_id, bryoquel_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province, vascan_port, vascan_statut_repartition, tsn, coleo_category
 

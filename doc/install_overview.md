@@ -71,3 +71,23 @@ Here's how to install and launch AIDE with Docker on the current machine:
 See [here](install.md) for instructions on configuring an instance of AIDE.
 
 After that, see [here](launch_aide.md) for instructions on launching an instance of AIDE.
+
+## Google Cloud Platform GCP
+
+Script that start the AIDE instance everyday : 
+
+```
+#! /bin/bash
+cd /app/aerial_wildlife_detection/docker
+sudo service docker stop
+sudo service docker start
+git checkout AIDE+MELCC-1.5
+git pull
+sudo docker-compose build
+sudo docker-compose up &
+```
+
+Wait 2 minutes until it completely started. Then launch the respective, URL port 8080.
+
+* remote dev : <http://206.12.94.82:8080/>
+* GCP : <http://35.208.225.49:8080/>
