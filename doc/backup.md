@@ -89,9 +89,9 @@ By default the application folder on the host is _/app/aerial_wildlife_detection
 
 The application folder in the container is _/home/aide/app_ and is mapped to that folder.
 
-| host                                   | container             |
-|----------------------------------------|-----------------------| 
-| /app/aerial_wildlife_detection/backup | /home/aide/app/backup | 
+| host                                  | container             |
+|---------------------------------------|-----------------------|
+| /app/aerial_wildlife_detection/backup | /home/aide/app/backup |
 
 From the host, you can _scp_ the dump file to another host. 
 
@@ -105,18 +105,7 @@ ubuntu@tes2:/app/images$ scp /app/aerial_wildlife_detection/backup/<hostname>-ai
 
 Start the container, wait for the application to start, and then stop it manually. Make the restore, and then restart manually the application to test .Finally if everything is good, restart the complete container and run some regression testing again.
  
-Here are the steps :
-1. Start the container and test that the application starts and works
-2. Connect to the container bash
-3. Stop the application manually
-4. Backup the current application database and images
-5. Restore the new backup and images
-6. Start the application manually
-7. Test
-8. When everything is fine, exit the container bash
-9. Restart the container
-10. Test
-11. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
+Refer to the [detailed step](#steps) before proceeding.   
 
 ## Images
 
@@ -162,11 +151,133 @@ drwxr-xr-x 3 root root  21 Sep 27  2021 tests_vincent
 From the host, you can _tar_ the images folder:
 
 ```
-ubuntu@tes2:/app/images$ tar -cvf images-.tar <hostname>-aide_images-`date +%Y%m%dT%H%M%S` -C /app/var/lib/docker/volumes/aide_images/_data .  
+ubuntu@tes2:/app/images$ tar -cvf /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data .  
 ```
 
 ### Transfer the images
 
-After taring the images folder, you can use the _scp_ command to copy them to the other host.    
+After taring the images folder, you can use the _scp_ command to copy it to the other host.
+
+```
+ubuntu@tes2:/app/images$ scp /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar user@host:/path/to/app/folder/backup   
+```
 
 ### Restore the images
+
+> **Note : Before restoring the dump, do not have the application running.**
+
+Refer to the [detailed step](#steps) before proceeding.   
+
+To restore the images, _untar_ the tar file inside volume location of the backup host.
+
+```
+ubuntu@tes2:/app/images$ tar -xvf /app/aerial_wildlife_detection/backup/<hostname>-aide_images-<tar datetime>.tar -C /app/var/lib/docker/volumes/aide_images/_data    
+```
+
+## <a name="steps"></a>Detailed steps
+
+Here are the steps to apply a complete backup of the database and images:
+
+1. Start the container and test that the application starts and works
+2. Connect to the container bash
+3. Stop the application manually
+4. Backup the current application database and images
+5. Restore the new backup and images
+6. Start the application manually
+7. Test
+8. When everything is fine, exit the container bash
+9. Restart the container
+10. Test
+11. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
+
+
+1. [From the host system] Start the container and test that the application starts and works
+
+```
+#! /bin/bash
+cd /app/aerial_wildlife_detection/docker
+sudo service docker stop
+sudo service docker start
+git checkout AIDE+MELCC-<tag>
+git pull
+sudo docker-compose build
+sudo docker-compose up &
+```
+
+Wait until completely started, including celery workers. 
+
+Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
+
+Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
+
+2. [From the host system] Connect to the container bash
+
+`sudo docker exec -it docker_aide_app_1 /bin/bash` 
+
+Result will be a prompt inside the container. like `root@aide_app_host:/home/aide/app#`.  
+
+3. [Within the container] Stop the application manually with the command provided. 
+
+`AIDE.sh stop`
+
+Wait until completely stopped, including celery workers. 
+
+No more _celery_ or _gunicorn_ process should be up and running (`ps -ef`).
+
+4. [Within the container] Backup the current application database and images
+
+Data : `sudo -u postgres pg_dump -Fc -d ailabeltooldb > ./backup/<hostname>-ailabeltooldb-`date +%Y%m%dT%H%M%S`-org.dump`
+
+Images : `tar -cvf ./backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`-org.tar -C /home/aide/images .`
+
+5. [Within the container] Restore the new backup and images
+
+Data : `sudo -u postgres pg_restore -Fc -d ailabeltooldb > ./backup/<hostname>-ailabeltooldb-<dump datetime>.dump`
+
+Images : `tar -xvf ./backup/<hostname>-aide_images-<tar datetime>.tar -C /home/aide/images`
+
+6. [Within the container] Start the application manually
+
+`AIDE.sh stop`
+
+Wait until completely started, including celery workers. 
+
+Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
+
+7. [From the host system] Test
+
+Wait until the system is up.
+
+Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
+
+8. When everything is fine, exit the container bash
+
+Hit CTRL-D or `exit` command.
+
+9. [From the host system] Restart the container
+
+```
+#! /bin/bash
+sudo docker-compose down
+cd /app/aerial_wildlife_detection/docker
+sudo service docker stop
+sudo service docker start
+git checkout AIDE+MELCC-<tag>
+git pull
+sudo docker-compose build
+sudo docker-compose up &
+```
+
+Wait until completely started, including celery workers. 
+
+Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
+
+Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
+
+10. [From the host system] Test
+
+Wait until the system is up.
+
+Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
+
+11. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 

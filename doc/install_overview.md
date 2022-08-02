@@ -46,6 +46,7 @@ Here's how to install and launch AIDE with Docker on the current machine:
     ```bash
         cd docker
         sudo docker-compose build
+        # or sudo docker-compose build --no-cache to rebuild completely
         cd ..
     ```
 6. Launch:

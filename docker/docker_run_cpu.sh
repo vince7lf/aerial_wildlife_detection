@@ -1,3 +1,6 @@
+#!/bin/bash
+set -x
+
 docker volume ls | grep -q aide_images || docker volume create aide_images
 docker volume ls | grep -q aide_db_data || docker volume create aide_db_data
 
