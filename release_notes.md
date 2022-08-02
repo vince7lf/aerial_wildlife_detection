@@ -9,6 +9,10 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+v1.3.4 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-08-02 
+- (AIDE+MELCC#38) When building docker image on the virtual box image, error popped again. Moving the fix oin top of the script.
+- add backup.md file to help doing backups and restore of the database and images.    
+
 v1.3.3 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-08-01 
 - (AIDE+MELCC#38) Fix image docker build issue
 - add scripts and comment about launching AIDE+MELCC in GCP 
