@@ -182,13 +182,15 @@ Here are the steps to apply a complete backup of the database and images:
 2. Connect to the container bash
 3. Stop the application manually
 4. Backup the current application database and images
-5. Restore the new backup and images
-6. Start the application manually
-7. Test
-8. When everything is fine, exit the container bash
-9. Restart the container
-10. Test
-11. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
+5. Remove the database
+6. Remove the images
+7. Restore the new backup and images
+8. Start the application manually
+9. Test
+10. When everything is fine, exit the container bash
+11. Restart the container
+12. Test
+13. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
 
 
 1. [From the host system] Start the container and test that the application starts and works
@@ -230,13 +232,23 @@ Data : `sudo -u postgres pg_dump -Fc -d ailabeltooldb > ./backup/<hostname>-aila
 
 Images : `tar -cvf ./backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`-org.tar -C /home/aide/images .`
 
-5. [Within the container] Restore the new backup and images
+5. [Within the container] Remove the database
+
+Run the psql command to remove the database ailabeltooldb. 
+And recreate it. 
+`sudo -u postgres pg_dump -Fc -d ailabeltooldb > ./backup/<hostname>-ailabeltooldb-`date +%Y%m%dT%H%M%S`-org.dump`
+
+
+6. [Within the container] Remove the images
+
+
+7. [Within the container] Restore the new backup and images
 
 Data : `sudo -u postgres pg_restore -Fc -d ailabeltooldb > ./backup/<hostname>-ailabeltooldb-<dump datetime>.dump`
 
 Images : `tar -xvf ./backup/<hostname>-aide_images-<tar datetime>.tar -C /home/aide/images`
 
-6. [Within the container] Start the application manually
+8. [Within the container] Start the application manually
 
 `AIDE.sh stop`
 
@@ -244,17 +256,17 @@ Wait until completely started, including celery workers.
 
 Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
 
-7. [From the host system] Test
+9. [From the host system] Test
 
 Wait until the system is up.
 
 Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
 
-8. When everything is fine, exit the container bash
+10. When everything is fine, exit the container bash
 
 Hit CTRL-D or `exit` command.
 
-9. [From the host system] Restart the container
+11. [From the host system] Restart the container
 
 ```
 #! /bin/bash
@@ -274,10 +286,10 @@ Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
 
 Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
 
-10. [From the host system] Test
+12. [From the host system] Test
 
 Wait until the system is up.
 
 Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
 
-11. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
+13. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
