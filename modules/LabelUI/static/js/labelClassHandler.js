@@ -122,28 +122,41 @@ class LabelClass {
         var legendInactive = 'legend-inactive';
         if (this.parent.getActiveClassID() === this.classID) legendInactive = '';
 
+        var classID = this.classID;
         var id = 'labelLegend_' + this.classID;
         var colorStyle = 'background:' + this.color;
 
         // favorit
         // favorit button to select favorit label
         var onClickFavoritLabel = function (e) {
-            let hasClass = $('#favorit').hasClass('active');
-            if (hasClass) $('#favorit').removeClass('active')
-            else $('#favorit').addClass('active')
-            alert('favorit')
+            let id = "#alabelstar_" + classID
+            let hasClass = $(id).hasClass('btn-light');
+            if (hasClass) {
+                $(id).removeClass('btn-light')
+                $(id).addClass('btn-warning')
+            } else {
+                $(id).removeClass('btn-warning')
+                $(id).addClass('btn-light')
+            }
         }
 
-        var favoritLabelBtn = $('<button id="favorit" class="btn btn-sm btn-light" title="Favorit" style="margin-left:10px;"><img src="/static/interface/img/controls/folder-favorites.svg" style="height:22px" /></button>');
-        favoritLabelBtn.click(onClickFavoritLabel);
-        labelControl.append(favoritLabelBtn);
+        // label control for the favorit
+        var htmlStr = '<tr></tr>';
 
+        var htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + colorStyle + '"><span class="label-text">' + name + '</span></div></td>';
         if (altStyle) {
             id = 'labelLegend_alt_' + this.classID;
-            var markup = $('<div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + '"><div class="legend-color-dot" style="' + colorStyle + '"></div><span class="label-text">' + name + '</span><span id="star"></span></div>');
-        } else {
-            var markup = $('<div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + colorStyle + '"><span class="label-text">' + name + '</span><span id="star">⭐</span></div>');
+            htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + '"><div class="legend-color-dot" style="' + colorStyle + '"></div><span class="label-text">' + name + '</span></div></td>'
         }
+        var markup = $(htmlMarkup);
+
+        var htmlBtn = '<td><button type="button" id="alabelstar_' + this.classID + '" class="btn btn-sm btn-light" title="Favorit" style="height: 30px;"><img src="/static/interface/img/controls/folder-favorites.svg" style="width: 22px;"/></button></td>'
+        var favoritLabelBtn = $(htmlBtn);
+        favoritLabelBtn.click(onClickFavoritLabel);
+
+        var labelControl = $(htmlStr);
+        labelControl.append(markup)
+        labelControl.append(favoritLabelBtn)
 
         // setup click handler to activate label class
         markup.click(function () {
@@ -187,10 +200,10 @@ class LabelClass {
         }
 
         // save for further use
-        if (altStyle) this.markup_alt = markup;
-        else this.markup = markup;
+        if (altStyle) this.markup_alt = labelControl;
+        else this.markup = labelControl;
 
-        return markup;
+        return labelControl;
     }
 
 
@@ -318,7 +331,7 @@ class LabelClassGroup {
         if (this.markup != null) return this.markup;
 
         this.markup = $('<div class="labelGroup"></div>');
-        var childrenDiv = $('<div class="labelGroup-children"></div>');
+        var childrenDiv = $('<table class="labelGroup-children"></table>');
 
         // append all children
         for (var c = 0; c < this.children.length; c++) {

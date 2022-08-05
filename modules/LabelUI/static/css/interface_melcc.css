@@ -233,7 +233,7 @@ canvas {
     font-weight: bold;
     color: white;
     cursor: pointer;
-    margin: 10px;
+    margin: 2px;
     border-radius: 2px;
     padding-left: 10px;
     width: 260px;
@@ -266,6 +266,7 @@ canvas {
 
 .labelGroup-children {
     margin-left: 10px;
+    border-spacing:0;
 }
 .legend-inactive {
     background: #EEEEEE !important;
