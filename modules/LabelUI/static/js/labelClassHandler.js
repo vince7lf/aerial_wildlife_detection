@@ -129,14 +129,19 @@ class LabelClass {
         // favorit
         // favorit button to select favorit label
         var onClickFavoritLabel = function (e) {
-            let id = "#alabelstar_" + classID
-            let hasClass = $(id).hasClass('btn-light');
+            let id = "alabelstar_" + classID
+            let hasClass = $('#' + id).hasClass('btn-light');
             if (hasClass) {
-                $(id).removeClass('btn-light')
-                $(id).addClass('btn-warning')
+                $('#' + id).removeClass('btn-light')
+                $('#' + id).addClass('btn-warning')
+                // add it to the Favorit group
+                var clone = $('#' + id).parent().parent().clone(true).attr("id", id + '_favorit');
+                var parent = $('#10000001-1001-1001-1001-100000000001').find('.labelGroup-children');
+                clone.appendTo(parent);
             } else {
-                $(id).removeClass('btn-warning')
-                $(id).addClass('btn-light')
+                $('#' + id + '_favorit').remove();
+                $('#' + id).removeClass('btn-warning')
+                $('#' + id).addClass('btn-light')
             }
         }
 
@@ -330,7 +335,7 @@ class LabelClassGroup {
     getMarkup() {
         if (this.markup != null) return this.markup;
 
-        this.markup = $('<div class="labelGroup"></div>');
+        this.markup = $('<div class="labelGroup" id="' + this.id + '"></div>');
         var childrenDiv = $('<table class="labelGroup-children"></table>');
 
         // append all children
@@ -448,6 +453,41 @@ class LabelClassHandler {
         // initialize default rainbow colors
         window.initClassColors(window.classes.numClasses + 1)
         for (var c in window.classes['entries']) {
+            // special groupd Favorits, Tile and Image
+            // if empty (no annotation) need to add an empty 'entries' object so they will appear in the interface
+            if (['10000001-1001-1001-1001-100000000001', '20000002-2002-2002-2002-200000000002', '30000003-3003-3003-3003-300000000003'].includes(c)) {
+                var entry = window.classes['entries'][c];
+                if (!entry.hasOwnProperty('entries') || entry['entries'] === undefined || Object.keys(entry['entries']).length === 0) {
+                    entry['entries'] = {
+                        '00000000-0000-0000-0000-000000000000':
+                            {
+                                'id': '00000000-0000-0000-0000-000000000000',
+                                'name': 'dummy',
+                                'index': 1,
+                                'color': '#999999',
+                                'keystroke': null
+                            }
+                    };
+                }
+                var nextItem = window.parseClassdefEntry(c, window.classes['entries'][c], this);
+                // if (nextItem === null) continue;
+                //
+                // if (nextItem instanceof LabelClass) {
+                //     this.labelClasses[c] = nextItem;
+                // } else {
+                //     // append label class group's entries
+                //     this.labelClasses = {...this.labelClasses, ...nextItem.labelClasses};
+                // }
+                this.items.push(nextItem);
+
+                // append to div
+                this.classLegendDiv.append(nextItem.getMarkup());
+            }
+
+        }
+        for (var c in window.classes['entries']) {
+            if (['10000001-1001-1001-1001-100000000001', '20000002-2002-2002-2002-200000000002', '30000003-3003-3003-3003-300000000003'].includes(c)) continue;
+
             var nextItem = window.parseClassdefEntry(c, window.classes['entries'][c], this);
             if (nextItem === null) continue;
 

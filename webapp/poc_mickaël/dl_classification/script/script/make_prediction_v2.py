@@ -236,7 +236,7 @@ class Mosaic:
 
 
         for tile in self.listTile:
-            print 1.0*(tile.tile_number+1) / (self.nbTiles*1.0)
+            print(1.0*(tile.tile_number+1) / (self.nbTiles*1.0))
             cursor.execute('INSERT INTO prediction(tile_number, mosaic_id, model_id, class, geom, most_likely_class) VALUES (%s, %s, %s, %s, ST_GeomFromText(%s, 4326), %s)',
                            (tile.tile_number,self.mosaic_id, self.model_id,tile.classification, tile.geom, tile.mostLikelyClass,))
             conn.commit()

@@ -76,5 +76,5 @@ class_id = options.class_id
 nbImg = showClassSamples(train_x_path, train_y_path, class_id, outImg_path)
 
 
-print nbImg
+print(nbImg)
 
