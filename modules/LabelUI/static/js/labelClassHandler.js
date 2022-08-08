@@ -161,7 +161,7 @@ class LabelClass {
             // count favorits
             var nbFavorits = $('[id$=_favorit]').length;
             // if no favorits, set the message
-            if( nbFavorits === 0 ) {
+            if (nbFavorits === 0) {
                 $("#no_favorits").attr("style", "display:block");
             } else {
                 $("#no_favorits").attr("style", "display:none");
@@ -183,8 +183,8 @@ class LabelClass {
         favoritLabelBtn.click(onClickFavoritLabel);
 
         var labelControl = $(htmlStr);
-        labelControl.append(markup)
-        labelControl.append(favoritLabelBtn)
+        labelControl.append(markup);
+        labelControl.append(favoritLabelBtn);
 
         // setup click handler to activate label class
         markup.click(function () {
@@ -586,6 +586,8 @@ class LabelClassHandler {
                 $('#labelLegend_alt_' + labelClassInstance.classID).addClass('legend-inactive');
                 $('#labelLegend_' + labelClassInstance.classID + '_favorit').addClass('legend-inactive');
                 $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').addClass('legend-inactive');
+
+                // TODO : remove from tile and image group
             }
         }
     }
@@ -602,6 +604,8 @@ class LabelClassHandler {
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_' + labelClassInstance.classID + '_favorit').removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').removeClass('legend-inactive');
+
+            // TODO : add to tile and image group
         }
     }
 
@@ -617,8 +621,23 @@ class LabelClassHandler {
             this.activeClass = labelClassInstance;
             if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
                 window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
+
+                // add to tile and image group
+                var id = 'labelLegend_' + labelClassInstance.classID;
+                var clone = $('#' + id).parent().parent().clone(true);
+                clone.attr("id", id + '_ctn_tile');
+                id = 'labelLegend_' + labelClassInstance.classID;
+                var clonedLabel = clone.find('#' + id);
+                clonedLabel.attr("id", id + '_tile');
+                var parent = $('#20000002-2002-2002-2002-200000000002').find('.labelGroup-children');
+                clone.appendTo(parent);
+
             } else {
-                window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false)
+                window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false);
+
+                var id = 'labelLegend_' + labelClassInstance.classID;
+                $('#' + id + '_ctn_tile').remove();
+
             }
 
             $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
