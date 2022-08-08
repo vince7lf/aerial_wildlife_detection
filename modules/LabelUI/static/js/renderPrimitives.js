@@ -323,7 +323,7 @@ class MapOlElement extends AbstractRenderElement {
                 mapControls.forEach(el => {
                     if (el.element.firstChild.id === "tileRowCol") {
                         // code snippet from regex101.com
-                        const regex = /.*(\d{2})_(\d{2})\.jpg/gm;
+                        const regex = /.*(\d{1,2})_(\d{1,2})\.jpg/gm;
                         let m;
                         let colRow = "No tile selected"
                         while ((m = regex.exec(location)) !== null) {

@@ -100,6 +100,12 @@ class LabelClass {
 
     getMarkup(altStyle) {
 
+        if (this.classID === '90000009-9009-9009-9009-900000000009') {
+            var htmlMarkup = '<td id="no_favorits" style="display:block;">No favorits</td>';
+            var markup = $(htmlMarkup);
+
+            return markup;
+        }
         if (altStyle) {
             if (this.markup_alt != undefined && this.markup_alt != null) return this.markup_alt;
         } else {
@@ -135,13 +141,30 @@ class LabelClass {
                 $('#' + id).removeClass('btn-light')
                 $('#' + id).addClass('btn-warning')
                 // add it to the Favorit group
-                var clone = $('#' + id).parent().parent().clone(true).attr("id", id + '_favorit');
+                var clone = $('#' + id).parent().parent().clone(true);
+                clone.attr("id", id + '_ctn_favorit');
+                id = 'labelLegend_' + classID;
+                if (altStyle) {
+                    id = 'labelLegend_alt_' + classID;
+                }
+                var clonedLabel = clone.find('#' + id);
+                clonedLabel.attr("id", id + '_favorit');
                 var parent = $('#10000001-1001-1001-1001-100000000001').find('.labelGroup-children');
                 clone.appendTo(parent);
             } else {
-                $('#' + id + '_favorit').remove();
+                $('#' + id + '_ctn_favorit').remove();
                 $('#' + id).removeClass('btn-warning')
                 $('#' + id).addClass('btn-light')
+
+            }
+            // add dummy message no favorits if no favorits
+            // count favorits
+            var nbFavorits = $('[id$=_favorit]').length;
+            // if no favorits, set the message
+            if( nbFavorits === 0 ) {
+                $("#no_favorits").attr("style", "display:block");
+            } else {
+                $("#no_favorits").attr("style", "display:none");
             }
         }
 
@@ -459,9 +482,9 @@ class LabelClassHandler {
                 var entry = window.classes['entries'][c];
                 if (!entry.hasOwnProperty('entries') || entry['entries'] === undefined || Object.keys(entry['entries']).length === 0) {
                     entry['entries'] = {
-                        '00000000-0000-0000-0000-000000000000':
+                        '90000009-9009-9009-9009-900000000009':
                             {
-                                'id': '00000000-0000-0000-0000-000000000000',
+                                'id': '90000009-9009-9009-9009-900000000009',
                                 'name': 'dummy',
                                 'index': 1,
                                 'color': '#999999',
@@ -470,15 +493,6 @@ class LabelClassHandler {
                     };
                 }
                 var nextItem = window.parseClassdefEntry(c, window.classes['entries'][c], this);
-                // if (nextItem === null) continue;
-                //
-                // if (nextItem instanceof LabelClass) {
-                //     this.labelClasses[c] = nextItem;
-                // } else {
-                //     // append label class group's entries
-                //     this.labelClasses = {...this.labelClasses, ...nextItem.labelClasses};
-                // }
-                this.items.push(nextItem);
 
                 // append to div
                 this.classLegendDiv.append(nextItem.getMarkup());
@@ -570,6 +584,8 @@ class LabelClassHandler {
             if (!$('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
                 $('#labelLegend_' + labelClassInstance.classID).addClass('legend-inactive');
                 $('#labelLegend_alt_' + labelClassInstance.classID).addClass('legend-inactive');
+                $('#labelLegend_' + labelClassInstance.classID + '_favorit').addClass('legend-inactive');
+                $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').addClass('legend-inactive');
             }
         }
     }
@@ -584,6 +600,8 @@ class LabelClassHandler {
         if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
             $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
+            $('#labelLegend_' + labelClassInstance.classID + '_favorit').removeClass('legend-inactive');
+            $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').removeClass('legend-inactive');
         }
     }
 
@@ -605,6 +623,8 @@ class LabelClassHandler {
 
             $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).toggleClass('legend-inactive');
+            $('#labelLegend_' + labelClassInstance.classID + '_favorit').toggleClass('legend-inactive');
+            $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').toggleClass('legend-inactive');
 
             window.activeClassColor = this.getActiveColor();
         } else {
