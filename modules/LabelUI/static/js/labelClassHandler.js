@@ -100,11 +100,20 @@ class LabelClass {
 
     getMarkup(altStyle) {
 
-        if (this.classID === '90000009-9009-9009-9009-900000000009') {
-            var htmlMarkup = '<td id="no_favorits" style="display:block;">No favorits</td>';
-            var markup = $(htmlMarkup);
+        if (['90000009-9009-9009-9009-900000000009', '80000008-8008-8008-8008-800000000008', '70000007-7007-7007-7007-700000000007'].includes(this.classID)) {
+            var groupProps = [
+                ['90000009-9009-9009-9009-900000000009', 'no_favorits', 'No favorits'],
+                ['80000008-8008-8008-8008-800000000008', 'no_label_tile', 'No labels'],
+                ['70000007-7007-7007-7007-700000000007', 'no_label_image', 'No labels'],
+            ];
+            for (var i = 0; i < groupProps.length; i++) {
+                if (this.classID === groupProps[i][0]) {
+                    var htmlMarkup = '<td id="' + groupProps[i][1] + '" style="display:block;">' + groupProps[i][2] + '</td>';
+                    var markup = $(htmlMarkup);
 
-            return markup;
+                    return markup;
+                }
+            }
         }
         if (altStyle) {
             if (this.markup_alt != undefined && this.markup_alt != null) return this.markup_alt;
@@ -136,10 +145,10 @@ class LabelClass {
         // favorit button to select favorit label
         var onClickFavoritLabel = function (e) {
             let id = "alabelstar_" + classID
-            let hasClass = $('#' + id).hasClass('btn-light');
+            let hasClass = $("[id^='" + id + "']").hasClass('btn-light');
             if (hasClass) {
-                $('#' + id).removeClass('btn-light')
-                $('#' + id).addClass('btn-warning')
+                $("[id^='" + id + "']").removeClass('btn-light')
+                $("[id^='" + id + "']").addClass('btn-warning')
                 // add it to the Favorit group
                 var clone = $('#' + id).parent().parent().clone(true);
                 clone.attr("id", id + '_ctn_favorit');
@@ -147,24 +156,24 @@ class LabelClass {
                 if (altStyle) {
                     id = 'labelLegend_alt_' + classID;
                 }
-                var clonedLabel = clone.find('#' + id);
+                var clonedLabel = clone.find("[id^='" + id + "']");
                 clonedLabel.attr("id", id + '_favorit');
                 var parent = $('#10000001-1001-1001-1001-100000000001').find('.labelGroup-children');
                 clone.appendTo(parent);
             } else {
                 $('#' + id + '_ctn_favorit').remove();
-                $('#' + id).removeClass('btn-warning')
-                $('#' + id).addClass('btn-light')
+                $("[id^='" + id + "']").removeClass('btn-warning')
+                $("[id^='" + id + "']").addClass('btn-light')
 
             }
             // add dummy message no favorits if no favorits
             // count favorits
-            var nbFavorits = $('[id$=_favorit]').length;
+            var nbFavorits = $("[id$='_favorit']").length;
             // if no favorits, set the message
             if (nbFavorits === 0) {
-                $("#no_favorits").attr("style", "display:block");
+                $("#10000001-1001-1001-1001-100000000001").find("#no_favorits").attr("style", "display:block");
             } else {
-                $("#no_favorits").attr("style", "display:none");
+                $("#10000001-1001-1001-1001-100000000001").find("#no_favorits").attr("style", "display:none");
             }
         }
 
@@ -481,10 +490,11 @@ class LabelClassHandler {
             if (['10000001-1001-1001-1001-100000000001', '20000002-2002-2002-2002-200000000002', '30000003-3003-3003-3003-300000000003'].includes(c)) {
                 var entry = window.classes['entries'][c];
                 if (!entry.hasOwnProperty('entries') || entry['entries'] === undefined || Object.keys(entry['entries']).length === 0) {
+                    let id = '90000009-9009-9009-9009-900000000009'.replaceAll(9, 9 + (1 - c[0])); // 1 - c[0] is 0 or a negative value
                     entry['entries'] = {
-                        '90000009-9009-9009-9009-900000000009':
+                        [id]:
                             {
-                                'id': '90000009-9009-9009-9009-900000000009',
+                                'id': id,
                                 'name': 'dummy',
                                 'index': 1,
                                 'color': '#999999',
@@ -584,8 +594,6 @@ class LabelClassHandler {
             if (!$('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
                 $('#labelLegend_' + labelClassInstance.classID).addClass('legend-inactive');
                 $('#labelLegend_alt_' + labelClassInstance.classID).addClass('legend-inactive');
-                $('#labelLegend_' + labelClassInstance.classID + '_favorit').addClass('legend-inactive');
-                $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').addClass('legend-inactive');
 
                 // TODO : remove from tile and image group
             }
@@ -602,10 +610,49 @@ class LabelClassHandler {
         if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
             $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
-            $('#labelLegend_' + labelClassInstance.classID + '_favorit').removeClass('legend-inactive');
-            $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').removeClass('legend-inactive');
 
             // TODO : add to tile and image group
+        }
+    }
+
+    addToGroup(classID, groupName, idGroup) {
+
+        // add to tile and image group
+        var id = 'labelLegend_' + classID;
+        var clone = $('#' + id).parent().parent().clone(true);
+        clone.attr("id", id + '_ctn_' + groupName);
+        id = 'labelLegend_' + classID;
+        var clonedLabel = clone.find('#' + id);
+        clonedLabel.attr("id", id + '_' + groupName);
+        var parent = $('#' + idGroup).find('.labelGroup-children');
+        clone.appendTo(parent);
+
+        // set the right highlight, same as the one selected
+        clonedLabel.removeClass('legend-inactive');
+
+        // Removes the label No labels under Tile group
+        // count labels for tiles
+        var nb = $("[id$='_tile']").length;
+        // if no labels, set the message
+        if (nb > 0) { // no label yet, then that the first one
+            $("#20000002-2002-2002-2002-200000000002").find("#no_label_tile").attr("style", "display:none");
+        }
+
+    }
+
+    removeFromGroup(classID, groupName) {
+        var id = 'labelLegend_' + classID;
+        $('#' + id + '_ctn_' + groupName).remove();
+
+        // same for the one in the favorit if any, remove the highlight
+
+
+        // Removes the label No labels under Tile group
+        // count labels for tiles
+        var nb = $("[id$='_tile']").length;
+        // if no labels, set the message
+        if (nb === 1) { // still not refreshed yet, last one being removed
+            $("#20000002-2002-2002-2002-200000000002").find("#no_label_tile").attr("style", "display:block");
         }
     }
 
@@ -622,30 +669,28 @@ class LabelClassHandler {
             if ($('#labelLegend_' + labelClassInstance.classID).hasClass('legend-inactive')) {
                 window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
 
-                // add to tile and image group
-                var id = 'labelLegend_' + labelClassInstance.classID;
-                var clone = $('#' + id).parent().parent().clone(true);
-                clone.attr("id", id + '_ctn_tile');
-                id = 'labelLegend_' + labelClassInstance.classID;
-                var clonedLabel = clone.find('#' + id);
-                clonedLabel.attr("id", id + '_tile');
-                var parent = $('#20000002-2002-2002-2002-200000000002').find('.labelGroup-children');
-                clone.appendTo(parent);
+                this.addToGroup(labelClassInstance.classID, "tile", '20000002-2002-2002-2002-200000000002');
 
             } else {
                 window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false);
 
-                var id = 'labelLegend_' + labelClassInstance.classID;
-                $('#' + id + '_ctn_tile').remove();
-
+                this.removeFromGroup(labelClassInstance.classID, "tile");
             }
 
             $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).toggleClass('legend-inactive');
-            $('#labelLegend_' + labelClassInstance.classID + '_favorit').toggleClass('legend-inactive');
-            $('#labelLegend_alt_' + labelClassInstance.classID + '_favorit').toggleClass('legend-inactive');
+
+            var str = ['labelLegend', labelClassInstance.classID, 'favorit'].join('_');
+            $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").toggleClass('legend-inactive');
+            str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
+            $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").toggleClass('legend-inactive');
 
             window.activeClassColor = this.getActiveColor();
+
+            // refresh labels of the images
+            // pour chaque tuile, aller chercher les labels
+            // rajouter le nouveau sauf s'il est déjà la
+            // highligth ceuux de la tuile
         } else {
             // mono-labelling mode
 
