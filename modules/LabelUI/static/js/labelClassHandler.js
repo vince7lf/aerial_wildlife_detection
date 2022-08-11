@@ -180,7 +180,7 @@ class LabelClass {
         // label control for the favorit
         var htmlStr = '<tr></tr>';
 
-        var htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + colorStyle + '"><span class="label-text">' + name + '</span></div></td>';
+        var htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + colorStyle + '"><span id="label-count"></span><span class="label-text">' + name + '</span></div></td>';
         if (altStyle) {
             id = 'labelLegend_alt_' + this.classID;
             htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + '"><div class="legend-color-dot" style="' + colorStyle + '"></div><span class="label-text">' + name + '</span></div></td>'
@@ -595,7 +595,21 @@ class LabelClassHandler {
                 $('#labelLegend_' + labelClassInstance.classID).addClass('legend-inactive');
                 $('#labelLegend_alt_' + labelClassInstance.classID).addClass('legend-inactive');
 
-                // TODO : remove from tile and image group
+                var str = ['labelLegend', labelClassInstance.classID, 'favorit'].join('_');
+                $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").addClass('legend-inactive');
+                str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
+                $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").addClass('legend-inactive');
+
+                var str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
+                $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").addClass('legend-inactive');
+                str = ['labelLegend_alt', labelClassInstance.classID, 'tile'].join('_')
+                $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").addClass('legend-inactive');
+
+                var str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
+                $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").addClass('legend-inactive');
+                str = ['labelLegend_alt', labelClassInstance.classID, 'image'].join('_')
+                $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").addClass('legend-inactive');
+
             }
         }
     }
@@ -611,7 +625,21 @@ class LabelClassHandler {
             $('#labelLegend_' + labelClassInstance.classID).removeClass('legend-inactive');
             $('#labelLegend_alt_' + labelClassInstance.classID).removeClass('legend-inactive');
 
-            // TODO : add to tile and image group
+            var str = ['labelLegend', labelClassInstance.classID, 'favorit'].join('_');
+            $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").removeClass('legend-inactive');
+            str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
+            $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").removeClass('legend-inactive');
+
+            var str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
+            $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").removeClass('legend-inactive');
+            str = ['labelLegend_alt', labelClassInstance.classID, 'tile'].join('_')
+            $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").removeClass('legend-inactive');
+
+            var str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
+            $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").removeClass('legend-inactive');
+            str = ['labelLegend_alt', labelClassInstance.classID, 'image'].join('_')
+            $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").removeClass('legend-inactive');
+
         }
     }
 
@@ -622,37 +650,84 @@ class LabelClassHandler {
         var clone = $('#' + id).parent().parent().clone(true);
         clone.attr("id", id + '_ctn_' + groupName);
         id = 'labelLegend_' + classID;
-        var clonedLabel = clone.find('#' + id);
+        var clonedLabel = $('#' + idGroup).find('#' + id + '_' + groupName);
+        if (clonedLabel.length > 0) {
+            // already there
+            // add count to the element
+            clonedLabel.attr("count", clonedLabel.length);
+            clonedLabel.find("#label-count").text("(" + clonedLabel.length + ") ");
+
+            return;
+        }
+        clonedLabel = clone.find('#' + id);
         clonedLabel.attr("id", id + '_' + groupName);
         var parent = $('#' + idGroup).find('.labelGroup-children');
         clone.appendTo(parent);
 
-        // set the right highlight, same as the one selected
-        clonedLabel.removeClass('legend-inactive');
-
         // Removes the label No labels under Tile group
         // count labels for tiles
-        var nb = $("[id$='_tile']").length;
+        var nb = $("[id$='_" + groupName + "']").length;
         // if no labels, set the message
         if (nb > 0) { // no label yet, then that the first one
-            $("#20000002-2002-2002-2002-200000000002").find("#no_label_tile").attr("style", "display:none");
+            $('#' + idGroup).find("#no_label_" + groupName).attr("style", "display:none");
         }
-
     }
 
-    removeFromGroup(classID, groupName) {
-        var id = 'labelLegend_' + classID;
-        $('#' + id + '_ctn_' + groupName).remove();
+    removeFromGroup(classID, groupName, idGroup) {
+        if (groupName === "tile") {
+            var id = 'labelLegend_' + classID;
+            $('#' + id + '_ctn_' + groupName).remove();
+        } else {
+            // image group : do not remove is more than one
+            var id = 'labelLegend_' + classID;
+            var nb = $('#' + id + '_' + groupName).attr("count");
+            if (nb - 1 > 0) {
+                // update the count
+                $('#' + id + '_' + groupName).attr("count", nb - 1);
+                $('#' + id + '_' + groupName).find("#label-count").text("(" + (nb - 1) + ") ");
 
-        // same for the one in the favorit if any, remove the highlight
+            } else {
+                $('#' + id + '_ctn_' + groupName).remove();
+            }
+        }
 
-
-        // Removes the label No labels under Tile group
+        // show the label No labels under Tile group
         // count labels for tiles
-        var nb = $("[id$='_tile']").length;
+        var nb = $("[id$='_" + groupName + "']").length;
         // if no labels, set the message
         if (nb === 1) { // still not refreshed yet, last one being removed
-            $("#20000002-2002-2002-2002-200000000002").find("#no_label_tile").attr("style", "display:block");
+            $('#' + idGroup).find("#no_label_" + groupName).attr("style", "display:block");
+        }
+    }
+
+    updateTileGroup(labels) {
+        // removes all from the group
+        $('#20000002-2002-2002-2002-200000000002').find("tr[id^='labelLegend_']").remove();
+        // reset the label no group
+        $('#20000002-2002-2002-2002-200000000002').find("#no_label_tile").attr("style", "display:block");
+
+        if (labels === null) return;
+        for (const label of labels) {
+            this.addToGroup(label, "tile", '20000002-2002-2002-2002-200000000002');
+            // check if part of the tile
+            let id = 'labelLegend_' + label;
+            $('#20000002-2002-2002-2002-200000000002').find('#' + id + '_ctn_image').find('#' + id + '_image').removeClass('legend-inactive');
+        }
+    }
+
+    updateImageGroup(labels) {
+        if (labels === null) return;
+        for (const label of labels) {
+            this.addToGroup(label, "image", '30000003-3003-3003-3003-300000000003');
+            // check if part of the tile
+            let id = 'labelLegend_' + label;
+            var labelInTile = $('#20000002-2002-2002-2002-200000000002').find('#' + id + '_tile');
+            if (labelInTile.length === 0) {
+                // not there turn it off
+                $('#30000003-3003-3003-3003-300000000003').find('#' + id + '_ctn_image').find('#' + id + '_image').addClass('legend-inactive');
+            } else {
+                $('#30000003-3003-3003-3003-300000000003').find('#' + id + '_ctn_image').find('#' + id + '_image').removeClass('legend-inactive');
+            }
         }
     }
 
@@ -670,11 +745,13 @@ class LabelClassHandler {
                 window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), true)
 
                 this.addToGroup(labelClassInstance.classID, "tile", '20000002-2002-2002-2002-200000000002');
+                this.addToGroup(labelClassInstance.classID, "image", '30000003-3003-3003-3003-300000000003');
 
             } else {
                 window.dataHandler.updateActiveAnnotationLabel(this.getActiveClassID(), false);
 
-                this.removeFromGroup(labelClassInstance.classID, "tile");
+                this.removeFromGroup(labelClassInstance.classID, "tile", '20000002-2002-2002-2002-200000000002');
+                this.removeFromGroup(labelClassInstance.classID, "image", '30000003-3003-3003-3003-300000000003');
             }
 
             $('#labelLegend_' + labelClassInstance.classID).toggleClass('legend-inactive');
@@ -685,12 +762,19 @@ class LabelClassHandler {
             str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
             $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").toggleClass('legend-inactive');
 
+            var str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
+            $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").toggleClass('legend-inactive');
+            str = ['labelLegend_alt', labelClassInstance.classID, 'tile'].join('_')
+            $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").toggleClass('legend-inactive');
+
+            var str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
+            $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").toggleClass('legend-inactive');
+            str = ['labelLegend_alt', labelClassInstance.classID, 'image'].join('_')
+            $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").toggleClass('legend-inactive');
+
+
             window.activeClassColor = this.getActiveColor();
 
-            // refresh labels of the images
-            // pour chaque tuile, aller chercher les labels
-            // rajouter le nouveau sauf s'il est déjà la
-            // highligth ceuux de la tuile
         } else {
             // mono-labelling mode
 

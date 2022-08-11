@@ -1503,6 +1503,7 @@ class ClassificationMLEntry extends AbstractDataEntryEx {
         }
     }
 
+    // only when monolabelling mode
     setSelectedFeatures(features) {
         if (this instanceof ClassificationTileEntry) {
             if (this.imageEntry)

@@ -210,7 +210,7 @@ class DataHandler {
         // */
         // var presentClassIDs = this.getAllPresentClassIDs();
 
-        // //TODO: this is very expensive; replace with LUT on the long term...
+        // //TODO: this is very expensive; replace with LUT on the long term... Look Up Tables
         // var container = $('#legend-entries-active-container');
         // container.empty();
         // for(var key in presentClassIDs) {
@@ -791,6 +791,7 @@ class DataHandler {
     }
 
     tileSelected(tilename) {
+        var uniqLabels = new Set();
         for (var id in this.entriesStack) {
             if (this.entriesStack[id].fileName.indexOf(tilename) !== -1) {
 
@@ -803,6 +804,7 @@ class DataHandler {
                     let hasClass = $('#filter-selected-label').hasClass('active');
                     window.labelClassHandler.filterSelectedLabel(hasClass);
 
+                    window.labelClassHandler.updateTileGroup(this.entriesStack[id].getLabel());
 
                 } else {
                     // mono-labelling mode
@@ -845,9 +847,16 @@ class DataHandler {
                     this.setSelectedFeatures(features);
 
                 }
-                return;
+                // return;
             }
+            // update the image group
+            // also done if the image matches (code above)
+            let labels = this.entriesStack[id].getLabel();
+            if (labels !== null)
+                uniqLabels = new Set([...uniqLabels, ...labels].sort())
         }
+        window.labelClassHandler.updateImageGroup(uniqLabels);
+
     }
 
     tileLabels(tilename) {
