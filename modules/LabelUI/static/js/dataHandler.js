@@ -61,12 +61,17 @@ class DataHandler {
 
 
     clearSelection() {
+
+        window.activeEntryID = null;
+
         for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].clearSelection();
         }
         // clear tile group
         window.labelClassHandler.updateTileGroup(null);
         window.labelClassHandler.updateImageGroup(null);
+
+
     }
 
     setSelectedFeatures(features) {
@@ -808,6 +813,9 @@ class DataHandler {
                     let hasClass = $('#filter-selected-label').hasClass('active');
                     window.labelClassHandler.filterSelectedLabel(hasClass);
 
+                    // update the tile group
+                    window.labelClassHandler.updateTileGroup(new Set([...this.entriesStack[id].getLabel()].sort()))
+
                 } else {
                     // mono-labelling mode
                     // associate the label with the tile
@@ -848,9 +856,10 @@ class DataHandler {
                     var features = this.getTilesAssociatedWithLabel(window.labelClassHandler.getActiveClassID())
                     this.setSelectedFeatures(features);
 
+                    // update the tile group
+                    window.labelClassHandler.updateTileGroup(null)
+
                 }
-                // update the tile group
-                window.labelClassHandler.updateTileGroup(new Set([...this.entriesStack[id].getLabel()].sort()))
                 // return;
             }
             // update the image group

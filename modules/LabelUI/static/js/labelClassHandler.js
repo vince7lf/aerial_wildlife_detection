@@ -138,10 +138,10 @@ class LabelClass {
         // favorit button to select favorit label
         var onClickFavoritLabel = function (e) {
             let id = "alabelstar_" + classID;
-            let hasClass = $("[id^='" + id + "']").hasClass('btn-light');
+            let hasClass = $("[id^='" + id + "']").hasClass('label-favorit-unselected');
             if (hasClass) {
-                $("[id^='" + id + "']").removeClass('btn-light')
-                $("[id^='" + id + "']").addClass('btn-warning')
+                $("[id^='" + id + "']").removeClass('label-favorit-unselected')
+                $("[id^='" + id + "']").addClass('label-favorit-selected')
                 // add it to the Favorit group
                 var clone = $('#' + id).parent().parent().clone(true);
                 clone.attr("id", id + '_ctn_favorit');
@@ -160,8 +160,8 @@ class LabelClass {
                 clone.appendTo(parent);
             } else {
                 $('#' + id + '_ctn_favorit').remove();
-                $("[id^='" + id + "']").removeClass('btn-warning')
-                $("[id^='" + id + "']").addClass('btn-light')
+                $("[id^='" + id + "']").removeClass('label-favorit-selected')
+                $("[id^='" + id + "']").addClass('label-favorit-unselected')
 
             }
             // add dummy message no favorits if no favorits
@@ -185,7 +185,7 @@ class LabelClass {
         }
         var markup = $(htmlMarkup);
 
-        var htmlBtn = '<td><button type="button" id="alabelstar_' + this.classID + '" class="btn btn-sm btn-light" title="Favorit" style="height: 30px;"><img src="/static/interface/img/controls/folder-favorites.svg" style="width: 22px;"/></button></td>'
+        var htmlBtn = '<td><button type="button" id="alabelstar_' + this.classID + '" class="btn btn-sm btn-light label-favorit-unselected" title="Favorit" style="height: 28px; width: 35px"></button></td>'
         var favoritLabelBtn = $(htmlBtn);
         favoritLabelBtn.click(onClickFavoritLabel);
 
@@ -724,10 +724,10 @@ class LabelClassHandler {
 
         if (labels === null) return;
         for (const label of labels) {
-            this.addToGroup(label, "image", '30000003-3003-3003-3003-300000000003', countLabels[label]);
             // check if part of the tile
             // except if mono-labelling mode
             if (window.labelClassHandler.activeLabellingMode == false) {
+                this.addToGroup(label, "image", '30000003-3003-3003-3003-300000000003', countLabels[label]);
 
                 let id = 'labelLegend_' + label;
                 var labelInTile = $('#20000002-2002-2002-2002-200000000002').find('#' + id + '_tile');
@@ -748,6 +748,7 @@ class LabelClassHandler {
         if (window.labelClassHandler.activeLabellingMode == false) {
 
             // is there any tile selected ?
+            if(window.activeEntryID === null) return; // no active tile do nothing and return
 
             // click on another selected label : unselect it
             this.activeClass = labelClassInstance;
