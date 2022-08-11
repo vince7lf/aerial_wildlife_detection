@@ -67,9 +67,7 @@ window._rainbow = function (numOfSteps, step) {
 window.initClassColors = function (numColors) {
     window.defaultColors = [];
     for (var c = 0; c < numColors; c++) {
-        window.defaultColors.push(
-            window._rainbow(numColors, c)
-        );
+        window.defaultColors.push(window._rainbow(numColors, c));
     }
 }
 
@@ -101,14 +99,10 @@ class LabelClass {
     getMarkup(altStyle) {
 
         if (['90000009-9009-9009-9009-900000000009', '80000008-8008-8008-8008-800000000008', '70000007-7007-7007-7007-700000000007'].includes(this.classID)) {
-            var groupProps = [
-                ['90000009-9009-9009-9009-900000000009', 'no_favorits', 'No favorits'],
-                ['80000008-8008-8008-8008-800000000008', 'no_label_tile', 'No labels'],
-                ['70000007-7007-7007-7007-700000000007', 'no_label_image', 'No labels'],
-            ];
+            var groupProps = [['90000009-9009-9009-9009-900000000009', 'no_favorits', 'No favorits'], ['80000008-8008-8008-8008-800000000008', 'no_label_tile', 'No labels'], ['70000007-7007-7007-7007-700000000007', 'no_label_image', 'No labels'],];
             for (var i = 0; i < groupProps.length; i++) {
                 if (this.classID === groupProps[i][0]) {
-                    var htmlMarkup = '<td id="' + groupProps[i][1] + '" style="display:block;">' + groupProps[i][2] + '</td>';
+                    var htmlMarkup = '<tr><td id="' + groupProps[i][1] + '" style="display:block;">' + groupProps[i][2] + '</td><td></td></tr>';
                     var markup = $(htmlMarkup);
 
                     return markup;
@@ -124,8 +118,7 @@ class LabelClass {
         var self = this;
         var name = this.name;
         var hasKeystroke = false;
-        if (this.keystroke != null && this.keystroke != undefined && Number.isInteger(this.keystroke) &&
-            this.keystroke > 0 && this.keystroke <= 9) {
+        if (this.keystroke != null && this.keystroke != undefined && Number.isInteger(this.keystroke) && this.keystroke > 0 && this.keystroke <= 9) {
             name = '(' + (this.keystroke) + ') ' + this.name;
             hasKeystroke = true;
         }
@@ -144,7 +137,7 @@ class LabelClass {
         // favorit
         // favorit button to select favorit label
         var onClickFavoritLabel = function (e) {
-            let id = "alabelstar_" + classID
+            let id = "alabelstar_" + classID;
             let hasClass = $("[id^='" + id + "']").hasClass('btn-light');
             if (hasClass) {
                 $("[id^='" + id + "']").removeClass('btn-light')
@@ -152,6 +145,11 @@ class LabelClass {
                 // add it to the Favorit group
                 var clone = $('#' + id).parent().parent().clone(true);
                 clone.attr("id", id + '_ctn_favorit');
+                clone.attr("style", "display:block");
+                // change the button id
+                id = "alabelstar_" + classID;
+                clone.find("[id='" + id + "']").attr("id", id + "_favorit");
+
                 id = 'labelLegend_' + classID;
                 if (altStyle) {
                     id = 'labelLegend_alt_' + classID;
@@ -213,10 +211,14 @@ class LabelClass {
                 // and set a red frame around all tiles with that label
                 var features = window.dataHandler.getTilesAssociatedWithLabel(self.classID)
                 window.dataHandler.setSelectedFeatures(features);
+
             } else {
                 // multi-labelling
                 self.parent.setActiveClass(self);
             }
+            // refresh the filter if active
+            let hasClass = $('#filter-selected-label').hasClass('active');
+            window.labelClassHandler.filterSelectedLabel(hasClass);
         });
 
         // listener for keypress if keystroke defined
@@ -237,8 +239,7 @@ class LabelClass {
         }
 
         // save for further use
-        if (altStyle) this.markup_alt = labelControl;
-        else this.markup = labelControl;
+        if (altStyle) this.markup_alt = labelControl; else this.markup = labelControl;
 
         return labelControl;
     }
@@ -272,8 +273,7 @@ class LabelClass {
                 if (this.markup_alt != null) {
                     this.markup_alt.show();
                 }
-                if (target === kw) minLevDist = 0;
-                else if (target.includes(kw)) minLevDist = 0.5;
+                if (target === kw) minLevDist = 0; else if (target.includes(kw)) minLevDist = 0.5;
                 return {dist: minLevDist, bestMatch: this};
             }
         }
@@ -425,8 +425,7 @@ class LabelClassGroup {
         }
 
         // show or hide group depending on children's visibility
-        if (childVisible) this.markup.show();
-        else this.markup.hide();
+        if (childVisible) this.markup.show(); else this.markup.hide();
         return {dist: minLevDist, bestMatch: argMin};
     }
 
@@ -440,8 +439,7 @@ class LabelClassGroup {
         }
 
         // show or hide group depending on children's visibility
-        if (childVisible) this.markup.show();
-        else this.markup.hide();
+        if (childVisible) this.markup.show(); else this.markup.hide();
         return result;
     }
 
@@ -462,13 +460,9 @@ class LabelClassHandler {
         this.classLegendDiv = classLegendDiv;
         this.items = [];    // may be both labelclasses and groups
         this.selectedLabelClasses = [];    // may be both labelclasses and groups
-        this.dummyClass = new LabelClass('00000000-0000-0000-0000-000000000000',
-            {
-                name: 'Label class',
-                index: 1,
-                color: '#17a2b8',
-                keystroke: null
-            });
+        this.dummyClass = new LabelClass('00000000-0000-0000-0000-000000000000', {
+            name: 'Label class', index: 1, color: '#17a2b8', keystroke: null
+        });
         this.activeLabellingMode = false;
         this._setupLabelClasses();
 
@@ -492,14 +486,9 @@ class LabelClassHandler {
                 if (!entry.hasOwnProperty('entries') || entry['entries'] === undefined || Object.keys(entry['entries']).length === 0) {
                     let id = '90000009-9009-9009-9009-900000000009'.replaceAll(9, 9 + (1 - c[0])); // 1 - c[0] is 0 or a negative value
                     entry['entries'] = {
-                        [id]:
-                            {
-                                'id': id,
-                                'name': 'dummy',
-                                'index': 1,
-                                'color': '#999999',
-                                'keystroke': null
-                            }
+                        [id]: {
+                            'id': id, 'name': 'dummy', 'index': 1, 'color': '#999999', 'keystroke': null
+                        }
                     };
                 }
                 var nextItem = window.parseClassdefEntry(c, window.classes['entries'][c], this);
@@ -643,24 +632,36 @@ class LabelClassHandler {
         }
     }
 
-    addToGroup(classID, groupName, idGroup) {
+    addToGroup(classID, groupName, idGroup, count) {
 
         // add to tile and image group
         var id = 'labelLegend_' + classID;
         var clone = $('#' + id).parent().parent().clone(true);
         clone.attr("id", id + '_ctn_' + groupName);
+        clone.attr("style", "display:block");
+        // change the button id
+        id = "alabelstar_" + classID;
+        clone.find("[id='" + id + "']").attr("id", id + "_groupName");
         id = 'labelLegend_' + classID;
         var clonedLabel = $('#' + idGroup).find('#' + id + '_' + groupName);
-        if (clonedLabel.length > 0) {
+        if (groupName === 'image' && clonedLabel.length > 0) {
             // already there
             // add count to the element
-            clonedLabel.attr("count", clonedLabel.length);
-            clonedLabel.find("#label-count").text("(" + clonedLabel.length + ") ");
+            let curr = clonedLabel.attr("count");
+            if (count === undefined) curr++; else curr = count;
+            clonedLabel.attr("count", curr);
+            clonedLabel.find("#label-count").text("(" + curr + ") ");
 
             return;
         }
         clonedLabel = clone.find('#' + id);
         clonedLabel.attr("id", id + '_' + groupName);
+
+        if (groupName === 'image') {
+            if (count === undefined) count = 1;
+            clonedLabel.attr("count", count);
+            clonedLabel.find("#label-count").text("(" + count + ") ");
+        }
         var parent = $('#' + idGroup).find('.labelGroup-children');
         clone.appendTo(parent);
 
@@ -681,10 +682,10 @@ class LabelClassHandler {
             // image group : do not remove is more than one
             var id = 'labelLegend_' + classID;
             var nb = $('#' + id + '_' + groupName).attr("count");
-            if (nb - 1 > 0) {
+            if (parseInt(nb) - 1 > 0) {
                 // update the count
-                $('#' + id + '_' + groupName).attr("count", nb - 1);
-                $('#' + id + '_' + groupName).find("#label-count").text("(" + (nb - 1) + ") ");
+                $('#' + id + '_' + groupName).attr("count", (parseInt(nb) - 1));
+                $('#' + id + '_' + groupName).find("#label-count").text("(" + (parseInt(nb) - 1) + ") ");
 
             } else {
                 $('#' + id + '_ctn_' + groupName).remove();
@@ -715,18 +716,27 @@ class LabelClassHandler {
         }
     }
 
-    updateImageGroup(labels) {
+    updateImageGroup(labels, countLabels) {
+        // removes all from the group
+        $('#30000003-3003-3003-3003-300000000003').find("tr[id^='labelLegend_']").remove();
+        // reset the label no group
+        $('#30000003-3003-3003-3003-300000000003').find("#no_label_image").attr("style", "display:block");
+
         if (labels === null) return;
         for (const label of labels) {
-            this.addToGroup(label, "image", '30000003-3003-3003-3003-300000000003');
+            this.addToGroup(label, "image", '30000003-3003-3003-3003-300000000003', countLabels[label]);
             // check if part of the tile
-            let id = 'labelLegend_' + label;
-            var labelInTile = $('#20000002-2002-2002-2002-200000000002').find('#' + id + '_tile');
-            if (labelInTile.length === 0) {
-                // not there turn it off
-                $('#30000003-3003-3003-3003-300000000003').find('#' + id + '_ctn_image').find('#' + id + '_image').addClass('legend-inactive');
-            } else {
-                $('#30000003-3003-3003-3003-300000000003').find('#' + id + '_ctn_image').find('#' + id + '_image').removeClass('legend-inactive');
+            // except if mono-labelling mode
+            if (window.labelClassHandler.activeLabellingMode == false) {
+
+                let id = 'labelLegend_' + label;
+                var labelInTile = $('#20000002-2002-2002-2002-200000000002').find('#' + id + '_tile');
+                if (labelInTile.length === 0) {
+                    // not there turn it off
+                    $('#30000003-3003-3003-3003-300000000003').find('#' + id + '_ctn_image').find('#' + id + '_image').addClass('legend-inactive');
+                } else {
+                    $('#30000003-3003-3003-3003-300000000003').find('#' + id + '_ctn_image').find('#' + id + '_image').removeClass('legend-inactive');
+                }
             }
         }
     }

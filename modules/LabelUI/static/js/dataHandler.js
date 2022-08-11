@@ -64,6 +64,9 @@ class DataHandler {
         for (var i = 0; i < this.dataEntries.length; i++) {
             this.dataEntries[i].clearSelection();
         }
+        // clear tile group
+        window.labelClassHandler.updateTileGroup(null);
+        window.labelClassHandler.updateImageGroup(null);
     }
 
     setSelectedFeatures(features) {
@@ -791,6 +794,7 @@ class DataHandler {
     }
 
     tileSelected(tilename) {
+        var countLabels = {};
         var uniqLabels = new Set();
         for (var id in this.entriesStack) {
             if (this.entriesStack[id].fileName.indexOf(tilename) !== -1) {
@@ -803,8 +807,6 @@ class DataHandler {
                     // refresh the filter if active
                     let hasClass = $('#filter-selected-label').hasClass('active');
                     window.labelClassHandler.filterSelectedLabel(hasClass);
-
-                    window.labelClassHandler.updateTileGroup(this.entriesStack[id].getLabel());
 
                 } else {
                     // mono-labelling mode
@@ -847,15 +849,22 @@ class DataHandler {
                     this.setSelectedFeatures(features);
 
                 }
+                // update the tile group
+                window.labelClassHandler.updateTileGroup(new Set([...this.entriesStack[id].getLabel()].sort()))
                 // return;
             }
             // update the image group
             // also done if the image matches (code above)
             let labels = this.entriesStack[id].getLabel();
-            if (labels !== null)
+            if (labels !== null) {
                 uniqLabels = new Set([...uniqLabels, ...labels].sort())
+                labels.forEach(id => {
+                    if (id in countLabels) countLabels[id]++;
+                    else countLabels[id] = 1;
+                });
+            }
         }
-        window.labelClassHandler.updateImageGroup(uniqLabels);
+        window.labelClassHandler.updateImageGroup(uniqLabels, countLabels);
 
     }
 
