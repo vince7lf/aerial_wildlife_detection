@@ -63,6 +63,11 @@ COMMENT ON COLUMN {id_labelclassGroup}.name IS 'name is the VASCAN "Rang"; strin
 COMMENT ON COLUMN {id_labelclassGroup}.color IS 'color is the background color of the group in the AIDE labelizing interface; string representing the hexadecimal value of the color; can be null in which case the color is the background color; part of the original AIDE schema;';
 COMMENT ON COLUMN {id_labelclassGroup}.parent IS 'parent contains the reference of the label group it belongs, if any; postgreSQL type is UUID, can be null if not part of a group; part of the original AIDE schema; i.e: "27e2ceb2-449c-11ec-a197-fa163e42617b"';
 
+INSERT INTO {id_labelclassGroup}
+    (id, name, color)
+VALUES ('10000001-1001-1001-1001-100000000001', 'Favorits', '#FF0000'),
+     ('20000002-2002-2002-2002-200000000002', 'Tile', '#FFA500'),
+     ('30000003-3003-3003-3003-300000000003', 'Image', '#FFA500');
 
 -- https://github.com/ReseauBiodiversiteQuebec/Coleo_DB/blob/master/API-coleo.md
 -- https://data.canadensys.net/vascan/search
