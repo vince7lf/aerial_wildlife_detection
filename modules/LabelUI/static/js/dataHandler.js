@@ -801,7 +801,15 @@ class DataHandler {
     tileSelected(tilename) {
         var countLabels = {};
         var uniqLabels = new Set();
+
+        var imageNameSelected = tilename.substring(0, tilename.indexOf('_tile'));
+
         for (var id in this.entriesStack) {
+            let URLImageParts = this.entriesStack[id].fileName.split('\\').pop().split('/');
+            let imageName = URLImageParts[1].substring(0, URLImageParts[1].indexOf('_tile'));
+
+            if( imageNameSelected !== imageName) continue;
+
             if (this.entriesStack[id].fileName.indexOf(tilename) !== -1) {
 
                 // multi-labelling mode

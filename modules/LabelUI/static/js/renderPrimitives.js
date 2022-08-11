@@ -322,24 +322,7 @@ class MapOlElement extends AbstractRenderElement {
                 var mapControls = self.olmap.getControls();
                 mapControls.forEach(el => {
                     if (el.element.firstChild.id === "tileRowCol") {
-                        // code snippet from regex101.com
-                        const regex = /.*(\d{1,2})_(\d{1,2})\.jpg/gm;
-                        let m;
-                        let colRow = "No tile selected"
-                        while ((m = regex.exec(location)) !== null) {
-                            // This is necessary to avoid infinite loops with zero-width matches
-                            if (m.index === regex.lastIndex) {
-                                regex.lastIndex++;
-                            }
-
-                            // The result can be accessed through the `m`-variable.
-                            // Match 0 2018-Boucherville-13571792-13572097-1_tile_24_27.jpg
-                            // Group 1 24
-                            // Group 2 27
-                            colRow = `Row ${m[1]} : Col ${m[2]}`
-                        }
-                        // code snippet from regex101.com
-                        el.element.firstChild.innerHTML = colRow;
+                        el.element.firstChild.innerHTML = window.getColRowFromTileName(location);
                     }
                 });
 

@@ -99,7 +99,9 @@ select * from test.active_labelclass
 where name LIKE 'test%'
 order by timeCreated DESC;
 
-INSERT INTO test.labelclassgroup(id, name)
-VALUES ('10000001-1001-1001-1001-100000000001', 'Favorits'),
-VALUES ('20000002-2002-2002-2002-200000000002', 'Tile'),
-VALUES ('30000003-3003-3003-3003-300000000003', 'Image');
+INSERT INTO test.labelclassgroup
+    (id, name)
+VALUES
+    ('10000001-1001-1001-1001-100000000001', 'Favorits'),
+    ('20000002-2002-2002-2002-200000000002', 'Tile'),
+    ('30000003-3003-3003-3003-300000000003', 'Image');
