@@ -600,12 +600,12 @@ class LabelClassHandler {
                 str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
                 $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").addClass('legend-inactive');
 
-                var str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
+                str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
                 $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").addClass('legend-inactive');
                 str = ['labelLegend_alt', labelClassInstance.classID, 'tile'].join('_')
                 $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").addClass('legend-inactive');
 
-                var str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
+                str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
                 $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").addClass('legend-inactive');
                 str = ['labelLegend_alt', labelClassInstance.classID, 'image'].join('_')
                 $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").addClass('legend-inactive');
@@ -630,12 +630,12 @@ class LabelClassHandler {
             str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
             $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").removeClass('legend-inactive');
 
-            var str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
+            str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
             $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").removeClass('legend-inactive');
             str = ['labelLegend_alt', labelClassInstance.classID, 'tile'].join('_')
             $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").removeClass('legend-inactive');
 
-            var str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
+            str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
             $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").removeClass('legend-inactive');
             str = ['labelLegend_alt', labelClassInstance.classID, 'image'].join('_')
             $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").removeClass('legend-inactive');
@@ -762,12 +762,12 @@ class LabelClassHandler {
             str = ['labelLegend_alt', labelClassInstance.classID, 'favorit'].join('_')
             $('#10000001-1001-1001-1001-100000000001').find("[id^=" + str + "]").toggleClass('legend-inactive');
 
-            var str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
+            str = ['labelLegend', labelClassInstance.classID, 'tile'].join('_');
             $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").toggleClass('legend-inactive');
             str = ['labelLegend_alt', labelClassInstance.classID, 'tile'].join('_')
             $('#20000002-2002-2002-2002-200000000002').find("[id^=" + str + "]").toggleClass('legend-inactive');
 
-            var str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
+            str = ['labelLegend', labelClassInstance.classID, 'image'].join('_');
             $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").toggleClass('legend-inactive');
             str = ['labelLegend_alt', labelClassInstance.classID, 'image'].join('_')
             $('#30000003-3003-3003-3003-300000000003').find("[id^=" + str + "]").toggleClass('legend-inactive');
