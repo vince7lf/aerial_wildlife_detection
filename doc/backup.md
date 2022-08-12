@@ -293,3 +293,40 @@ Wait until the system is up.
 Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
 
 13. Keep the backup for 2-4 weeks or the time needed to test that everything is fine. 
+
+
+## Add labelclassgroup 'favorits', 'Tile' and 'Image' to existing project
+
+Connect to the docker shell:
+```
+(aide) ubuntu@tes2:/app/aerial_wildlife_detection/docker$ sudo docker exec -it docker_aide_app_1 /bin/bash
+```
+
+Connect to the database
+```
+root@aide_app_host:/home/aide/app# sudo -u postgres psql -d ailabeltooldb
+```
+
+Check the existing projects
+```
+ailabeltooldb=# select shortname from aide_admin.project;
+```
+
+Execute the SQL on the right schema and table labelclassgroup :
+```
+ailabeltooldb=# INSERT INTO tests_vincent.labelclassgroup
+    (id, name, color)
+VALUES ('10000001-1001-1001-1001-100000000001', 'Favorits', '#FF0000'),
+     ('20000002-2002-2002-2002-200000000002', 'Tile', '#FFA500'),
+     ('30000003-3003-3003-3003-300000000003', 'Image', '#FFA500');
+INSERT 0 3
+```
+
+## psql shortcuts
+
+help command : ailabeltooldb=# \?
+list of schemas : ailabeltooldb=# \dn
+list of tables for a specific schema : ailabeltooldb=# \dt aide_admin.*
+turn display to row : ailabeltooldb=# \x
+quit : ailabeltooldb=# \q
+drop schema : ailabeltooldb=# drop schema "test_tiles_docker" CASCADE;
