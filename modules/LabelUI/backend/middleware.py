@@ -266,9 +266,9 @@ class DBMiddleware():
         else:
             hiddenSpec = 'WHERE hidden IS false'
         queryStr = sql.SQL('''
-            SELECT 'group' AS type, id, NULL as idx, name, color, parent, NULL AS keystroke, NULL AS hidden FROM {}
+            SELECT 'group' AS type, id, NULL as idx, name, color, parent, NULL AS keystroke, NULL AS hidden, false as favorit FROM {}
             UNION ALL
-            SELECT 'class' AS type, id, idx, name, color, labelclassgroup, keystroke, hidden FROM {}
+            SELECT 'class' AS type, id, idx, name, color, labelclassgroup, keystroke, hidden, favorit FROM {}
             {};
             ''').format(
                 sql.Identifier(project, 'labelclassgroup'),
@@ -289,7 +289,8 @@ class DBMiddleware():
                     'name': cl['name'],
                     'color': cl['color'],
                     'parent': str(cl['parent']) if cl['parent'] is not None else None,
-                    'hidden': cl['hidden']
+                    'hidden': cl['hidden'],
+                    'favorit': cl['favorit']
                 }
                 if cl['type'] == 'group':
                     entry['entries'] = {}
@@ -923,4 +924,24 @@ class DBMiddleware():
             imgs_error = [str(i) for i in list(imgs_error)]
             response['bookmarks_error'] = imgs_error
         
+        return response
+
+    def updateLabelClassFavorit(self, project, labelClassID, is_favorit):
+        '''
+            update the labelclass favorit state
+        '''
+        queryStr = sql.SQL('''
+            UPDATE {id_labelclass}
+            SET favorit = %s
+            WHERE id = %s             
+        ''').format(
+            id_labelclass=sql.Identifier(project, 'labelclass')
+        )
+        result = self.dbConnector.execute(queryStr, (is_favorit,labelClassID,))
+
+        response = {
+            'status': 0,
+            'result': "OK"
+        }
+
         return response

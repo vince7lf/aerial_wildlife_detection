@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS {id_labelclass} (
     labelclassgroup uuid,
     keystroke SMALLINT UNIQUE,
     hidden BOOLEAN NOT NULL DEFAULT FALSE,
-    vascan_id INT NOT NULL,
+    vascan_id INT NOT NULL DEFAULT -1,
     bryoquel_id INT DEFAULT NULL,
     coleo_vernacular_fr VARCHAR DEFAULT NULL,
     coleo_vernacular_en VARCHAR DEFAULT NULL,
@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS {id_labelclass} (
     vascan_statut_repartition VARCHAR DEFAULT NULL,
     tsn INT DEFAULT NULL,
     coleo_category VARCHAR NOT NULL DEFAULT 'plantes',
+    favorit BOOLEAN NOT NULL DEFAULT FALSE,
     PRIMARY KEY (id),
     FOREIGN KEY (labelclassgroup) REFERENCES {id_labelclassGroup}(id)
 );
@@ -124,6 +125,7 @@ COMMENT ON COLUMN {id_labelclass}.vascan_port IS 'vascan_port is the VASCAN "por
 COMMENT ON COLUMN {id_labelclass}.vascan_statut_repartition IS 'vascan_statut_repartition is the VASCAN statut repartition; string, can be null, default to NULL; source: imported from the Excel document "BdQc_SP_communes_CL_2021-05-18.xlsx", provided by the MELCC; refer to https://data.canadensys.net/vascan/search; not part of the original AIDE schema, it has been added for the MELCC; i.e: "Indigène"';
 COMMENT ON COLUMN {id_labelclass}.tsn IS 'tsn is the TSN ID ("Identifiant ITS") as defined in "https://github.com/ReseauBiodiversiteQuebec/Coleo_DB/blob/master/API-coleo.md"; integer, can be null, default to NULL; source: none, no value imported, defaulted to NULL; not part of the original AIDE schema, it has been added for the MELCC; no known example';
 COMMENT ON COLUMN {id_labelclass}.coleo_category IS 'coleo_category is the category found in the Colea database, as defined in "https://github.com/ReseauBiodiversiteQuebec/Coleo_DB/blob/master/API-coleo.md"; string, can be null, default to "plantes"; source: none, no value imported, defaulted to "plantes" as AIDE+MELCC is focussed on biodiversity; not part of the original AIDE schema, it has been added for the MELCC; refer to the Coleo_DB URL for the other possible values';
+COMMENT ON COLUMN {id_labelclass}.favorit IS 'flag tagging the label as a favorit; boolean, set to true or false (default) in the annotation interface';
 
 
 CREATE TABLE IF NOT EXISTS {id_annotation} (

@@ -382,3 +382,19 @@ class LabelUI():
                     'status': 1,
                     'message': str(e)
                 }
+
+        @self.app.get('/<project>/updateLabelClassFavorit')
+        def update_labelclass_favorit(project):
+            if not self.loginCheck(project=project):
+                abort(403, 'forbidden')
+
+            try:
+                labelClassID = request.query['labelclassid']
+                is_favorit = request.query['is_favorit']
+                response = self.middleware.updateLabelClassFavorit(project, labelClassID, is_favorit)
+                return response
+            except Exception as e:
+                return {
+                    'status': 1,
+                    'message': str(e)
+                }

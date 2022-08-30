@@ -922,5 +922,25 @@ class DataHandler {
         return false;
     }
 
+    _updateLabelClassFavorit(labelclassid, is_favorit) {
+        var self = this;
+
+        var url = 'updateLabelClassFavorit?labelclassid=' + labelclassid + '&is_favorit=' + is_favorit;
+        return $.ajax({
+            url: url,
+            method: 'get',
+            success: function (data) {
+                if(data.hasOwnProperty('result')) {
+                    let result = data['result']
+                }
+            },
+            error: function (xhr, status, error) {
+                if (error == 'Unauthorized') {
+                    // ask user to provide password again
+                    window.verifyLogin((self._updateLabelClassFavorit).bind(self));
+                }
+            }
+        });
+    }
 
 }

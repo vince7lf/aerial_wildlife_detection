@@ -3,6 +3,11 @@
 
     2019-20 Benjamin Kellenberger
 */
+/*
+    Helper classes responsible for displaying the available label classes on the screen.
+
+    2019-20 Benjamin Kellenberger
+*/
 
 window.parseClassdefEntry = function (id, entry, parent) {
     if (entry.hasOwnProperty('entries') && entry['entries'] != undefined) {
@@ -85,7 +90,7 @@ class LabelClass {
         this.colorValues = window.getColorValues(this.color);   // [R, G, B, A]
 
         this.keystroke = properties['keystroke'];
-
+        this.favorit = properties['favorit'];
 
         // flip active foreground color if background is too bright
         this.darkForeground = (window.getBrightness(this.color) >= 92);
@@ -158,11 +163,16 @@ class LabelClass {
                 clonedLabel.attr("id", id + '_favorit');
                 var parent = $('#10000001-1001-1001-1001-100000000001').find('.labelGroup-children');
                 clone.appendTo(parent);
+
+                // persist
+                window.dataHandler._updateLabelClassFavorit(classID, true);
             } else {
                 $('#' + id + '_ctn_favorit').remove();
                 $("[id^='" + id + "']").removeClass('label-favorit-selected')
                 $("[id^='" + id + "']").addClass('label-favorit-unselected')
 
+                // persist
+                window.dataHandler._updateLabelClassFavorit(classID, false);
             }
             // add dummy message no favorits if no favorits
             // count favorits
@@ -185,7 +195,10 @@ class LabelClass {
         }
         var markup = $(htmlMarkup);
 
-        var htmlBtn = '<td><button type="button" id="alabelstar_' + this.classID + '" class="btn btn-sm btn-light label-favorit-unselected" title="Favorit" style="height: 28px; width: 35px"></button></td>'
+        let favorit_class = "label-favorit-unselected";
+        if( this.favorit === true )
+            favorit_class = "label-favorit-selected";
+        var htmlBtn = '<td><button type="button" id="alabelstar_' + this.classID + '" class="btn btn-sm btn-light ' + favorit_class + '" title="Favorit" style="height: 28px; width: 35px"></button></td>'
         var favoritLabelBtn = $(htmlBtn);
         favoritLabelBtn.click(onClickFavoritLabel);
 
@@ -748,7 +761,7 @@ class LabelClassHandler {
         if (window.labelClassHandler.activeLabellingMode == false) {
 
             // is there any tile selected ?
-            if(window.activeEntryID === null) return; // no active tile do nothing and return
+            if (window.activeEntryID === null) return; // no active tile do nothing and return
 
             // click on another selected label : unselect it
             this.activeClass = labelClassInstance;
