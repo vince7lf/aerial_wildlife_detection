@@ -101,6 +101,30 @@ class LabelClass {
         this.markup_alt = null;
     }
 
+    buildMarkup(classID, id, legendInactive, foregroundStyle, colorStyle, name, altStyle, is_favorit) {
+        var htmlStr = '<tr></tr>';
+        if ( is_favorit === true )
+            htmlStr = '<tr id="alabelstar_' + classID + '_ctn_favorit" style="display:block"></tr>';
+
+        if ( is_favorit === true )
+            id = id + "_favorit";
+        var htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + colorStyle + '"><span id="label-count"></span><span class="label-text">' + name + '</span></div></td>';
+        if (altStyle) {
+            id = 'labelLegend_alt_' + classID;
+            htmlMarkup = '<td ><div class="label-class-legend ' + legendInactive + '" id="' + id + '" style="' + foregroundStyle + '"><div class="legend-color-dot" style="' + colorStyle + '"></div><span class="label-text">' + name + '</span></div></td>'
+        }
+
+        let favorit_class = "label-favorit-unselected";
+        if( this.favorit === true )
+            favorit_class = "label-favorit-selected";
+        var htmlBtn = '<td><button type="button" id="alabelstar_' + classID + '" class="btn btn-sm btn-light ' + favorit_class + '" title="Favorit" style="height: 28px; width: 35px"></button></td>'
+        if( this.favorit === true )
+            htmlBtn = '<td><button type="button" id="alabelstar_' + classID + '_favorit" class="btn btn-sm btn-light ' + favorit_class + '" title="Favorit" style="height: 28px; width: 35px"></button></td>'
+
+        return {htmlStr: htmlStr, htmlMarkup: htmlMarkup, htmlBtn: htmlBtn}
+
+    }
+
     getMarkup(altStyle) {
 
         if (['90000009-9009-9009-9009-900000000009', '80000008-8008-8008-8008-800000000008', '70000007-7007-7007-7007-700000000007'].includes(this.classID)) {
@@ -207,8 +231,11 @@ class LabelClass {
         labelControl.append(favoritLabelBtn);
 
         // setup click handler to activate label class
-        markup.click(function () {
+        var onClickMarkupLabel = function(e) {
             if (window.uiBlocked) return;
+
+            // is there any tile selected ?
+            if (window.activeEntryID === null || window.activeEntryID === undefined) return; // no active tile do nothing and return
 
             if (window.labelClassHandler.activeLabellingMode == true) {
                 // mono-labelling
@@ -232,7 +259,8 @@ class LabelClass {
             // refresh the filter if active
             let hasClass = $('#filter-selected-label').hasClass('active');
             window.labelClassHandler.filterSelectedLabel(hasClass);
-        });
+        }
+        markup.click(onClickMarkupLabel);
 
         // listener for keypress if keystroke defined
         if (hasKeystroke) {
@@ -249,6 +277,24 @@ class LabelClass {
                     return;
                 }
             });
+        }
+
+        // construct a clone for the favorit group
+        if ( this.favorit === true ) {
+            var markups = this.buildMarkup(this.classID, id, legendInactive, foregroundStyle, colorStyle, name, altStyle, this.favorit)
+            var cloneLabelControl = $(markups.htmlStr);
+            var favoritLabelBtn = $(markups.htmlBtn);
+            favoritLabelBtn.click(onClickFavoritLabel);
+            var markup = $(markups.htmlMarkup);
+            markup.click(onClickMarkupLabel);
+            cloneLabelControl.append(markup);
+            cloneLabelControl.append(favoritLabelBtn);
+            // add clone to the history group
+            var parent = $('#10000001-1001-1001-1001-100000000001').find('.labelGroup-children');
+            cloneLabelControl.appendTo(parent);
+
+            // hide label 'no label'
+            $('#10000001-1001-1001-1001-100000000001').find("#no_favorits").attr("style", "display:none");
         }
 
         // save for further use
@@ -761,7 +807,7 @@ class LabelClassHandler {
         if (window.labelClassHandler.activeLabellingMode == false) {
 
             // is there any tile selected ?
-            if (window.activeEntryID === null) return; // no active tile do nothing and return
+            if (window.activeEntryID === null || window.activeEntryID === undefined) return; // no active tile do nothing and return
 
             // click on another selected label : unselect it
             this.activeClass = labelClassInstance;

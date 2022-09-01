@@ -269,7 +269,7 @@ class DBMiddleware():
             SELECT 'group' AS type, id, NULL as idx, name, color, parent, NULL AS keystroke, NULL AS hidden, false as favorit FROM {}
             UNION ALL
             SELECT 'class' AS type, id, idx, name, color, labelclassgroup, keystroke, hidden, favorit FROM {}
-            {};
+            {} ORDER BY name;
             ''').format(
                 sql.Identifier(project, 'labelclassgroup'),
                 sql.Identifier(project, 'labelclass'),
