@@ -104,8 +104,48 @@ ubuntu@tes2:/app/images$ scp /app/aerial_wildlife_detection/backup/<hostname>-ai
 > **Note : Before restoring the dump, do not have the application running.**
 
 Start the container, wait for the application to start, and then stop it manually. Make the restore, and then restart manually the application to test .Finally if everything is good, restart the complete container and run some regression testing again.
- 
-Refer to the [detailed step](#steps) before proceeding.   
+
+Make sure there is no other connection opened with the database, like pg_admin or another client.
+
+Or you will have a returned message error like this :
+```
+vince@vince-VirtualBox:~$ sudo -u postgres psql -c "DROP DATABASE IF EXISTS ailabeltooldb;"
+[sudo] password for vince:
+ERROR:  database "ailabeltooldb" is being accessed by other users
+DETAIL:  There is 1 other session using the database.
+```
+
+Drop the database using dropdb or SQL command :  
+```
+vince@vince-VirtualBox:~$ sudo -u postgres /usr/bin/dropdb -e -i --if-exists ailabeltooldb
+Database "ailabeltooldb" will be permanently removed.
+Are you sure? (y/n) y
+SELECT pg_catalog.set_config('search_path', '', false)
+DROP DATABASE IF EXISTS ailabeltooldb;
+
+or
+
+vince@vince-VirtualBox:~$ sudo -u postgres psql -c "DROP DATABASE IF EXISTS ailabeltooldb;"
+DROP DATABASE
+
+```
+
+Add the user in case this is a new fresh install of postgreSQL. Command is the same used when creating the project. 
+```
+vince@vince-VirtualBox:~$ sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE pg_roles.rolname='ailabeluser'" | grep -q 1 || sudo -u postgres psql -c "CREATE USER ailabeluser WITH PASSWORD 'aiLabelUser';"
+```
+
+Recreate the database. Command is the same used when creating the project. 
+```
+vince@vince-VirtualBox:~$ sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname = 'ailabeltooldb'" | grep -q 1 || sudo -u postgres psql -c "CREATE DATABASE ailabeltooldb WITH OWNER ailabeluser CONNECTION LIMIT -1;"
+CREATE DATABASE
+```
+Grant the user to access the database. Command is the same used when creating the project. 
+```
+vince@vince-VirtualBox:~$ sudo -u postgres psql -c "GRANT CONNECT ON DATABASE ailabeltooldb TO ailabeluser;"
+GRANT
+vince@vince-VirtualBox:~$ sudo -u postgres pg_restore -d ailabeltooldb /app/backup/vbox-ailabeltooldb-20220803T084827.dump
+```
 
 ## Images
 
@@ -151,7 +191,7 @@ drwxr-xr-x 3 root root  21 Sep 27  2021 tests_vincent
 From the host, you can _tar_ the images folder:
 
 ```
-ubuntu@tes2:/app/images$ tar -cvf /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data .  
+ubuntu@tes2:/app/images$ sudo tar -cvf /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data .  
 ```
 
 ### Transfer the images
@@ -235,16 +275,28 @@ Images : `tar -cvf ./backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`-org.tar
 5. [Within the container] Remove the database
 
 Run the psql command to remove the database ailabeltooldb. 
-And recreate it. 
-`sudo -u postgres pg_dump -Fc -d ailabeltooldb > ./backup/<hostname>-ailabeltooldb-`date +%Y%m%dT%H%M%S`-org.dump`
+`vince@vince-VirtualBox:~$ sudo -u postgres /usr/bin/dropdb -e -i --if-exists ailabeltooldb`
 
+or 
+
+`vince@vince-VirtualBox:~$ sudo -u postgres psql -c "DROP DATABASE IF EXISTS ailabeltooldb;"`
 
 6. [Within the container] Remove the images
 
 
 7. [Within the container] Restore the new backup and images
 
-Data : `sudo -u postgres pg_restore -Fc -d ailabeltooldb > ./backup/<hostname>-ailabeltooldb-<dump datetime>.dump`
+Data :
+
+```
+sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE pg_roles.rolname='ailabeluser'" | grep -q 1 || sudo -u postgres psql -c "CREATE USER ailabeluser WITH PASSWORD 'aiLabelUser';"
+sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname = 'ailabeltooldb'" | grep -q 1 || sudo -u postgres psql -c "CREATE DATABASE ailabeltooldb WITH OWNER ailabeluser CONNECTION LIMIT -1;"
+sudo -u postgres psql -c "GRANT CONNECT ON DATABASE ailabeltooldb TO ailabeluser;"
+sudo -u postgres psql -d ailabeltooldb -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+sudo -u postgres psql -d ailabeltooldb -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO ailabeluser;"
+
+sudo -u postgres pg_restore -d ailabeltooldb /app/backup/vbox-ailabeltooldb-20220803T084827.dump
+```
 
 Images : `tar -xvf ./backup/<hostname>-aide_images-<tar datetime>.tar -C /home/aide/images`
 
@@ -324,9 +376,22 @@ INSERT 0 3
 
 ## psql shortcuts
 
-help command : ailabeltooldb=# \?
-list of schemas : ailabeltooldb=# \dn
-list of tables for a specific schema : ailabeltooldb=# \dt aide_admin.*
-turn display to row : ailabeltooldb=# \x
-quit : ailabeltooldb=# \q
-drop schema : ailabeltooldb=# drop schema "test_tiles_docker" CASCADE;
+- help command : ailabeltooldb=# \?
+- list of schemas : ailabeltooldb=# \dn
+- list of tables for a specific schema : ailabeltooldb=# \dt aide_admin.*
+- turn display to row : ailabeltooldb=# \x
+- quit : ailabeltooldb=# \q
+- drop schema : ailabeltooldb=# drop schema "test_tiles_docker" CASCADE;
+
+## From a newly created postgreSQL instance
+
+Some external objects needs to be added to the postgreSQL instances on top of the database itself.  
+
+Replace the variables by their real values (dbUser, dbPassword, dbName) 
+```
+sudo -u postgres psql -tc "SELECT 1 FROM pg_roles WHERE pg_roles.rolname='$dbUser'" | grep -q 1 || sudo -u postgres psql -c "CREATE USER $dbUser WITH PASSWORD '$dbPassword';"
+sudo -u postgres psql -tc "SELECT 1 FROM pg_database WHERE datname = '$dbName'" | grep -q 1 || sudo -u postgres psql -c "CREATE DATABASE $dbName WITH OWNER $dbUser CONNECTION LIMIT -1;"
+sudo -u postgres psql -c "GRANT CONNECT ON DATABASE $dbName TO $dbUser;"
+sudo -u postgres psql -d $dbName -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
+sudo -u postgres psql -d $dbName -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $dbUser;"
+```
