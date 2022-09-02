@@ -202,6 +202,13 @@ After taring the images folder, you can use the _scp_ command to copy it to the 
 ubuntu@tes2:/app/images$ scp /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar user@host:/path/to/app/folder/backup   
 ```
 
+From the localhost to the virtualbox, use the MobaXterm internal terminal shell : 
+
+```
+/home/mobaxterm  scp -P 7722 /drives/c/Users/User/Downloads/gcp-ailabeltooldb-20220901T205210.dump vince@127.0.0.1:/home/vince
+gcp-ailabeltooldb-20220901T205210.dump
+```
+
 ### Restore the images
 
 > **Note : Before restoring the dump, do not have the application running.**
@@ -383,6 +390,24 @@ INSERT 0 3
 - quit : ailabeltooldb=# \q
 - drop schema : ailabeltooldb=# drop schema "test_tiles_docker" CASCADE;
 
+
+## Remove a project
+
+Drop project ands schem fronm database 
+
+```
+sudo -u postgres psql -d ailabeltooldb -c "delete from aide_admin.authentication where project = '<project-short-name>';"
+sudo -u postgres psql -d ailabeltooldb -c "delete from aide_admin.project where shortname = '<project-short-name>';"
+sudo -u postgres psql -d ailabeltooldb -c "drop schema IF EXISTS \"<project-short-name>\" CASCADE;"
+```
+
+Delete images : 
+
+```
+rm -rf /app/images/<project-short-name>
+```
+
+
 ## From a newly created postgreSQL instance
 
 Some external objects needs to be added to the postgreSQL instances on top of the database itself.  
@@ -395,3 +420,4 @@ sudo -u postgres psql -c "GRANT CONNECT ON DATABASE $dbName TO $dbUser;"
 sudo -u postgres psql -d $dbName -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 sudo -u postgres psql -d $dbName -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $dbUser;"
 ```
+
