@@ -392,6 +392,9 @@ ailabeltooldb=# select shortname from aide_admin.project;
 
 Execute the SQL on the right schema and table labelclassgroup :
 ```
+ailabeltooldb=# ALTER TABLE "tests_vincent".labelclass
+ADD favorit BOOLEAN DEFAULT FALSE NOT NULL;
+
 ailabeltooldb=# INSERT INTO tests_vincent.labelclassgroup
     (id, name, color)
 VALUES ('10000001-1001-1001-1001-100000000001', 'Favorits', '#FF0000'),
