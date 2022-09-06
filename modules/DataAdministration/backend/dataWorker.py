@@ -264,7 +264,7 @@ class DataWorker:
                     images.append(image)
                     filenames.append(filename)
 
-                    if (filename.find('_tile.jpg') > -1):
+                    if (filename.find('_tile.') > -1):
                         existingFiles = 'replaceExisting'
 
                 else:
@@ -413,7 +413,7 @@ class DataWorker:
 
     def uploadImagesEx(self, project, filename, destFolder, parent):
 
-        if (filename.find('_tile.jpg') == -1): return None
+        if (filename.find('_tile.') == -1): return None
 
         # if image is a _tile.jpg
         # trigger script

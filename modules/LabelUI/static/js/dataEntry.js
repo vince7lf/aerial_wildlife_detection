@@ -938,7 +938,7 @@ class AbstractDataEntryEx {
             image.addEventListener('load', () => {
                 resolve(image);
             });
-            if (imageURI.indexOf('_tile.jpg') > -1) {
+            if (imageURI.indexOf('_tile.') > -1) {
                 image.src = imageURI;
             } else {
                 resolve(image);

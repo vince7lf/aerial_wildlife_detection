@@ -273,7 +273,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][d]
-                            if (dataEntry.fileName.indexOf('_tile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('_tile.') > -1) {
                                 var entry = new ClassificationTileEntry(d, dataEntry);
                                 self.tiles[dataEntry.fileName] = entry;
                             } else {
@@ -383,7 +383,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][d]
-                            if (dataEntry.fileName.indexOf('_tile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('_tile.') > -1) {
                                 var entry = new ClassificationTileEntry(d, dataEntry);
                                 self.tiles[dataEntry.fileName] = entry;
                             } else {
@@ -551,7 +551,7 @@ class DataHandler {
                             // test if image is a tile, checking for any geojson file <imagename>.geojson in the same folder as the images
                             // If so, create an image separated in tiles that will be displayed. But labels will be associated to each tile
                             var dataEntry = data['entries'][entryID]
-                            if (dataEntry.fileName.indexOf('_tile.jpg') > -1) {
+                            if (dataEntry.fileName.indexOf('_tile.') > -1) {
                                 var entry = new ClassificationTileEntry(entryID, dataEntry);
                                 self.tiles[dataEntry.fileName] = entry;
                             } else {

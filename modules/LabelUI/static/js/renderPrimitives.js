@@ -173,8 +173,8 @@ class MapOlElement extends AbstractRenderElement {
         // this is a hack : the image to be loaded is inside the subfolder where with the name of the image without the extension.
         this.URLImageParts = this.imageSrcOrg.split('\\').pop().split('/');
         this.filenameParts = this.URLImageParts.slice(-1).pop().split('.');
-        this.imageUrl = this.imageSrcOrg.replace('.jpg', '') + '/' + this.filenameParts[0] + '.jpg';
-        this.geojson = this.imageUrl.replace('.jpg', '.geojson');
+        this.imageUrl = this.imageSrcOrg.replace('.' + this.filenameParts[1], '') + '/' + this.filenameParts[0] + '.' + this.filenameParts[1];
+        this.geojson = this.imageUrl.replace('.' + this.filenameParts[1], '.geojson');
         this.timeCreated = new Date();
         this.olmap = null;
         this.features = new ol.Collection();
