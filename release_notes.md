@@ -9,6 +9,12 @@
 - GCP: http://35.208.225.49:8080/
 
 ## Releases
+
+v1.7 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-09-06
+- merged with branch tile_image_favorits_groups
+- sync version with tag version
+- new TAG AIDE+MELCC-1.7
+
 v1.3.4 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-08-02 
 - (AIDE+MELCC#38) When building docker image on the virtual box image, error popped again. Moving the fix oin top of the script.
 - add backup.md file to help doing backups and restore of the database and images.    
