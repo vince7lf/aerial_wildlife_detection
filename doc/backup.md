@@ -107,6 +107,13 @@ Start the container, wait for the application to start, and then stop it manuall
 
 Make sure there is no other connection opened with the database, like pg_admin or another client.
 
+Reset the postgresql service if needed :
+
+```
+sudo service postgresql stop
+sudo service postgresql start
+```
+
 Or you will have a returned message error like this :
 ```
 vince@vince-VirtualBox:~$ sudo -u postgres psql -c "DROP DATABASE IF EXISTS ailabeltooldb;"
@@ -114,6 +121,8 @@ vince@vince-VirtualBox:~$ sudo -u postgres psql -c "DROP DATABASE IF EXISTS aila
 ERROR:  database "ailabeltooldb" is being accessed by other users
 DETAIL:  There is 1 other session using the database.
 ```
+
+In that case reset the postgresql service (stop restart, see above) 
 
 Drop the database using dropdb or SQL command :  
 ```
@@ -255,7 +264,7 @@ sudo docker-compose up &
 
 Wait until completely started, including celery workers. 
 
-Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
+Check the _celery_ and _gunicorn_ process up and running (`ps -ef | grep python`).
 
 Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
 
@@ -267,11 +276,23 @@ Result will be a prompt inside the container. like `root@aide_app_host:/home/aid
 
 3. [Within the container] Stop the application manually with the command provided. 
 
-`AIDE.sh stop`
+`bash AIDE.sh stop` will stop the docker container (killing guniron processes stops the docker container)
+
+Instead just stop the celery workers and reset the postgreslq service (trop / start):
+
+```
+export PYTHONPATH=/home/aide/app
+export AIDE_CONFIG_PATH=/home/aide/app/docker/settings.ini
+export AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
+/opt/conda/bin/celery -A celery_worker control shutdown
+# pkill gunicorn # do not kill gunicorn processes as it will stop the docker container.   
+sudo service postgresql stop
+sudo service postgresql start
+```
 
 Wait until completely stopped, including celery workers. 
 
-No more _celery_ or _gunicorn_ process should be up and running (`ps -ef`).
+No more _celery_ or _gunicorn_ process should be up and running (`ps -ef | grep python`).
 
 4. [Within the container] Backup the current application database and images
 
@@ -309,11 +330,9 @@ Images : `tar -xvf ./backup/<hostname>-aide_images-<tar datetime>.tar -C /home/a
 
 8. [Within the container] Start the application manually
 
-`AIDE.sh stop`
+No need to start the application manually as it is still running, only the connection to the database was dropped while dropping and restoring the database.  
 
-Wait until completely started, including celery workers. 
-
-Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
+Check the _celery_ and _gunicorn_ process up and running (`ps -ef | grep python`).
 
 9. [From the host system] Test
 
@@ -341,7 +360,7 @@ sudo docker-compose up &
 
 Wait until completely started, including celery workers. 
 
-Check the _celery_ and _gunicorn_ process up and running (`ps -ef`).
+Check the _celery_ and _gunicorn_ process up and running (`ps -ef | grep python`).
 
 Test using the URL of the app _http://localhost:8080_ , login and browse the test project.  
 
@@ -393,7 +412,7 @@ INSERT 0 3
 
 ## Remove a project
 
-Drop project ands schem fronm database 
+Drop project ands schema from database 
 
 ```
 sudo -u postgres psql -d ailabeltooldb -c "delete from aide_admin.authentication where project = '<project-short-name>';"
