@@ -234,9 +234,6 @@ class LabelClass {
         var onClickMarkupLabel = function(e) {
             if (window.uiBlocked) return;
 
-            // is there any tile selected ?
-            if (window.activeEntryID === null || window.activeEntryID === undefined) return; // no active tile do nothing and return
-
             if (window.labelClassHandler.activeLabellingMode == true) {
                 // mono-labelling
 
@@ -253,6 +250,9 @@ class LabelClass {
                 window.dataHandler.setSelectedFeatures(features);
 
             } else {
+                // is there any tile selected ?
+                if (window.activeEntryID === null || window.activeEntryID === undefined) return; // no active tile do nothing and return
+
                 // multi-labelling
                 self.parent.setActiveClass(self);
             }
