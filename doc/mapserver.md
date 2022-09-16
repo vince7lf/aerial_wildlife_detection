@@ -109,3 +109,10 @@ You should see an HTML page with all the PHP configuration settings.
 Open a browser and enter `http://localhost/cgi-bin/mapserv`
 
 You should see an HTML page with the message _No query information to decode. QUERY_STRING is set, but empty._ 
+
+
+# Install dependencies
+
+## GDAL
+
+source : <https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html>
