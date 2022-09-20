@@ -1,0 +1,470 @@
+Scopus
+EXPORT DATE:27 Nov 2021
+
+ML-KNN: A lazy learning approach to multi-label learning
+(2007) . Cited 2016 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-33947681316&doi=10.1016%2fj.patcog.2006.12.019&partnerID=40&md5=b74c8e4b97a75ab90277a8f038bed7f3
+
+Learning multi-label scene classification
+(2004) . Cited 1600 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-3042597440&doi=10.1016%2fj.patcog.2004.03.009&partnerID=40&md5=5a14ebe26762f4bc37ae1ed4d74af408
+
+A survey of graph theoretical approaches to image segmentation
+(2013) . Cited 258 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84870239407&doi=10.1016%2fj.patcog.2012.09.015&partnerID=40&md5=557dc890f635b7be9de42102d0274262
+
+A novel ensemble method for classifying imbalanced data
+(2015) . Cited 222 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84921817000&doi=10.1016%2fj.patcog.2014.11.014&partnerID=40&md5=24e53a3d9fcf9bd6e478bf9c4a22c461
+
+Tree ensembles for predicting structured outputs
+(2013) . Cited 175 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84870255848&doi=10.1016%2fj.patcog.2012.09.023&partnerID=40&md5=5cff044f39a70d7888d0ccdf2c20d05d
+
+The impact of class imbalance in classification performance metrics based on the binary confusion matrix
+(2019) . Cited 170 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85062244891&doi=10.1016%2fj.patcog.2019.02.023&partnerID=40&md5=b4506c2173ab9ce0c284ae7705e0a316
+
+Inverse random under sampling for class imbalance problem and its application to multi-label classification
+(2012) . Cited 156 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84861810464&doi=10.1016%2fj.patcog.2012.03.014&partnerID=40&md5=59ef6f6186b6677c0dc59f717b26c09f
+
+Multi-view low-rank sparse subspace clustering
+(2018) . Cited 121 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85028510979&doi=10.1016%2fj.patcog.2017.08.024&partnerID=40&md5=39557f71d8c1a72745b67050ab3f84ab
+
+Graph spectral image smoothing using the heat kernel
+(2008) . Cited 114 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-48149111839&doi=10.1016%2fj.patcog.2008.05.007&partnerID=40&md5=05b39ad8d47367360f5689a175f97326
+
+Complete canonical correlation analysis with application to multi-view gait recognition
+(2016) . Cited 98 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84946488033&doi=10.1016%2fj.patcog.2015.08.011&partnerID=40&md5=c778b172506317b13dbf919175728ff6
+
+Granular multi-label feature selection based on mutual information
+(2017) . Cited 87 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85016041496&doi=10.1016%2fj.patcog.2017.02.025&partnerID=40&md5=a6bd104f3dcefda12fb1164cb52c6846
+
+Multi-label feature selection with missing labels
+(2018) . Cited 86 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85032306908&doi=10.1016%2fj.patcog.2017.09.036&partnerID=40&md5=dee58fb593e6b2383576f2c12bb10790
+
+Hierarchical annotation of medical images
+(2011) . Cited 80 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-79958836082&doi=10.1016%2fj.patcog.2011.03.026&partnerID=40&md5=13129a897e1fdac0b0e123ee891a8593
+
+MLTSVM: A novel twin support vector machine to multi-label learning
+(2016) . Cited 78 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84951816826&doi=10.1016%2fj.patcog.2015.10.008&partnerID=40&md5=27c4f826b29e8f4f1ede11bd824ffd44
+
+An active learning-based SVM multi-class classification model
+(2015) . Cited 75 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84921665973&doi=10.1016%2fj.patcog.2014.12.009&partnerID=40&md5=55d362bca4ebfd5242c5715153487398
+
+Multi-label learning with missing labels for image annotation and facial action unit recognition
+(2015) . Cited 74 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84925658170&doi=10.1016%2fj.patcog.2015.01.022&partnerID=40&md5=0dee9b0ae32a28e9c4a1afa3e08e7c19
+
+Fast multi-label feature selection based on information-theoretic feature ranking
+(2015) . Cited 73 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84929510253&doi=10.1016%2fj.patcog.2015.04.009&partnerID=40&md5=27670d07b149fc6adce8c0a76065831c
+
+SVM based multi-label learning with missing labels for image annotation
+(2018) . Cited 70 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85042351070&doi=10.1016%2fj.patcog.2018.01.022&partnerID=40&md5=da1d0e5042d611b71f1aa2085b2dd20c
+
+A deeply supervised residual network for HEp-2 cell classification via cross-modal transfer learning
+(2018) . Cited 67 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044647278&doi=10.1016%2fj.patcog.2018.02.006&partnerID=40&md5=ebfa83479fade7b180efee4caae48e60
+
+Manifold regularized discriminative feature selection for multi-label learning
+(2019) . Cited 62 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85067232650&doi=10.1016%2fj.patcog.2019.06.003&partnerID=40&md5=a9e90d9da28a5fe00794056336f661a7
+
+Fuzzy support vector machines for multilabel classification
+(2015) . Cited 62 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84925373610&doi=10.1016%2fj.patcog.2015.01.009&partnerID=40&md5=30a9341cf20da3007279a446cbb55aaf
+
+Mixture correntropy for robust learning
+(2018) . Cited 61 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044656339&doi=10.1016%2fj.patcog.2018.02.010&partnerID=40&md5=1f5a2d8c4795740ac735e30ab01f720b
+
+Adaptive hash retrieval with kernel based similarity
+(2018) . Cited 56 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85017162770&doi=10.1016%2fj.patcog.2017.03.020&partnerID=40&md5=44805970e5ad6e40c878e04b1bbad4a3
+
+Automatic image annotation via label transfer in the semantic space
+(2017) . Cited 54 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85023172569&doi=10.1016%2fj.patcog.2017.05.019&partnerID=40&md5=f5aa12d8ae4fc084310c8f55a0cb859a
+
+Supervised deep hashing for scalable face image retrieval
+(2018) . Cited 49 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85016554015&doi=10.1016%2fj.patcog.2017.03.028&partnerID=40&md5=88559c935ec07ffc6ed12ba7a64598b2
+
+Multilabel classifiers with a probabilistic thresholding strategy
+(2012) . Cited 49 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-80052965571&doi=10.1016%2fj.patcog.2011.08.007&partnerID=40&md5=0b83a8d245b3e8b351f1fc6dd0001891
+
+Online multi-label streaming feature selection based on neighborhood rough set
+(2018) . Cited 47 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85050290374&doi=10.1016%2fj.patcog.2018.07.021&partnerID=40&md5=a3a312ec0b4ab2989a94127b44a2d7ec
+
+Scalable multi-output label prediction: From classifier chains to classifier trellises
+(2015) . Cited 47 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84925368172&doi=10.1016%2fj.patcog.2015.01.004&partnerID=40&md5=f2d802ed67f86ed61f550ca76ed8c730
+
+Hierarchical Multi-label Classification using Fully Associative Ensemble Learning
+(2017) . Cited 46 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85019996583&doi=10.1016%2fj.patcog.2017.05.007&partnerID=40&md5=b2b0297baaffcbc1afa04ef271b382f3
+
+SCLS: Multi-label feature selection based on scalable criterion for large label set
+(2017) . Cited 46 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85009772926&doi=10.1016%2fj.patcog.2017.01.014&partnerID=40&md5=d6d52f9d5483793ca4975fa02fc94395
+
+A survey and analysis on automatic image annotation
+(2018) . Cited 45 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044646635&doi=10.1016%2fj.patcog.2018.02.017&partnerID=40&md5=8adaf333d66972e03f9ea1feddcbae43
+
+Fast multi-label core vector machine
+(2013) . Cited 44 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84870243552&doi=10.1016%2fj.patcog.2012.09.003&partnerID=40&md5=4692042acbb33039860f66d6145da4ac
+
+Distinguishing two types of labels for multi-label feature selection
+(2019) . Cited 38 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85066821230&doi=10.1016%2fj.patcog.2019.06.004&partnerID=40&md5=ef1b1e8652a78d2981b89bd2144255d8
+
+Local image tagging via graph regularized joint group sparsity
+(2013) . Cited 38 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84872492538&doi=10.1016%2fj.patcog.2012.10.026&partnerID=40&md5=64816b71095f6b69e0ecc647d7bd7c24
+
+Multi-label classification with a reject option
+(2013) . Cited 37 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84875698182&doi=10.1016%2fj.patcog.2013.01.035&partnerID=40&md5=4291d9acc0ea6c98b85819f6c6f0934c
+
+Cost-sensitive learning of hierarchical tree classifiers for large-scale image classification and novel category detection
+(2015) . Cited 36 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84921690563&doi=10.1016%2fj.patcog.2014.10.025&partnerID=40&md5=ba59ce2f6b18f9c856402800801bae1f
+
+Graph regularized multiset canonical correlations with applications to joint feature extraction
+(2014) . Cited 36 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84907711267&doi=10.1016%2fj.patcog.2014.06.016&partnerID=40&md5=50ad6809762853fd60874d89ffc832fa
+
+Enhancing multi-label classification by modeling dependencies among labels
+(2014) . Cited 36 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84902338960&doi=10.1016%2fj.patcog.2014.04.009&partnerID=40&md5=39282cb4ebe69ac001fa7873057eacfd
+
+Multi-label classification and extracting predicted class hierarchies
+(2011) . Cited 36 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-78649318170&doi=10.1016%2fj.patcog.2010.09.010&partnerID=40&md5=286313dab4f44c3e2f963742533bfd1f
+
+A label-specific multi-label feature selection algorithm based on the Pareto dominance concept
+(2019) . Cited 34 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85058786584&doi=10.1016%2fj.patcog.2018.12.020&partnerID=40&md5=14ed02382a46f3e6a629ee8a902f53f4
+
+Low rank representation with adaptive distance penalty for semi-supervised subspace classification
+(2017) . Cited 34 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85016068878&doi=10.1016%2fj.patcog.2017.02.017&partnerID=40&md5=1c3a90c4f1b5d68faf54d420af06021d
+
+Matrix completion by least-square, low-rank, and sparse self-representations
+(2017) . Cited 33 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85023201554&doi=10.1016%2fj.patcog.2017.05.013&partnerID=40&md5=f04a528180da27b98a1d5cf6fb731e55
+
+Integrating multi-level deep learning and concept ontology for large-scale visual recognition
+(2018) . Cited 32 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85042385657&doi=10.1016%2fj.patcog.2018.01.027&partnerID=40&md5=cc63112d34a7fd6291748c8768ea0222
+
+Labelling strategies for hierarchical multi-label classification techniques
+(2016) . Cited 32 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84977950757&doi=10.1016%2fj.patcog.2016.02.017&partnerID=40&md5=12acdbb5d7fd1b0588a47058c81cb117
+
+Designing multi-label classifiers that maximize F measures: State of the art
+(2017) . Cited 30 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84988490325&doi=10.1016%2fj.patcog.2016.08.008&partnerID=40&md5=172c88c35131b20f7f66c72a0f4d49e9
+
+Multi-layer multi-view topic model for classifying advertising video
+(2017) . Cited 28 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85017605712&doi=10.1016%2fj.patcog.2017.03.003&partnerID=40&md5=af51e2e55026f0310cd7ddf3af678114
+
+OFS-Density: A novel online streaming feature selection method
+(2019) . Cited 27 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85053055279&doi=10.1016%2fj.patcog.2018.08.009&partnerID=40&md5=5c5d91279dae246d3c96004aedbf14f0
+
+Facial action unit recognition under incomplete data based on multi-label learning with missing labels
+(2016) . Cited 26 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84994876182&doi=10.1016%2fj.patcog.2016.07.009&partnerID=40&md5=a3087d41b1b606569bd02511ac2b208b
+
+Inconsistency-based active learning for support vector machines
+(2012) . Cited 26 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84861810043&doi=10.1016%2fj.patcog.2012.03.022&partnerID=40&md5=576417800b282cf2ee9a8c37088c5e76
+
+Two stage architecture for multi-label learning
+(2012) . Cited 26 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-80055018047&doi=10.1016%2fj.patcog.2011.08.011&partnerID=40&md5=bb2ce17edefbe8cd448069e259f9f958
+
+Multi-view label embedding
+(2018) . Cited 24 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85051243842&doi=10.1016%2fj.patcog.2018.07.009&partnerID=40&md5=960ed2d5f822a71204e96c4ae0c6b04c
+
+Penalized partial least square discriminant analysis with l1-norm for multi-label data
+(2015) . Cited 24 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84921672079&doi=10.1016%2fj.patcog.2014.11.007&partnerID=40&md5=27f886025d78b685e9f02c6a4a7df871
+
+Multi-label classification via label correlation and first order feature dependance in a data stream
+(2019) . Cited 23 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85060098884&doi=10.1016%2fj.patcog.2019.01.007&partnerID=40&md5=f42a460f7fe12c938613d5cc801ca88a
+
+Gaze latent support vector machine for image classification improved by weakly supervised region selection
+(2017) . Cited 20 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85027531875&doi=10.1016%2fj.patcog.2017.07.001&partnerID=40&md5=2be2e788b089e5c4aa5dd5ae30577b57
+
+Large-scale multi-label classification using unknown streaming images: Large-scale multi-label classification using unknown streaming images
+(2020) . Cited 18 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85074452565&doi=10.1016%2fj.patcog.2019.107100&partnerID=40&md5=24ce44a8ea9586fd7d408866c38acd21
+
+DELTA: A deep dual-stream network for multi-label image classification
+(2019) . Cited 18 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85062722563&doi=10.1016%2fj.patcog.2019.03.006&partnerID=40&md5=6e26d3ca5fb6b0f1143d3664e385d417
+
+Semi-supervised robust deep neural networks for multi-label image classification
+(2020) . Cited 17 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85077342922&doi=10.1016%2fj.patcog.2019.107164&partnerID=40&md5=1f388a87dc761c857c31f9f512da86ea
+
+Multi-label methods for prediction with sequential data
+(2017) . Cited 17 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84998693454&doi=10.1016%2fj.patcog.2016.09.015&partnerID=40&md5=3d3ef8fca21d0c119651a122e65cb4d4
+
+Uncooperative gait recognition: Re-ranking based on sparse coding and multi-view hypergraph learning
+(2016) . Cited 17 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84958117503&doi=10.1016%2fj.patcog.2015.11.016&partnerID=40&md5=9be930d251dbe39bdba91322f65dc58b
+
+Efficient multi-modal fusion on supergraph for scalable image annotation
+(2015) . Cited 17 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84925674870&doi=10.1016%2fj.patcog.2015.01.015&partnerID=40&md5=379bd358f377852bc3ce1d2fd6c44ef5
+
+Non-linear matrix completion
+(2018) . Cited 16 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85033457176&doi=10.1016%2fj.patcog.2017.10.014&partnerID=40&md5=7fae0c732ed862a2ea9e65baa15d25d1
+
+Two-tier image annotation model based on a multi-label classifier and fuzzy-knowledge representation scheme
+(2016) . Cited 16 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84947594550&doi=10.1016%2fj.patcog.2015.10.017&partnerID=40&md5=0cccf8cd7ba3f24102f21d6041bd8d05
+
+Noisy multi-label semi-supervised dimensionality reduction
+(2019) . Cited 15 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85060984659&doi=10.1016%2fj.patcog.2019.01.033&partnerID=40&md5=b90d5585a87fabf1e6823c99b7eab3f2
+
+Group preserving label embedding for multi-label classification
+(2019) . Cited 15 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85060186657&doi=10.1016%2fj.patcog.2019.01.009&partnerID=40&md5=02b53b6ff6809107536b9806e1f12e1e
+
+Iterative image segmentation with feature driven heuristic four-color labeling
+(2018) . Cited 15 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85040311592&doi=10.1016%2fj.patcog.2017.10.023&partnerID=40&md5=337d8bdaa7cb6a1cf5adbb558e444008
+
+Semi-supervised cross-modal image generation with generative adversarial networks
+(2020) . Cited 14 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85075505126&doi=10.1016%2fj.patcog.2019.107085&partnerID=40&md5=4870a9299a79e9866f5e1c3190fc0625
+
+Multi-label classification via incremental clustering on an evolving data stream
+(2019) . Cited 14 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85066978517&doi=10.1016%2fj.patcog.2019.06.001&partnerID=40&md5=16fca509846e13121dc5469c8946dc34
+
+Diffusive likelihood for interactive image segmentation
+(2018) . Cited 14 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044657671&doi=10.1016%2fj.patcog.2018.02.023&partnerID=40&md5=e79b3cea267b381e7c4c64279b5735e3
+
+Supervising topic models with Gaussian processes
+(2018) . Cited 13 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044649648&doi=10.1016%2fj.patcog.2017.12.019&partnerID=40&md5=9a1143ce1e3999058c0dfa216c69d252
+
+Training inter-related classifiers for automatic image classification and annotation
+(2013) . Cited 13 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84872500329&doi=10.1016%2fj.patcog.2012.10.029&partnerID=40&md5=531c34fd4961de8703c8adc4f07983f0
+
+Multi-dimensional classification via kNN feature augmentation
+(2020) . Cited 12 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85085219487&doi=10.1016%2fj.patcog.2020.107423&partnerID=40&md5=d8f7d0ed07f9fc6185a090ad7f999b2c
+
+Collaborative and geometric multi-kernel learning for multi-class classification
+(2020) . Cited 12 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85074163620&doi=10.1016%2fj.patcog.2019.107050&partnerID=40&md5=f47c0564dc8e61ac3dec32c6cc52377b
+
+Cost-sensitive classifier chains: Selecting low-cost features in multi-label classification
+(2019) . Cited 12 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85054175427&doi=10.1016%2fj.patcog.2018.09.012&partnerID=40&md5=ef044c1e3a1ff4221558ad88e2bbbffc
+
+Learning with privileged information for multi-Label classification
+(2018) . Cited 12 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85051253212&doi=10.1016%2fj.patcog.2018.03.033&partnerID=40&md5=22f7ec3f48b38f182c7566540b5baa0c
+
+A generalized weighted distance k-Nearest Neighbor for multi-label problems
+(2021) . Cited 11 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85099086600&doi=10.1016%2fj.patcog.2020.107526&partnerID=40&md5=e4b85a94ef49ad55a4cfe19c05d82b51
+
+Multi-label feature selection with shared common mode
+(2020) . Cited 11 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85082683920&doi=10.1016%2fj.patcog.2020.107344&partnerID=40&md5=813f9984e56fb827cb92f939bb348a59
+
+Multi-modal and multi-layout discriminative learning for placental maturity staging
+(2017) . Cited 11 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84998546887&doi=10.1016%2fj.patcog.2016.09.037&partnerID=40&md5=0c45747848b7c738d027dfdcae279bed
+
+Clustering of multivariate binary data with dimension reduction via L1-regularized likelihood maximization
+(2015) . Cited 10 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84941415103&doi=10.1016%2fj.patcog.2015.05.026&partnerID=40&md5=8b66575b80daaa30d61dad33792c44c8
+
+Prototype learning and collaborative representation using Grassmann manifolds for image set classification
+(2020) . Cited 9 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85075457536&doi=10.1016%2fj.patcog.2019.107123&partnerID=40&md5=6cdf496842392e504bab15adff45305a
+
+Entropy and orthogonality based deep discriminative feature learning for object recognition
+(2018) . Cited 9 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044967891&doi=10.1016%2fj.patcog.2018.03.036&partnerID=40&md5=e28ad65b95cabb90088bce8db4efcf39
+
+Uncorrelated multi-set feature learning for color face recognition
+(2016) . Cited 9 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84994820096&doi=10.1016%2fj.patcog.2016.06.010&partnerID=40&md5=7263d161cfab398b50cff217884fa7e2
+
+A convex formulation for multiple ordinal output classification
+(2019) . Cited 8 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85053399985&doi=10.1016%2fj.patcog.2018.09.005&partnerID=40&md5=77e074f3a22329483d12552d7bfc0f61
+
+Morphological classifiers
+(2018) . Cited 8 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85049553242&doi=10.1016%2fj.patcog.2018.06.010&partnerID=40&md5=e42b08827a84839139f53de0f3acf2fc
+
+A new distance measure for non-identical data with application to image classification
+(2017) . Cited 8 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84999040465&doi=10.1016%2fj.patcog.2016.10.018&partnerID=40&md5=9d544bd738ad2fd61721580af8a3f94c
+
+View-specific subspace learning and re-ranking for semi-supervised person re-identification
+(2020) . Cited 7 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85088917705&doi=10.1016%2fj.patcog.2020.107568&partnerID=40&md5=b53512525dd1f067b3a5eef57bb52142
+
+Structure alignment of attributes and visual features for cross-dataset person re-identification
+(2020) . Cited 7 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85084332662&doi=10.1016%2fj.patcog.2020.107414&partnerID=40&md5=ff27f7f051b7aa24bb6287dcc85666d2
+
+Semi-automatic dynamic auxiliary-tag-aided image annotation
+(2010) . Cited 7 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-70349500343&doi=10.1016%2fj.patcog.2009.03.009&partnerID=40&md5=0fc1615fe425821e5dcc7a6eb9c26c82
+
+Weakly supervised image classification and pointwise localization with graph convolutional networks
+(2021) . Cited 6 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85089572399&doi=10.1016%2fj.patcog.2020.107596&partnerID=40&md5=52bfe799aa4e423277c556a0fd3d4afe
+
+Joint and individual matrix factorization hashing for large-scale cross-modal retrieval
+(2020) . Cited 6 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85086138344&doi=10.1016%2fj.patcog.2020.107479&partnerID=40&md5=bc02dbd30eaa45d1cd2f68818ce73aaf
+
+Optimization of classifier chains via conditional likelihood maximization
+(2018) . Cited 5 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85032297443&doi=10.1016%2fj.patcog.2017.09.034&partnerID=40&md5=ca59972f993cc04e5c22132cb7cba040
+
+A semi-dependent decomposition approach to learn hierarchical classifiers
+(2010) . Cited 5 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-78049321347&doi=10.1016%2fj.patcog.2010.06.001&partnerID=40&md5=c81f1c66a9ba6daaef3ae9b9c004814d
+
+Cross-modal discriminant adversarial network
+(2021) . Cited 4 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85096018021&doi=10.1016%2fj.patcog.2020.107734&partnerID=40&md5=400e56ac059fb6e68a28aa876ef0a332
+
+Threshold optimization for F measure of macro-averaged precision and recall
+(2020) . Cited 4 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85078831104&doi=10.1016%2fj.patcog.2020.107250&partnerID=40&md5=429f8ac84e3687fb7996141496ce5e63
+
+Real-Time monophonic and polyphonic audio classification from power spectra
+(2019) . Cited 4 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85063289424&doi=10.1016%2fj.patcog.2019.03.017&partnerID=40&md5=e1bef635993ef97ba57064fd60814c59
+
+A generalized multi-dictionary least squares framework regularized with multi-graph embeddings
+(2019) . Cited 4 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85059962036&doi=10.1016%2fj.patcog.2019.01.012&partnerID=40&md5=362c22b8460e45ac1e44ffad6151bd0d
+
+Manifold constraint transfer for visual structure-driven optimization
+(2018) . Cited 3 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85044663571&doi=10.1016%2fj.patcog.2017.11.006&partnerID=40&md5=769873a8ae0ac066d7cad9343ed2601b
+
+Multilabel predictions with sets of probabilities: The Hamming and ranking loss cases
+(2015) . Cited 3 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84937814140&doi=10.1016%2fj.patcog.2015.04.020&partnerID=40&md5=6b6e46503aa30b96f6ae00acbd98d863
+
+A unified view of class-selection with probabilistic classifiers
+(2014) . Cited 3 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-84887015359&doi=10.1016%2fj.patcog.2013.07.020&partnerID=40&md5=69d255d43c9de6953634989ed7eeefd2
+
+Hierarchical distillation learning for scalable person search
+(2021) . Cited 2 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85100583583&doi=10.1016%2fj.patcog.2021.107862&partnerID=40&md5=a5478ee9ecc47a5fcca70bcf883fdacc
+
+Expand globally, shrink locally: Discriminant multi-label learning with missing labels
+(2021) . Cited 2 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85091895021&doi=10.1016%2fj.patcog.2020.107675&partnerID=40&md5=d3053c461bb0ded6a0abcf2e795843d4
+
+Cross-view classification by joint adversarial learning and class-specificity distribution
+(2021) . Cited 2 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85090860828&doi=10.1016%2fj.patcog.2020.107633&partnerID=40&md5=384e20b7b807473b9777c476377819bc
+
+Active k-labelsets ensemble for multi-label classification
+(2021) . Cited 2 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85089601789&doi=10.1016%2fj.patcog.2020.107583&partnerID=40&md5=213f599652fbd87b8bee291ba0e883b8
+
+Diverse image annotation with missing labels
+(2019) . Cited 2 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85065408884&doi=10.1016%2fj.patcog.2019.05.018&partnerID=40&md5=0e225ae1706c3029f89f250ec47308df
+
+Heritage image annotation via collective knowledge
+(2019) . Cited 2 times.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85064844023&doi=10.1016%2fj.patcog.2019.04.017&partnerID=40&md5=4996259458056446a6b3908eb1e80123
+
+Well-calibrated confidence measures for multi-label text classification with a large number of labels
+(2022) . Cited 1 time.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85114006535&doi=10.1016%2fj.patcog.2021.108271&partnerID=40&md5=20e644a1ce2099ebfa3f5346dcedaee9
+
+Learning common and label-specific features for multi-Label classification with correlation information
+(2022) . Cited 1 time.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85113277352&doi=10.1016%2fj.patcog.2021.108259&partnerID=40&md5=424fb8bdc685802c3792e68bd28b14a3
+
+Multi-label feature selection via manifold regularization and dependence maximization
+(2021) . Cited 1 time.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85110353944&doi=10.1016%2fj.patcog.2021.108149&partnerID=40&md5=710c3a338e18ce6dc1d17fdfeb3070dd
+
+Compact learning for multi-label classification
+(2021) . Cited 1 time.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85099787169&doi=10.1016%2fj.patcog.2021.107833&partnerID=40&md5=bd2fb6c549304cc245bbecd81b37b8ca
+
+Progressive sample mining and representation learning for one-shot person re-identification
+(2021) . Cited 1 time.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85090067722&doi=10.1016%2fj.patcog.2020.107614&partnerID=40&md5=be0a22f9e338981b0327cdd6a522a536
+
+Supervised dimensionality reduction of proportional data using mixture estimation
+(2020) . Cited 1 time.
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85084339439&doi=10.1016%2fj.patcog.2020.107379&partnerID=40&md5=eea5066e662786f780776cc803363227
+
+Multi-label sampling based on local label imbalance
+(2022) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85118604850&doi=10.1016%2fj.patcog.2021.108294&partnerID=40&md5=bf26e1d76b9a2e4562aa55417d8f7e13
+
+Manifold learning with structured subspace for multi-label feature selection
+(2021) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85111294337&doi=10.1016%2fj.patcog.2021.108169&partnerID=40&md5=88b0d5d61c1ad7afc093bef25fae4bd1
+
+Sparse semi-supervised heterogeneous interbattery bayesian analysis
+(2021) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85109899109&doi=10.1016%2fj.patcog.2021.108141&partnerID=40&md5=8efba08b3709f008e50fbd46afcc473b
+
+Multi-label feature selection considering label supplementation
+(2021) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85109600848&doi=10.1016%2fj.patcog.2021.108137&partnerID=40&md5=ea878fb5f6dbd546219f4562da500a02
+
+GGAC: Multi-relational image gated GCN with attention convolutional binary neural tree for identifying disease with chest X-rays
+(2021) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85108428384&doi=10.1016%2fj.patcog.2021.108113&partnerID=40&md5=0ba4d5d32b87c791c532dd10c27a76dd
+
+Online incremental hierarchical classification resonance network
+(2021) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85091678917&doi=10.1016%2fj.patcog.2020.107672&partnerID=40&md5=17529d88faa598efcd440519e11fc3a5
+
+Deep tree-ensembles for multi-output prediction
+(2021) . 
+https://www.scopus.com/inward/record.uri?eid=2-s2.0-85113276211&doi=10.1016%2fj.patcog.2021.108211&partnerID=40&md5=22a41d52b80f2a778cdf2cc0f1c05e82
