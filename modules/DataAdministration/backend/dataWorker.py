@@ -395,7 +395,7 @@ class DataWorker:
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
 
-        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent],
+        proc = subprocess.run(["gdalogr_createtiles_geotiff.sh", image, destFolder, parent],
                               stdin=subprocess.DEVNULL,
                               stdout=subprocess.PIPE,
                               stderr=subprocess.DEVNULL,

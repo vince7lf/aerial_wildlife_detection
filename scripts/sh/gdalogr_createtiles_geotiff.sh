@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # how-to run the script
-# ./create_tile.sh > /dev/null 2>&1
+# gdalogr_createtiles_geotiff.sh 2019-Boucherville-13225474-13410695_tile.jpg /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test > /dev/null 2>&1
 
 # this script is a part of a proof of concept, and assume things work as expected.
 # It should not be the way to do, and not used in production and by operations.
@@ -26,10 +26,8 @@ geojsonFilename="${filename}.geojson"
 # clean
 _clean()
 {
-  rm -rf ${destDir}/*.tif
-  rm -rf ${destDir}/*.wld
-  rm -rf ${destDir}/*.prj
   rm -rf ${destDir}/*.dbf
+  rm -rf ${destDir}/*.prj
   rm -rf ${destDir}/*.shp
   rm -rf ${destDir}/*.shx
   rm -rf ${destDir}/1
@@ -41,12 +39,36 @@ _cleanAll()
   rm -rf ${destDir}
 }
 
+_convertJPEGToTIFF()
+{
+  geoTiffFilename="${filename}.tiff"
+  jgwFilename="${filename}.jgw"
+  wldFilename="${filename}.wld"
+
+  # requires the exiftool to read the EXIF metadata
+  # read the JPEG EXIF metadata gpslongitude and gpslatitude
+  lonx=(`exiftool -s -s -s -c '%.13f' -gpslongitude ${srcDir}/${imgFilename}`)
+  laty=(`exiftool -s -s -s -c '%.13f' -gpslatitude ${srcDir}/${imgFilename}`)
+
+  # the format of the file document at <https://en.wikipedia.org/wiki/World_file>
+  # value of 0.00000001 has been deducted using QGIS and a JPEG. The photo represent a square of 1m x 1m of a field.
+  # the GPS coordinates latx/lonx represent the upper-left corner. lonx is negative
+  # tested with QGIS
+  echo -e "0.00000001\n0\n0\n-0.00000001\n-${lonx}\n${laty}" > ${srcDir}/${jgwFilename}
+  echo -e "0.00000001\n0\n0\n-0.00000001\n-${lonx}\n${laty}" > ${srcDir}/${wldFilename}
+
+  # convert to geoTiff; compress like JPEG default 75%; to keep same size as original JPEG
+  gdal_translate -of GTiff -a_srs EPSG:4326 -co COMPRESS=JPEG ${srcDir}/${imgFilename} ${srcDir}/${geoTiffFilename}
+}
+
 # clean all before processing
 _cleanAll
 
 # prepare
 mkdir -p ${destDir}
 cp -rap ${srcDir}/${imgFilename} ${destDir}
+
+[[ "${extension,,}" =~ "jpeg"|"jpg" ]] && _convertJPEGToTIFF
 
 # create tile as shapefile
 # output and error piped to /dev/null
@@ -56,17 +78,12 @@ gdal_retile.py -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 
 # output and error piped to /dev/null
 ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${destDir}/${shpFilename} > /dev/null 2>&1
 
-# loop through the .tiff files and convert to .jpg
+# loop through the .tiff files
 tiles=()
 for f in ${destDir}/*.tif; do
-  jpg="${f%.*}.jpg"
-  # output and error piped to /dev/null
-  gdal_translate -of JPEG -scale -co worldfile=yes ${f} ${jpg} > /dev/null 2>&1
-  tiles+=(${parentDir}/${filename}/$(basename -- "${jpg}"))
+  tif="${f%.*}.tif"
+  tiles+=(${parentDir}/${filename}/$(basename -- "${tif}"))
 done
-
-# change .tif to .jpg into the .geojson
-sed -i 's/\.tif/\.jpg/g' ${destDir}/${geojsonFilename}
 
 # remove unecessary files
 _clean
