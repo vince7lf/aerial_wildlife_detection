@@ -363,6 +363,13 @@ class DataWorker:
                     subImage.save(absFilePath)
 
                     imgs_valid.append(key)
+
+                    # test if image is a tiff; because tiff are not built-in/supported by browser, it will be converted to a JPEG image by the script
+                    # tiff image is saved to the disk but in the database it is refered as a jpg as browser do not support tif; the jpg image is saved to disk from the script gdalogr_createtiles_geotiff
+                    # change the extension
+                    if (newFileName.find("_tile.tif") > -1):
+                        newFileName = re.sub(r"_tile\.(?:tiff|tif)", "_tile.jpg", newFileName)
+
                     imgPaths_valid.append(os.path.join(parent, newFileName))
 
                     # VLF is this image need to be split into tiles ?
