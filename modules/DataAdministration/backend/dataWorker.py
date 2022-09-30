@@ -244,12 +244,13 @@ class DataWorker:
                     raise Exception(f'Invalid file type (*{ext})')
 
                 # check if loadable as image
-                cache = io.BytesIO()
-                nextUpload.save(cache)
+                # cache = io.BytesIO()
+                # nextUpload.save(cache)
                 try:
-                    image = Image.open(cache)
-                except Exception:
-                    raise Exception('File is not a valid image.')
+                    image = images.get(key)
+                    # image = Image.open(cache)
+                except Exception as e:
+                    raise Exception('File is not a valid image. ')
 
                 # prepare image(s) to save to disk
                 parent, filename = os.path.split(nextFileName)
@@ -402,7 +403,7 @@ class DataWorker:
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
 
-        proc = subprocess.run(["gdalogr_createtiles_geotiff.sh", image, destFolder, parent],
+        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent],
                               stdin=subprocess.DEVNULL,
                               stdout=subprocess.PIPE,
                               stderr=subprocess.DEVNULL,

@@ -45,7 +45,7 @@ _cleanAll()
 _cleanAll
 
 # prepare
-mkdir -p ${destDir}
+mkdir -p "${destDir}"
 cp -rap ${srcDir}/${imgFilename} ${destDir}
 
 # create tile as shapefile
@@ -61,7 +61,7 @@ tiles=()
 for f in ${destDir}/*.tif; do
   jpg="${f%.*}.jpg"
   # output and error piped to /dev/null
-  gdal_translate -of JPEG -scale -co worldfile=yes ${f} ${jpg} > /dev/null 2>&1
+  gdal_translate -of JPEG -co worldfile=yes ${f} ${jpg} > /dev/null 2>&1
   tiles+=(${parentDir}/${filename}/$(basename -- "${jpg}"))
 done
 
@@ -76,8 +76,12 @@ if [ ${#tiles[@]} -eq 0 ]; then exit 0; fi
 # output the list of new images with path
 for tile in "${tiles[@]}"
 do
-     echo $tile
+    echo $tile
 done
+
+# trigger the script to create the geolocalized geojson and tiles/images and used by mapserver.
+# in the futur that script should be the only one and openlayer in the annotation interface should suppoer geolocalized geojson
+nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" &
 
 # assume always good, no errors
 exit 1

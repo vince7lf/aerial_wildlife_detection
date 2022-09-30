@@ -20,8 +20,8 @@ parentDir=$3
 extension="${imgFilename##*.}"
 filename="${imgFilename%.*}"
 destDir="${srcDir}/${filename}"
-shpFilename="${filename}.shp"
-geojsonFilename="${filename}.geojson"
+shpFilename="${filename}.ms.shp"
+geojsonFilename="${filename}.ms.geojson"
 
 # clean
 _clean()
@@ -77,7 +77,7 @@ _convertTIFFToJPEG()
 }
 
 # clean all before processing
-_cleanAll
+#_cleanAll
 
 # prepare
 mkdir -p ${destDir}
@@ -102,7 +102,6 @@ ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${d
 # loop through the .tiff files and convert the tiff to jpg if we need to share them; jpeg won't appear in the database.
 tiles=()
 for f in ${destDir}/*.tif; do
-  tif="${f%.*}.tif"
   jpg="${f%.*}.jpg"
   gdal_translate -of JPEG -co worldfile=yes ${f} ${jpg} > /dev/null 2>&1
   tiles+=(${parentDir}/${filename}/$(basename -- "${jpg}"))
