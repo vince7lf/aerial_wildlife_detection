@@ -1,0 +1,39 @@
+ExifTool Version Number         : 10.80
+File Name                       : 2021-05-17-Shawi-test-tourb-15m-map-MavicMini_transparent_mosaic_group1.tif
+Directory                       : /mnt/c/Users/User/Downloads/AIDE+MELCC/OneDrive_1_9-13-2022
+File Size                       : 52 MB
+File Modification Date/Time     : 2022:09:13 18:15:00-04:00
+File Access Date/Time           : 2022:09:29 09:37:37-04:00
+File Inode Change Date/Time     : 2022:09:15 12:47:51-04:00
+File Permissions                : rwxrwxrwx
+File Type                       : TIFF
+File Type Extension             : tif
+MIME Type                       : image/tiff
+Exif Byte Order                 : Little-endian (Intel, II)
+Image Width                     : 5968
+Image Height                    : 5817
+Bits Per Sample                 : 8 8 8 8
+Compression                     : LZW
+Photometric Interpretation      : RGB
+Strip Offsets                   : (Binary data 50660 bytes, use -b option to extract)
+Samples Per Pixel               : 4
+Rows Per Strip                  : 1
+Strip Byte Counts               : (Binary data 32690 bytes, use -b option to extract)
+Planar Configuration            : Chunky
+Software                        : pix4dmapper
+Predictor                       : Horizontal differencing
+Extra Samples                   : Unassociated Alpha
+Sample Format                   : Unsigned; Unsigned; Unsigned; Unsigned
+Pixel Scale                     : 0.00766 0.00766 0
+Model Tie Point                 : 0 0 0 -8085778.88365 5867675.40634 0
+GDAL No Data                    : -10000
+Geo Tiff Version                : 1.1.0
+GT Model Type                   : Projected
+GT Raster Type                  : Pixel Is Area
+GT Citation                     : WGS 84 / Pseudo-Mercator
+Geog Citation                   : WGS 84
+Geog Angular Units              : Angular Degree
+Projected CS Type               : Unknown (3857)
+Proj Linear Units               : Linear Meter
+Image Size                      : 5968x5817
+Megapixels                      : 34.7

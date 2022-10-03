@@ -26,6 +26,10 @@ geojsonFilename="${filename}.ms.geojson"
 # clean
 _clean()
 {
+  rm -rf ${srcDir}/*.jpg.aux.xml
+  rm -rf ${srcDir}/*.wld
+  rm -rf ${srcDir}/*.jgw
+
   rm -rf ${destDir}/*.dbf
   rm -rf ${destDir}/*.prj
   rm -rf ${destDir}/*.shp
@@ -36,6 +40,16 @@ _clean()
 # clean all
 _cleanAll()
 {
+  rm -rf ${srcDir}/*.jpg.aux.xml
+  rm -rf ${srcDir}/*.wld
+  rm -rf ${srcDir}/*.jgw
+
+  [[ "${extension,,}" =~ "jpeg"|"jpg" ]] && rm -rf ${srcDir}/*.tif*;
+  [[ "${extension,,}" =~ "tif"|"tiff" ]] && {
+    rm -rf ${srcDir}/*.jpg
+    rm -rf ${srcDir}/*.jpg
+  }
+
   rm -rf ${destDir}
 }
 

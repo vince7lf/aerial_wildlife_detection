@@ -1,0 +1,61 @@
+ExifTool Version Number         : 10.80
+File Name                       : Vincent Le Falher - reconnaissance des acquis microprogramme - 2016 (1).tif
+Directory                       : /mnt/c/Users/User/Downloads
+File Size                       : 132 kB
+File Modification Date/Time     : 2022:10:03 14:25:39-04:00
+File Access Date/Time           : 2022:10:03 14:25:41-04:00
+File Inode Change Date/Time     : 2022:10:03 14:25:39-04:00
+File Permissions                : rwxrwxrwx
+File Type                       : TIFF
+File Type Extension             : tif
+MIME Type                       : image/tiff
+Exif Byte Order                 : Little-endian (Intel, II)
+Subfile Type                    : Full-resolution Image
+Image Width                     : 1275
+Image Height                    : 1650
+Bits Per Sample                 : 8 8 8
+Compression                     : LZW
+Photometric Interpretation      : RGB
+Fill Order                      : Normal
+Strip Offsets                   : 7016
+Orientation                     : Horizontal (normal)
+Samples Per Pixel               : 3
+Rows Per Strip                  : 1650
+Strip Byte Counts               : 128273
+X Resolution                    : 150
+Y Resolution                    : 150
+Planar Configuration            : Chunky
+Resolution Unit                 : inches
+Page Number                     : 0 1
+Software                        :
+Modify Date                     : 2020:01:01 00:00:00
+Artist                          :
+Predictor                       : None
+Profile CMM Type                :
+Profile Version                 : 2.1.0
+Profile Class                   : Display Device Profile
+Color Space Data                : RGB
+Profile Connection Space        : XYZ
+Profile Date Time               : 0000:00:00 00:00:00
+Profile File Signature          : acsp
+Primary Platform                : Apple Computer Inc.
+CMM Flags                       : Not Embedded, Independent
+Device Manufacturer             :
+Device Model                    :
+Device Attributes               : Reflective, Glossy, Positive, Color
+Rendering Intent                : Perceptual
+Connection Space Illuminant     : 0.96419 1 0.82489
+Profile Creator                 :
+Profile ID                      : 0
+Profile Description             : Artifex Software sRGB ICC Profile
+Profile Copyright               : Copyright Artifex Software 2011
+Media White Point               : 0.95045 1 1.08905
+Media Black Point               : 0 0 0
+Red Matrix Column               : 0.43607 0.22249 0.01392
+Green Matrix Column             : 0.38515 0.71687 0.09708
+Blue Matrix Column              : 0.14307 0.06061 0.7141
+Red Tone Reproduction Curve     : (Binary data 2060 bytes, use -b option to extract)
+Green Tone Reproduction Curve   : (Binary data 2060 bytes, use -b option to extract)
+Blue Tone Reproduction Curve    : (Binary data 2060 bytes, use -b option to extract)
+Image Size                      : 1275x1650
+Megapixels                      : 2.1

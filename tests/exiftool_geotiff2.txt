@@ -1,0 +1,36 @@
+ExifTool Version Number         : 10.80
+File Name                       : 2019-Boucherville-13225474-13410695_tile.tiff
+Directory                       : /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test-tiff
+File Size                       : 3.3 MB
+File Modification Date/Time     : 2022:09:26 11:00:42-04:00
+File Access Date/Time           : 2022:09:29 13:43:10-04:00
+File Inode Change Date/Time     : 2022:09:29 10:35:54-04:00
+File Permissions                : rwxrwxrwx
+File Type                       : TIFF
+File Type Extension             : tif
+MIME Type                       : image/tiff
+Exif Byte Order                 : Little-endian (Intel, II)
+Image Width                     : 1079
+Image Height                    : 1080
+Bits Per Sample                 : 8 8 8
+Compression                     : Uncompressed
+Photometric Interpretation      : RGB
+Strip Offsets                   : (Binary data 4149 bytes, use -b option to extract)
+Samples Per Pixel               : 3
+Rows Per Strip                  : 2
+Strip Byte Counts               : (Binary data 2699 bytes, use -b option to extract)
+Planar Configuration            : Chunky
+Sample Format                   : Unsigned; Unsigned; Unsigned
+Pixel Scale                     : 1e-08 1e-08 0
+Model Tie Point                 : 0 0 0 -73.4666400170111 45.6261787100444 0
+GDAL Metadata                   : <GDALMetadata>.  <Item name="EXIF_ApertureValue">(2.971)</Item>.  <Item name="EXIF_Artist">b6cba20c-c3c0-430e-80fc-ff539a81584b</Item>.  <Item name="EXIF_ColorSpace">1</Item>.  <Item name="EXIF_ComponentsConfiguration">0x00 0x03 0x02 0x01</Item>.  <Item name="EXIF_CompressedBitsPerPixel">(5.36062)</Item>.  <Item name="EXIF_Contrast">0</Item>.  <Item name="EXIF_CustomRendered">0</Item>.  <Item name="EXIF_DateTime">2019:07:09 15:42:19</Item>.  <Item name="EXIF_DateTimeDigitized">2019:07:09 15:33:53</Item>.  <Item name="EXIF_DateTimeOriginal">2019:07:09 15:33:53</Item>.  <Item name="EXIF_DeviceSettingDescription">0x00 0x00 0x00 0x00</Item>.  <Item name="EXIF_DigitalZoomRatio">(0)</Item>.  <Item name="EXIF_Document_Name">2019-07-09T19:52:25Z</Item>.  <Item name="EXIF_ExifVersion">0230</Item>.  <Item name="EXIF_ExposureBiasValue">(0)</Item>.  <Item name="EXIF_ExposureIndex">(0.25)</Item>.  <Item name="EXIF_ExposureMode">1</Item>.  <Item name="EXIF_ExposureProgram">1</Item>.  <Item name="EXIF_ExposureTime">(0.001)</Item>.  <Item name="EXIF_FileSource">0x03</Item>.  <Item name="EXIF_Flash">32</Item>.  <Item name="EXIF_FlashpixVersion">0100</Item>.  <Item name="EXIF_FNumber">(2.8)</Item>.  <Item name="EXIF_FocalLength">(4.5)</Item>.  <Item name="EXIF_FocalLengthIn35mmFilm">24</Item>.  <Item name="EXIF_GainControl">0</Item>.  <Item name="EXIF_GPSAltitude">(2.4)</Item>.  <Item name="EXIF_GPSAltitudeRef">0x00</Item>.  <Item name="EXIF_GPSLatitude">(45) (37) (34.2433)</Item>.  <Item name="EXIF_GPSLatitudeRef">N</Item>.  <Item name="EXIF_GPSLongitude">(73) (27) (59.904)</Item>.  <Item name="EXIF_GPSLongitudeRef">W</Item>.  <Item name="EXIF_ImageDescription">eefa5b1e-5d82-4229-b0f7-e70aff262c58</Item>.  <Item name="EXIF_ImageUniqueID">eefa5b1e-5d82-4229-b0f7-e70aff262c58</Item>.  <Item name="EXIF_Interoperability_Index">R98</Item>.  <Item name="EXIF_Interoperability_Version">0x30 0x31 0x30 0x30</Item>.  <Item name="EXIF_ISOSpeedRatings">400</Item>.  <Item name="EXIF_LensSpecification">(0) (0) (2.2) (2.2)</Item>.  <Item name="EXIF_LightSource">0</Item>.  <Item name="EXIF_Make">DJI</Item>.  <Item name="EXIF_MakerNote">[awb_dbg_info:ACDYCELKDCGUFSXICDERPLJEXQEAKHETOOVRPRNNHNPFBQALCJQBRHJBAOVRMAODOLRNJDDUEHYVZFOKSNKDPSSGDEFTGZRLASIQ</Item>.  <Item name="EXIF_MaxApertureValue">(2.971)</Item>.  <Item name="EXIF_MeteringMode">1</Item>.  <Item name="EXIF_Model">FC2103</Item>.  <Item name="EXIF_PixelXDimension">1079</Item>.  <Item name="EXIF_PixelYDimension">1080</Item>.  <Item name="EXIF_ResolutionUnit">2</Item>.  <Item name="EXIF_Saturation">0</Item>.  <Item name="EXIF_SceneCaptureType">0</Item>.  <Item name="EXIF_SceneType">0x01</Item>.  <Item name="EXIF_Sharpness">0</Item>.  <Item name="EXIF_Software">Fulcrum Android 2.33.0 (4881), Android 8.0.0, BullittGroupLimited, S41</Item>.  <Item name="EXIF_SubjectDistance">(0)</Item>.  <Item name="EXIF_SubjectDistanceRange">0</Item>.  <Item name="EXIF_WhiteBalance">0</Item>.  <Item name="EXIF_XResolution">(72)</Item>.  <Item name="EXIF_YCbCrPositioning">1</Item>.  <Item name="EXIF_YResolution">(72)</Item>.</GDALMetadata>.
+Geo Tiff Version                : 1.1.0
+GT Model Type                   : Geographic
+GT Raster Type                  : Pixel Is Area
+Geographic Type                 : WGS 84
+Geog Citation                   : WGS 84
+Geog Angular Units              : Angular Degree
+Geog Semi Major Axis            : 6378137
+Geog Inv Flattening             : 298.257223563
+Image Size                      : 1079x1080
+Megapixels                      : 1.2
