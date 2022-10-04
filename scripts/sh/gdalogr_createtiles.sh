@@ -64,7 +64,7 @@ _convertTIFFToJPEG() {
 
   # convert to geoTiff; compress like JPEG default 75%; to keep same size as original JPEG
   # important to specify 'worldfile=no' here. Otherwise the geojson will contain real coordinates, which we do not want here. the ms.geojson (mapserver) will be generated net step/script
-  gdal_translate -of JPEG -co worldfile=no ${srcDir}/${imgFilename} ${srcDir}/${jpgFilename} >/dev/null 2>&1
+  gdal_translate -of JPEG -co worldfile=no ${srcDir}/${imgFilename} ${srcDir}/${jpgFilename} > ${devnull} 2>&1
 
   # removes files that can help geolocalized the jpg
   rm -rf ${srcDir}/*.jpg.aux.xml
@@ -113,18 +113,18 @@ cp -rap ${srcDir}/${imgFilename} ${destDir}
 # The command can return the following errors if JPEG is not georeferenced (no jwg/wld file)
 # ERROR 1: The transformation is already "north up" or a transformation between pixel/line and georeferenced coordinates cannot be computed for TEMP. There is no affine transformation and no GCPs. Specify transformation option SRC_METHOD=NO_GEOTRANSFORM to bypass this check.
 # Reprojection failed for /tmp/test-jpg-2/test-jpg/2019-Boucherville-13225474-13410695_tile/1/2019-Boucherville-13225474-13410695_tile_1_1.tif, error 3
-gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilename} >${devnull} 2>&1
+gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilename} > ${devnull} 2>&1
 
 # create .geojson and generate .tiff tiles
 # output and error piped to /dev/null
-ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${destDir}/${shpFilename} >${devnull} 2>&1
+ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${destDir}/${shpFilename} > ${devnull} 2>&1
 
 # loop through the .tiff files and convert to .jpg
 tiles=()
 for f in ${destDir}/*.tif; do
   jpg="${f%.*}.jpg"
   # output and error piped to /dev/null
-  gdal_translate -of JPEG -co worldfile=yes ${f} ${jpg} >${devnull} 2>&1
+  gdal_translate -of JPEG -co worldfile=yes ${f} ${jpg} > ${devnull} 2>&1
   tiles+=(${parentDir}/${filename}/$(basename -- "${jpg}"))
 done
 
