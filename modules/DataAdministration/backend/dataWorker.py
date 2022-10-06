@@ -368,8 +368,13 @@ class DataWorker:
                     # test if image is a tiff; because tiff are not built-in/supported by browser, it will be converted to a JPEG image by the script
                     # tiff image is saved to the disk but in the database it is refered as a jpg as browser do not support tif; the jpg image is saved to disk from the script gdalogr_createtiles_geotiff
                     # change the extension
-                    if (newFileName.find("_tile.tif") > -1):
-                        newFileName = re.sub(r"_tile\.(?:tiff|tif)", "_tile.jpg", newFileName)
+                    tifMatches = ["tiff", "tif", "TIFF", "TIF"]
+                    if any(x in newFileName for x in tifMatches):
+                        newFileName = re.sub(r"_tile\.(?:tiff|tif|TIFF|TIF)", "_tile.jpg", newFileName)
+
+                    jpgMatches = ["JPEG", "JPG"]
+                    if any(x in newFileName for x in jpgMatches):
+                        newFileName = re.sub(r"_tile\.(?:JPEG|JPG)", "_tile.jpg", newFileName)
 
                     imgPaths_valid.append(os.path.join(parent, newFileName))
 
@@ -886,7 +891,10 @@ class DataWorker:
                 ''').format(
                 id_lc=sql.Identifier(project, 'labelclass')
             )
-            queryFields.extend(['labelclass_name', 'labelclass_index', 'vascan_id', 'bryoquel_id', 'coleo_vernacular_fr', 'coleo_vernacular_en', 'vascan_region', 'vascan_province', 'vascan_port', 'vascan_statut_repartition', 'tsn', 'coleo_category'])
+            queryFields.extend(
+                ['labelclass_name', 'labelclass_index', 'vascan_id', 'bryoquel_id', 'coleo_vernacular_fr',
+                 'coleo_vernacular_en', 'vascan_region', 'vascan_province', 'vascan_port', 'vascan_statut_repartition',
+                 'tsn', 'coleo_category'])
         else:
             lcStr = sql.SQL('')
 
