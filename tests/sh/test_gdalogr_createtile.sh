@@ -44,54 +44,295 @@ geotiff=(2019-Boucherville-13225474-13410695_tile.tiff /app/tests/images/test-ge
 # sudo /usr/local/bin/gdalogr_createtiles.sh nogpsinfo_tile.jpg /app/tests/images/test-tiff-6/test-geotiff /app/tests/images/test-tiff-6/test-geotiff true
 # sudo bash ${script} ${geotiff[0]} ${geotiff[1]} ${geotiff[1]} true
 
-_test_jpg_nogps()
-{
+# -----------------------------------------------------------------------------
+_test_jpg_nogps() {
   echo -e "${GREEN}${FUNCNAME[0]}${NC}"
-  jpg_nogps=(nogpsinfo_tile.jpg /app/tests/images/test-jpg-nogps/test-jpg)
-  filename="${jpg_nogps[0]%.*}"
-  sudo rm -rf "${jpg_nogps[1]}/${filename}/"
-  sudo rm -rf "${jpg_nogps[1]}/*.tif*"
-  sudo rm -rf "${jpg_nogps[1]}/*.jpg.aux.xml"
-  sudo rm -rf "${jpg_nogps[1]}/*.wld"
-  sudo rm -rf "${jpg_nogps[1]}/*.jgw"
-  sudo bash ${script} ${jpg_nogps[0]} ${jpg_nogps[1]} ${jpg_nogps[1]} false
-  [[ -f "${jpg_nogps[1]}/${filename}.jpg.aux.xml" ]] && {
+  extension="jpg"
+  [[ ! -z $1 && $1 = 'JPG' ]] && extension='JPG'
+  [[ ! -z $1 && $1 = 'JPEG' ]] && extension='JPEG'
+  repo=(nogpsinfo_tile.${extension} /app/tests/images/test-${extension}-nogps/test-${extension})
+  filename="${repo[0]%.*}"
+  sudo rm -rf "${repo[1]}/${filename}/"
+  sudo rm -rf "${repo[1]}/*.tif*"
+  sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
+  sudo rm -rf "${repo[1]}/*.wld"
+  sudo rm -rf "${repo[1]}/*.jgw"
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[1]} ${DEBUG}
+  [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  [[ -f "${jpg_nogps[1]}/${filename}.wld" ]] && {
+  [[ -f "${repo[1]}/${filename}.wld" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  [[ -f "${jpg_nogps[1]}/${filename}.jgw" ]] && {
+  [[ -f "${repo[1]}/${filename}.jgw" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  [[ -f "${jpg_nogps[1]}/${filename}.tif*" ]] && {
+  [[ -f "${repo[1]}/${filename}.tif" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  [[ ! -d "${jpg_nogps[1]}/${filename}" ]] && {
+  [[ ! -d "${repo[1]}/${filename}" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  [[ ! -f "${jpg_nogps[1]}/${filename}/${filename}.geojson" ]] && {
+  [[ ! -f "${repo[1]}/${filename}/${filename}.jpg" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  if ! grep -q "\"coordinates\".*0\.0, 0\.0.*128\.0, 0\.0.*128\.0, -128\.0.*0\.0, -128\.0.*0\.0, 0\.0" "${jpg_nogps[1]}/${filename}/${filename}.geojson"; then {
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.jpg 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ $(ls -1 ${repo[1]}/${filename}/${filename}_*.tif 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  if ! grep -q "\"coordinates\".*0\.0, 0\.0.*128\.0, 0\.0.*128\.0, -128\.0.*0\.0, -128\.0.*0\.0, 0\.0" "${repo[1]}/${filename}/${filename}.geojson"; then {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi
-  [[ -f "${jpg_nogps[1]}/${filename}/${filename}.ms.geojson" ]] && {
-    echo -e "${RED}Failed${NC}"
-    exit 0
-  }
-  [[ -f "${jpg_nogps[1]}/${filename}/${filename}_*.tif" ]] && {
+  [[ -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
   echo -e "${GREEN}Successful${NC}"
 }
 
+# -----------------------------------------------------------------------------
+_test_jpg_gps() {
+  echo -e "${GREEN}${FUNCNAME[0]}${NC}"
+  repo=(2019-Boucherville-13225474-13410695_tile.jpg /app/tests/images/test-geojpg)
+  filename="${repo[0]%.*}"
+  sudo rm -rf "${repo[1]}/${filename}/"
+  sudo rm -rf "${repo[1]}/*.tif*"
+  sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
+  sudo rm -rf "${repo[1]}/*.wld"
+  sudo rm -rf "${repo[1]}/*.jgw"
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[1]} ${DEBUG}
+  while [[ $(pgrep -x gdalogr_createtile_geotiff.sh >/dev/null) ]]; do
+    echo "running; waiting 1 sec"
+    sleep 1
+  done
+
+  sleep 7
+
+  [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.wld" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.jgw" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.tif" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -d "${repo[1]}/${filename}" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.jpg" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.jpg 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.wld" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.wld 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.jgw" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.tif 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  if ! grep -q "\"coordinates\".*0\.0, 0\.0.*128\.0, 0\.0.*128\.0, -128\.0.*0\.0, -128\.0.*0\.0, 0\.0" "${repo[1]}/${filename}/${filename}.geojson"; then {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }; fi
+  [[ ! -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  if ! grep -q "\"coordinates\".*-73.*45.*-73.*45.*-73.*45.*-73.*45.*-73.*45" "${repo[1]}/${filename}/${filename}.ms.geojson"; then {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }; fi
+  echo -e "${GREEN}Successful${NC}"
+}
+
+# -----------------------------------------------------------------------------
+_test_tiff_notgeo() {
+  echo -e "${GREEN}${FUNCNAME[0]}${NC}"
+  repo=(test_notgeotiff_tile.tif /app/tests/images/test-tif-10/test-tiff)
+  filename="${repo[0]%.*}"
+  sudo rm -rf "${repo[1]}/${filename}/"
+  sudo rm -rf "${repo[1]}/*.jpg"
+  sudo rm -rf "${repo[1]}/*.jpg_original"
+  sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
+  sudo rm -rf "${repo[1]}/*.wld"
+  sudo rm -rf "${repo[1]}/*.jgw"
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[1]} ${DEBUG}
+  [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.wld" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.jgw" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -d "${repo[1]}/${filename}" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.jpg" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}/${filename}.tif" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.jpg 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ $(ls -1 ${repo[1]}/${filename}/${filename}_*.tif 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  if ! grep -q "\"coordinates\".*0\.0, 0\.0.*128\.0, 0\.0.*128\.0, -128\.0.*0\.0, -128\.0.*0\.0, 0\.0" "${repo[1]}/${filename}/${filename}.geojson"; then {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }; fi
+  [[ -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  echo -e "${GREEN}Successful${NC}"
+}
+
+# -----------------------------------------------------------------------------
+_test_geotiff() {
+  echo -e "${GREEN}${FUNCNAME[0]}${NC}"
+  repo=(2019-Boucherville-13225474-13410695_tile.tiff /app/tests/images/test-geotiff-9/test-geotiff)
+  filename="${repo[0]%.*}"
+  sudo rm -rf "${repo[1]}/${filename}/"
+  sudo rm -rf "${repo[1]}/*.jpg"
+  sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
+  sudo rm -rf "${repo[1]}/*.wld"
+  sudo rm -rf "${repo[1]}/*.jgw"
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[1]} false
+  while [[ $(pgrep -x gdalogr_createtile_geotiff.sh >/dev/null) ]]; do
+    echo "running; waiting 1 sec"
+    sleep 1
+  done
+
+  sleep 7
+
+  [[ ! -f "${repo[1]}/${filename}.jpg" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}.tiff" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.wld" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ -f "${repo[1]}/${filename}.jgw" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -d "${repo[1]}/${filename}" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.jpg" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.jpg 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.wld" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.wld 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.tiff" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! $(ls -1 ${repo[1]}/${filename}/${filename}_*.tif 2>/dev/null | wc -l) -gt 0 ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  [[ ! -f "${repo[1]}/${filename}/${filename}.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  if ! grep -q "\"coordinates\".*0\.0, 0\.0.*128\.0, 0\.0.*128\.0, -128\.0.*0\.0, -128\.0.*0\.0, 0\.0" "${repo[1]}/${filename}/${filename}.geojson"; then {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }; fi
+  [[ ! -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }
+  if ! grep -q "\"coordinates\".*-73.*45.*-73.*45.*-73.*45.*-73.*45.*-73.*45" "${repo[1]}/${filename}/${filename}.ms.geojson"; then {
+    echo -e "${RED}Failed${NC}"
+    exit 0
+  }; fi
+  echo -e "${GREEN}Successful${NC}"
+}
+
 _test_jpg_nogps
+_test_jpg_nogps JPG
+_test_jpg_nogps JPEG
+#_test_jpg_gps
+#_test_tiff_notgeo
+#_test_geotiff
