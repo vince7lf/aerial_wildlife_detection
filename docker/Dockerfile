@@ -14,7 +14,7 @@ ARG USER_GID=$USER_UID
 # Fix to error due to NVIDIA key rotation
 # W: GPG error: Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease: The following signatures couldn’t be verified because the public key is not available: NO_PUBKEY A4B469963BF863CC
 # E: The repository ‘Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease’ is not signed.
-# https://forums.developer.nvidia.com/t/18-04-cuda-docker-image-is-broken/212892/14
+RUN apt-get -y install dirmngr
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
     apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
