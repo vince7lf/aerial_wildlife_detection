@@ -128,7 +128,7 @@ ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${d
 
 # loop through the .tiff files and convert the tiff to jpg if we need to share them; tiff won't appear in the database.
 tiles=()
-for f in ${destDir}/*.tif; do
+for f in ${destDir}/*_tile_*_*.tif; do
   jpg="${f%.*}.jpg"
   gdal_translate -of JPEG -co worldfile=yes ${f} ${jpg} >/dev/null 2>&1
   tiles+=(${parentDir}/${filename}/$(basename -- "${jpg}"))

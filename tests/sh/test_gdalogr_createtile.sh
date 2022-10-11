@@ -189,7 +189,10 @@ _test_jpg_gps() {
 # -----------------------------------------------------------------------------
 _test_tiff_notgeo() {
   echo -e "${GREEN}${FUNCNAME[0]}${NC}"
-  repo=(test_notgeotiff_tile.tif /app/tests/images/test-tif-10/test-tiff)
+  extension="tif"
+  [[ ! -z $1 && $1 = 'TIF' ]] && extension='TIF'
+  [[ ! -z $1 && $1 = 'TIFF' ]] && extension='TIFF'
+  repo=(test_notgeotiff_tile.${extension} /app/tests/images/test-${extension}-10/test-${extension})
   filename="${repo[0]%.*}"
   sudo rm -rf "${repo[1]}/${filename}/"
   sudo rm -rf "${repo[1]}/*.jpg"
@@ -333,6 +336,8 @@ _test_geotiff() {
 _test_jpg_nogps
 _test_jpg_nogps JPG
 _test_jpg_nogps JPEG
-#_test_jpg_gps
-#_test_tiff_notgeo
-#_test_geotiff
+_test_jpg_gps
+_test_tiff_notgeo
+_test_tiff_notgeo TIF
+_test_tiff_notgeo TIFF
+_test_geotiff

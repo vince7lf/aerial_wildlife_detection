@@ -70,7 +70,7 @@ _normalizeExtension() {
   # jpeg becomes jpg
   [[ "${extension,,}" = "jpeg" ]] && imgFilename="${filename}.jpg"
 
-  cp -rap ${srcDir}/${imgFilenameOrg} ${srcDir}/${imgFilename}
+  [[ ${imgFilenameOrg} != ${imgFilename} ]] && cp -rap ${srcDir}/${imgFilenameOrg} ${srcDir}/${imgFilename}
 }
 
 _convertTIFFToJPEG() {
@@ -85,6 +85,8 @@ _convertTIFFToJPEG() {
 
   # strip all exif metadata
   exiftool -all= -overwrite_original ${srcDir}/${imgFilenameNotGeo} >${devnull} 2>&1
+
+  cp -rap ${srcDir}/${imgFilenameNotGeo} ${destDir}/${imgFilenameNotGeo}
 }
 
 _testGeoJPEGExif() {
@@ -130,7 +132,7 @@ ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${d
 
 # loop through the .tiff files and convert to .jpg
 tiles=()
-for f in ${destDir}/*.tif; do
+for f in ${destDir}/*_tile_*_*.tif; do
   jpg="${f%.*}.jpg"
   # output and error piped to /dev/null
   gdal_translate -of JPEG -co worldfile=yes ${f} ${jpg} >${devnull} 2>&1
