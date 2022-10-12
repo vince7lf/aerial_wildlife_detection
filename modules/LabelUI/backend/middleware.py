@@ -24,12 +24,11 @@ class DBMiddleware():
         self.config = config
         self.dbConnector = dbConnector
 
-        self.project_immutables = {}       # project settings that cannot be changed (project shorthand -> {settings})
+        self.project_immutables = {}  # project settings that cannot be changed (project shorthand -> {settings})
 
         self._fetchProjectSettings()
         self.sqlBuilder = SQLStringBuilder()
         self.annoParser = AnnotationParser()
-
 
     def _fetchProjectSettings(self):
         # AI controller URI
@@ -51,8 +50,8 @@ class DBMiddleware():
             self.defaultStyles = json.load(open('config/default_ui_settings.json', 'r'))
         except:
             # resort to built-in styles
-            self.defaultStyles = json.load(open('modules/ProjectAdministration/static/json/default_ui_settings.json', 'r'))
-
+            self.defaultStyles = json.load(
+                open('modules/ProjectAdministration/static/json/default_ui_settings.json', 'r'))
 
     def _assemble_annotations(self, project, queryData, hideGoldenQuestionInfo, multilabels=None):
         response = {}
@@ -98,17 +97,16 @@ class DBMiddleware():
                         value = value.timestamp()
                     elif isinstance(value, UUID):
                         value = str(value)
-                    if(c == 'label' and multilabels != None):
+                    if (c == 'label' and multilabels != None):
                         value = [str(entry['label']) for entry in multilabels if str(entry['annotation']) == entryID]
                     entry[c] = value
-                
+
                 if b['ctype'] == 'annotation':
                     response[imgID]['annotations'][entryID] = entry
                 elif b['ctype'] == 'prediction':
                     response[imgID]['predictions'][entryID] = entry
 
         return response
-
 
     def _set_images_requested(self, project, imageIDs):
         '''
@@ -129,7 +127,6 @@ class DBMiddleware():
                 WHERE id IN %s;
             ''').format(id_img=sql.Identifier(project, 'image'))
             self.dbConnector.execute(queryStr, (now, tuple(vals),), None)
-
 
     def _get_sample_metadata(self, metaType):
         '''
@@ -187,7 +184,6 @@ class DBMiddleware():
                 return None
         return self.project_immutables[project]
 
-    
     def get_dynamic_project_settings(self, project):
         queryStr = 'SELECT ui_settings FROM aide_admin.project WHERE shortname = %s;'
         result = self.dbConnector.execute(queryStr, (project,), 1)
@@ -197,7 +193,6 @@ class DBMiddleware():
         result = helpers.check_args(result, self.defaultStyles)
 
         return result
-
 
     def getProjectSettings(self, project):
         '''
@@ -212,14 +207,15 @@ class DBMiddleware():
         projSettings['classes'] = self.getClassDefinitions(project)
 
         # static and dynamic project settings and properties from configuration file
-        projSettings = { **projSettings, **self.get_project_immutables(project), **self.get_dynamic_project_settings(project), **self.globalSettings }
+        projSettings = {**projSettings, **self.get_project_immutables(project),
+                        **self.get_dynamic_project_settings(project), **self.globalSettings}
 
         # append project shorthand to AIController URI 
-        if 'aiControllerURI' in projSettings and projSettings['aiControllerURI'] is not None and len(projSettings['aiControllerURI']):
+        if 'aiControllerURI' in projSettings and projSettings['aiControllerURI'] is not None and len(
+                projSettings['aiControllerURI']):
             projSettings['aiControllerURI'] = os.path.join(projSettings['aiControllerURI'], project) + '/'
 
         return projSettings
-
 
     def getProjectInfo(self, project):
         '''
@@ -254,7 +250,6 @@ class DBMiddleware():
             'segmentation_ignore_unlabeled': result['segmentation_ignore_unlabeled']
         }
 
-
     def getClassDefinitions(self, project, showHidden=False):
         '''
             Returns a dictionary with entries for all classes in the project.
@@ -271,10 +266,10 @@ class DBMiddleware():
             SELECT 'class' AS type, id, idx, name, color, labelclassgroup, keystroke, hidden, favorit FROM {}
             {} ORDER BY name;
             ''').format(
-                sql.Identifier(project, 'labelclassgroup'),
-                sql.Identifier(project, 'labelclass'),
-                sql.SQL(hiddenSpec)
-            )
+            sql.Identifier(project, 'labelclassgroup'),
+            sql.Identifier(project, 'labelclass'),
+            sql.SQL(hiddenSpec)
+        )
 
         classData = self.dbConnector.execute(queryStr, None, 'all')
 
@@ -299,7 +294,6 @@ class DBMiddleware():
                     entry['keystroke'] = cl['keystroke']
                     numClasses += 1
                 allEntries[id] = entry
-        
 
         # transform into tree
         def _find_parent(tree, parentID):
@@ -316,7 +310,6 @@ class DBMiddleware():
             else:
                 return None
 
-
         allEntries = {
             'entries': allEntries
         }
@@ -328,7 +321,7 @@ class DBMiddleware():
             if parentID is None:
                 # entry or group with no parent: append to root directly
                 allEntries['entries'][key] = entry
-            
+
             else:
                 # move item
                 parent = _find_parent(allEntries, parentID)
@@ -338,18 +331,19 @@ class DBMiddleware():
         allEntries['numClasses'] = numClasses
         return allEntries
 
-
     def getBatch_fixed(self, project, username, data, hideGoldenQuestionInfo=True):
         '''
             Returns entries from the database based on the list of data entry identifiers specified.
         '''
 
         if not len(data):
-            return { 'entries': {} }
+            return {'entries': {}}
 
         # query
         projImmutables = self.get_project_immutables(project)
-        queryStr = self.sqlBuilder.getFixedImagesQueryString(project, projImmutables['annotationType'], projImmutables['predictionType'], projImmutables['demoMode'])
+        queryStr = self.sqlBuilder.getFixedImagesQueryString(project, projImmutables['annotationType'],
+                                                             projImmutables['predictionType'],
+                                                             projImmutables['demoMode'])
 
         # verify provided UUIDs
         uuids = []
@@ -383,7 +377,7 @@ class DBMiddleware():
             response = self._assemble_annotations(project, annoResult, hideGoldenQuestionInfo, labels)
         except Exception as e:
             print(e)
-    
+
         # filter out images that are invalid
         imgs_malformed = list(set(imgs_malformed).union(set(data).difference(set(response.keys()))))
 
@@ -397,15 +391,17 @@ class DBMiddleware():
             response['imgs_malformed'] = imgs_malformed
 
         return response
-        
 
-    def getBatch_auto(self, project, username, order='unlabeled', subset='default', limit=None, hideGoldenQuestionInfo=True):
+    def getBatch_auto(self, project, username, order='unlabeled', subset='default', limit=None,
+                      hideGoldenQuestionInfo=True):
         '''
             TODO: description
         '''
         # query
         projImmutables = self.get_project_immutables(project)
-        queryStr = self.sqlBuilder.getNextBatchQueryString(project, projImmutables['annotationType'], projImmutables['predictionType'], order, subset, projImmutables['demoMode'])
+        queryStr = self.sqlBuilder.getNextBatchQueryString(project, projImmutables['annotationType'],
+                                                           projImmutables['predictionType'], order, subset,
+                                                           projImmutables['demoMode'])
 
         # limit (TODO: make 128 a hyperparameter)
         if limit is None:
@@ -415,8 +411,8 @@ class DBMiddleware():
             limit = min(int(limit), 9999)
 
         # parse results
-        queryVals = (username,username,limit,username,)
-        if projImmutables['demoMode']:      #TODO: demoMode can now change dynamically
+        queryVals = (username, username, limit, username,)
+        if projImmutables['demoMode']:  # TODO: demoMode can now change dynamically
             queryVals = (limit,)
 
         annoResult = self.dbConnector.execute(queryStr, queryVals, 'all')
@@ -432,7 +428,7 @@ class DBMiddleware():
         # mark images as requested
         self._set_images_requested(project, response)
 
-        return { 'entries': response }
+        return {'entries': response}
 
     def getLabels(self, project, annoResult):
         # loop through the annotation
@@ -440,7 +436,7 @@ class DBMiddleware():
         # VLF do not convert to str; keep UUID
         ids = [b['id'] for b in annoResult if b['id'] is not None]
 
-        if( len(ids) == 0 ): return None;
+        if (len(ids) == 0): return None;
 
         # query the labels for each annotation ids
         # do not put the %s between (); tuples passed to execute.
@@ -455,8 +451,8 @@ class DBMiddleware():
 
         return labelResult
 
-
-    def getBatch_timeRange(self, project, minTimestamp, maxTimestamp, userList, skipEmptyImages=False, limit=None, goldenQuestionsOnly=False, hideGoldenQuestionInfo=True):
+    def getBatch_timeRange(self, project, minTimestamp, maxTimestamp, userList, skipEmptyImages=False, limit=None,
+                           goldenQuestionsOnly=False, hideGoldenQuestionInfo=True):
         '''
             Returns images that have been annotated within the given time range and/or
             by the given user(s). All arguments are optional.
@@ -464,7 +460,8 @@ class DBMiddleware():
         '''
         # query string
         projImmutables = self.get_project_immutables(project)
-        queryStr = self.sqlBuilder.getDateQueryString(project, projImmutables['annotationType'], minTimestamp, maxTimestamp, userList, skipEmptyImages, goldenQuestionsOnly)
+        queryStr = self.sqlBuilder.getDateQueryString(project, projImmutables['annotationType'], minTimestamp,
+                                                      maxTimestamp, userList, skipEmptyImages, goldenQuestionsOnly)
 
         # check validity and provide arguments
         queryVals = []
@@ -502,10 +499,8 @@ class DBMiddleware():
         # # mark images as requested
         # self._set_images_requested(project, response)
 
+        return {'entries': response}
 
-        return { 'entries': response }
-
-    
     def get_timeRange(self, project, userList, skipEmptyImages=False, goldenQuestionsOnly=False):
         '''
             Returns two timestamps denoting the temporal limits within which
@@ -535,7 +530,6 @@ class DBMiddleware():
                 'error': 'no annotations made'
             }
 
-
     def get_sampleData(self, project):
         '''
             Returns a sample image from the project, with annotations
@@ -544,7 +538,8 @@ class DBMiddleware():
             available, a built-in default is returned instead.
         '''
         projImmutables = self.get_project_immutables(project)
-        queryStr = self.sqlBuilder.getSampleDataQueryString(project, projImmutables['annotationType'], projImmutables['predictionType'])
+        queryStr = self.sqlBuilder.getSampleDataQueryString(project, projImmutables['annotationType'],
+                                                            projImmutables['predictionType'])
 
         # query and parse results
         response = None
@@ -553,7 +548,7 @@ class DBMiddleware():
             response = self._assemble_annotations(project, annoResult, True)
         except Exception as e:
             print(e)
-        
+
         if response is None or not len(response):
             # no valid data found for project; fall back to sample data
             response = {
@@ -561,17 +556,18 @@ class DBMiddleware():
                     'fileName': '/static/interface/exampleData/sample_image.jpg',
                     'viewcount': 1,
                     'annotations': {
-                        '00000000-0000-0000-0000-000000000000': self._get_sample_metadata(projImmutables['annotationType'])
+                        '00000000-0000-0000-0000-000000000000': self._get_sample_metadata(
+                            projImmutables['annotationType'])
                     },
                     'predictions': {
-                        '00000000-0000-0000-0000-000000000000': self._get_sample_metadata(projImmutables['predictionType'])
+                        '00000000-0000-0000-0000-000000000000': self._get_sample_metadata(
+                            projImmutables['predictionType'])
                     },
                     'last_checked': None,
                     'isGoldenQuestion': True
                 }
             }
         return response
-
 
     def submitAnnotationsExt(self, project, submissions, annotation_ids):
         '''
@@ -585,8 +581,8 @@ class DBMiddleware():
                 for annotation in entry['annotations']:
                     # assemble annotation values
                     if annotation['label'] is not None:
-                        annoValues = annoValues + [(UUID(annotation['id']),UUID(label)) for label in annotation['label']]
-
+                        annoValues = annoValues + [(UUID(annotation['id']), UUID(label)) for label in
+                                                   annotation['label']]
 
         # delete all associations annotation-label
 
@@ -684,9 +680,9 @@ class DBMiddleware():
                     else:
                         # new annotation
                         values_insert.append(tuple(annoValues))
-                    
-            viewcountValues.append((username, imageKey, 1, lastChecked, lastChecked, lastTimeRequired, lastTimeRequired, numInteractions, meta))
 
+            viewcountValues.append((username, imageKey, 1, lastChecked, lastChecked, lastTimeRequired, lastTimeRequired,
+                                    numInteractions, meta))
 
         # delete all annotations that are not in submitted batch
         imageKeys = list(UUID(k) for k in submissions['entries'])
@@ -720,7 +716,7 @@ class DBMiddleware():
                 RETURNING id;
             ''').format(
                 id_anno=sql.Identifier(project, 'annotation'),
-                cols=sql.SQL(', ').join([sql.SQL(c) for c in colnames[1:]])     # skip 'id' column
+                cols=sql.SQL(', ').join([sql.SQL(c) for c in colnames[1:]])  # skip 'id' column
             )
             returning_id = self.dbConnector.insert(queryStr, values_insert, numReturn='all')
             new_ids = [item[0] for item in returning_id]
@@ -751,7 +747,6 @@ class DBMiddleware():
 
             self.dbConnector.insert(queryStr, values_update)
 
-
         # viewcount table
         queryStr = sql.SQL('''
             INSERT INTO {id_iu} (username, image, viewcount, first_checked, last_checked, last_time_required, total_time_required, num_interactions, meta)
@@ -771,7 +766,6 @@ class DBMiddleware():
 
         return 0
 
-
     def getGoldenQuestions(self, project):
         '''
             Returns a list of image UUIDs and their file names that have been flagged
@@ -789,7 +783,6 @@ class DBMiddleware():
             'images': result
         }
 
-
     def setGoldenQuestions(self, project, submissions):
         '''
             Receives an iterable of tuples (uuid, bool) and updates the
@@ -801,7 +794,7 @@ class DBMiddleware():
                 'status': 2,
                 'message': 'Not allowed in demo mode.'
             }
-        
+
         queryStr = sql.SQL('''
             UPDATE {id_img} AS img SET isGoldenQuestion = c.isGoldenQuestion
             FROM (VALUES %s)
@@ -820,7 +813,6 @@ class DBMiddleware():
             'status': 0,
             'golden_questions': imgs_result
         }
-
 
     def getBookmarks(self, project, user):
         '''
@@ -843,7 +835,6 @@ class DBMiddleware():
             'status': 0,
             'bookmarks': result
         }
-
 
     def setBookmark(self, project, user, bookmarks):
         '''
@@ -898,7 +889,7 @@ class DBMiddleware():
                     imgs_error.add(imageID)
                 else:
                     imgs_success.append(imageID)
-        
+
         # remove existing bookmarks
         if len(imgs_clear):
             queryStr = sql.SQL('''
@@ -923,7 +914,7 @@ class DBMiddleware():
         if len(imgs_error):
             imgs_error = [str(i) for i in list(imgs_error)]
             response['bookmarks_error'] = imgs_error
-        
+
         return response
 
     def updateLabelClassFavorit(self, project, labelClassID, is_favorit):
@@ -937,7 +928,7 @@ class DBMiddleware():
         ''').format(
             id_labelclass=sql.Identifier(project, 'labelclass')
         )
-        result = self.dbConnector.execute(queryStr, (is_favorit,labelClassID,))
+        result = self.dbConnector.execute(queryStr, (is_favorit, labelClassID,))
 
         response = {
             'status': 0,

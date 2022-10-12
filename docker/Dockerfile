@@ -29,8 +29,8 @@ RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/r
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
-    # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
-    && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release \
+    # Verify git, process tools, lsb-release (common in install instructions for CLIs) exiftool installed
+    && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release exiftool\
     #
     && conda install python=3.7 \
     # TBC if all of this is required (from AIDE scripts)
