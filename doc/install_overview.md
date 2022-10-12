@@ -86,8 +86,8 @@ Script that start the AIDE instance everyday :
 cd /app/aerial_wildlife_detection/docker
 sudo service docker stop
 sudo service docker start
-git checkout AIDE+MELCC-1.5
-git pull
+git fetch --tags
+git checkout AIDE+MELCC-1.8
 sudo docker-compose build
 sudo docker-compose up &
 ```
