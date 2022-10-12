@@ -14,7 +14,14 @@ ARG USER_GID=$USER_UID
 # Fix to error due to NVIDIA key rotation
 # W: GPG error: Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease: The following signatures couldn’t be verified because the public key is not available: NO_PUBKEY A4B469963BF863CC
 # E: The repository ‘Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease’ is not signed.
-RUN apt-get -y install dirmngr
+# if error gpg: can't connect (...): IPC connect call failed
+# if error : gpg: WARNING: unable to fetch URI No dirmngr
+# dirmngr already running and zoombie process
+# restart VM will solve. Kill zoombie process will also.
+# fix : kill gpg-agent before sudo docker-compose build
+# pkill -9 gpg-agent
+# restart gpg-agent :
+# source <(gpg-agent --daemon)
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
     apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
@@ -135,7 +142,7 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
 # download AIDE source code (from local repository)
 COPY . .
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
-RUN cp scripts/sh/gdalogr_createtiles.sh /usr/local/bin && ls -al /usr/local/bin/gdalogr_createtiles.sh && chmod a+rx /usr/local/bin/gdalogr_createtiles.sh
+RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/local/bin/gdalogr_createtiles*.sh
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app

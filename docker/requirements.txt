@@ -9,6 +9,10 @@ Pillow>=2.2.1
 numpy
 requests
 # kombu==4.6.11
+
+# fix issue with celery and Python 3.7
+importlib-metadata==4.13.0
+
 celery[redis,auth,msgpack]  #==4.4.7
 
 # for the AI backend

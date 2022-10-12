@@ -6,6 +6,10 @@ If you have [AIDE v1](https://github.com/microsoft/aerial_wildlife_detection/tre
 
 ## New installation
 
+Arbutus : After a boot, mount manually the /app drive 
+
+`sudo mount /dev/vdb1 /app`
+
 ### With Docker
 
 Here's how to install and launch AIDE with Docker on the current machine:
