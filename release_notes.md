@@ -10,6 +10,10 @@
 
 ## Releases
 
+v1.8 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-10-12
+- merged with branch mapserver
+- new TAG AIDE+MELCC-1.8
+
 v1.7 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-09-06
 - merged with branch tile_image_favorits_groups
 - sync version with tag version
