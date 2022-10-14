@@ -764,6 +764,71 @@ class DBMiddleware():
 
         self.submitAnnotationsExt(project, submissions, tuple(new_ids + ids))
 
+        # WIP update ms.geojson; need to support async & multicollaborative solution. Requirement : not two person can annotate the same image at the same time
+        self.updateMsGeojson(project, submissions)
+
+        return 0
+
+    def updateMsGeojson(self, project, submissions):
+
+        projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
+        if os.path.isdir(projectFolder) == False and os.path.islink(projectFolder) == False: return None
+
+        # read annotation info for each tile from the DB
+        queryStr = sql.SQL('''
+            SELECT image_id, annotation_id, labelclass_id, time_annotated, date_image_added, time_requested_image, image_path_filename, labelclass_name, labelclass_index, vascan_id, bryoquel_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province
+                , vascan_port, vascan_statut_repartition, tsn, coleo_category FROM (
+
+                SELECT t.id as annotation_id,
+                    t.timecreated as time_annotated,
+                    img.*, lc.*
+                FROM {id_annotation} AS t
+    
+                JOIN (SELECT annotation, label
+                    FROM {id_annotation_label}
+                ) AS al
+                ON t.id = al.annotation
+    
+                JOIN (
+                    SELECT id AS image_id, filename as image_path_filename, date_added AS date_image_added, last_requested AS time_requested_image
+                    FROM {id_image}
+                ) AS img
+                ON t.image = img.image_id
+
+                JOIN (SELECT id AS labelclass_id, name AS labelclass_name, idx AS labelclass_index, vascan_id, bryoquel_id, coleo_vernacular_fr, coleo_vernacular_en, vascan_region, vascan_province
+    , vascan_port, vascan_statut_repartition, tsn, coleo_category
+                    FROM {id_labelclass}
+                ) AS lc
+                ON al.label = lc.labelclass_id
+            ) as s
+        ''').format(
+            id_anno=sql.Identifier(project, 'annotation'),
+            id_annotation_label=sql.Identifier(project, 'annotation_label'),
+            id_image=sql.Identifier(project, 'image'),
+            id_labelclass=sql.Identifier(project, 'labelclass')
+        )
+        result = self.dbConnector.execute(queryStr, None, 'all')
+        # result = [(str(r['image']), r['filename'], r['timecreated']) for r in result]
+        # return {
+        #     'status': 0,
+        #     'bookmarks': result
+        # }
+
+        # multiple geojson possible
+
+        # extract the path info to find the geojson
+        # filePath = os.path.join(projectFolder, '')
+
+        # read geojson as dict
+        # with open(filePath, 'r') as f:
+        #     data = json.load(f)
+
+        # update the geojson dict with the annotation info using the tile name as the mapping key
+
+        # save the geojson
+        # with open(filePath, 'w') as f:
+        #     json.dump(data, f)
+
         return 0
 
     def getGoldenQuestions(self, project):
