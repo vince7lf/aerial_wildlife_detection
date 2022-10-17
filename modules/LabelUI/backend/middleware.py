@@ -800,7 +800,8 @@ class DBMiddleware():
                     FROM {id_labelclass}
                 ) AS lc
                 ON al.label = lc.labelclass_id
-            ) as s
+            ) as s 
+            ORDER BY image_path_filename
         ''').format(
             id_annotation=sql.Identifier(project, 'annotation'),
             id_annotation_label=sql.Identifier(project, 'annotation_label'),
@@ -817,6 +818,7 @@ class DBMiddleware():
         # }
 
         # multiple geojson possible
+        geojsonFiles = []
         for r in result:
             # extract the path info to find the geojson file on disk
             # filePath = os.path.join(projectFolder, '')
@@ -828,6 +830,19 @@ class DBMiddleware():
             splitted_path_filename = os.path.normpath(str(r['image_path_filename'])).split(os.path.sep)
             geojsonTemplateFullFilepath = os.path.join(projectFolder, path_filename[0],
                                                        splitted_path_filename[-2] + '.ms.template.geojson')
+            geojsonFullFilepath = os.path.join(projectFolder, path_filename[0],
+                                               splitted_path_filename[-2] + '.ms.geojson')
+            found = False
+            for geojsonFile in geojsonFiles:
+                if geojsonFile['geojsonFullFilepath'] == geojsonFullFilepath:
+                    found = True
+                    break
+            if found: continue
+            geojsonFiles.append({'path_filename': path_filename, 'splitted_path_filename': splitted_path_filename,
+                                 'geojsonTemplateFullFilepath': geojsonTemplateFullFilepath,
+                                 'geojsonFullFilepath': geojsonFullFilepath})
+
+        for geojsonFile in geojsonFiles:
             # read geojson as dict
             # sample :
             # {
@@ -846,41 +861,42 @@ class DBMiddleware():
             #              [[-73.466639, 45.626179], [-73.466637, 45.626179], [-73.466637, 45.626178],
             #               [-73.466639, 45.626178], [-73.466639, 45.626179]]]}},
 
-            with open(geojsonTemplateFullFilepath, 'r') as f:
+            with open(geojsonFile['geojsonTemplateFullFilepath'], 'r') as f:
                 data = json.load(f)
                 # look through the dictionary for the features array with a properties.Location field equal the filename
                 # look for the picture
                 for feature in data['features']:
 
-                    if (feature['properties']['Location'] == path_filename[1]):
-                        # add an empty annotation array by default
-                        if "annotations" not in feature['properties']: feature['properties']['annotations'] = []
+                    for r in result:
+                        path_filename = os.path.split(str(r['image_path_filename']))
 
-                        # found
-                        # add the result of the query to the properties
-                        # update the geojson dict with the annotation info using the tile name as the mapping key
-                        annotation = {}
-                        annotation['image_id'] = str(r['image_id'])
-                        annotation['annotation_id'] = str(r['annotation_id'])
-                        annotation['labelclass_id'] = str(r['labelclass_id'])
-                        annotation['time_annotated'] = str(r['time_annotated'])
-                        annotation['date_image_added'] = str(r['date_image_added'])
-                        annotation['time_requested_image'] = str(r['time_requested_image'])
-                        annotation['image_path_filename'] = str(r['image_path_filename'])
-                        annotation['labelclass_name'] = str(r['labelclass_name'])
-                        annotation['labelclass_index'] = str(r['labelclass_index'])
-                        annotation['vascan_id'] = str(r['vascan_id'])
-                        annotation['bryoquel_id'] = str(r['bryoquel_id'])
-                        annotation['coleo_vernacular_fr'] = str(r['coleo_vernacular_fr'])
-                        annotation['coleo_vernacular_en'] = str(r['coleo_vernacular_en'])
-                        annotation['vascan_region'] = str(r['vascan_region'])
-                        annotation['vascan_province'] = str(r['vascan_province'])
-                        feature['properties']['annotations'].append(annotation)
+                        if (geojsonFile['path_filename'][0] == path_filename[0] and feature['properties']['Location'] == geojsonFile['path_filename'][1]):
+                            # add an empty annotation array by default
+                            if "annotations" not in feature['properties']: feature['properties']['annotations'] = []
+
+                            # found
+                            # add the result of the query to the properties
+                            # update the geojson dict with the annotation info using the tile name as the mapping key
+                            annotation = {}
+                            annotation['image_id'] = str(r['image_id'])
+                            annotation['annotation_id'] = str(r['annotation_id'])
+                            annotation['labelclass_id'] = str(r['labelclass_id'])
+                            annotation['time_annotated'] = str(r['time_annotated'])
+                            annotation['date_image_added'] = str(r['date_image_added'])
+                            annotation['time_requested_image'] = str(r['time_requested_image'])
+                            annotation['image_path_filename'] = str(r['image_path_filename'])
+                            annotation['labelclass_name'] = str(r['labelclass_name'])
+                            annotation['labelclass_index'] = str(r['labelclass_index'])
+                            annotation['vascan_id'] = str(r['vascan_id'])
+                            annotation['bryoquel_id'] = str(r['bryoquel_id'])
+                            annotation['coleo_vernacular_fr'] = str(r['coleo_vernacular_fr'])
+                            annotation['coleo_vernacular_en'] = str(r['coleo_vernacular_en'])
+                            annotation['vascan_region'] = str(r['vascan_region'])
+                            annotation['vascan_province'] = str(r['vascan_province'])
+                            feature['properties']['annotations'].append(annotation)
 
             # save the geojson
-            geojsonFullFilepath = os.path.join(projectFolder, path_filename[0],
-                                               splitted_path_filename[-2] + '.ms.geojson')
-            with open(geojsonFullFilepath, 'w') as f:
+            with open(geojsonFile['geojsonFullFilepath'], 'w') as f:
                 json.dump(data, f)
 
         return 0
