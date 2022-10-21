@@ -830,6 +830,9 @@ class DBMiddleware():
             splitted_path_filename = os.path.normpath(str(r['image_path_filename'])).split(os.path.sep)
             geojsonTemplateFullFilepath = os.path.join(projectFolder, path_filename[0],
                                                        splitted_path_filename[-2] + '.ms.template.geojson')
+            if os.path.exists(geojsonFile['geojsonTemplateFullFilepath']) == False:
+                continue
+
             geojsonFullFilepath = os.path.join(projectFolder, path_filename[0],
                                                splitted_path_filename[-2] + '.ms.geojson')
             found = False
@@ -843,6 +846,8 @@ class DBMiddleware():
                                  'geojsonFullFilepath': geojsonFullFilepath})
 
         host = self.config.getProperty('Server', 'host')
+        if host == '0.0.0.0':
+            host = 'localhost'
         port = self.config.getProperty('Server', 'port')
         dataServer_uri = self.config.getProperty('Server', 'dataServer_uri')
 
@@ -874,7 +879,8 @@ class DBMiddleware():
                     for r in result:
                         path_filename = os.path.split(str(r['image_path_filename']))
 
-                        if (geojsonFile['path_filename'][0] == path_filename[0] and feature['properties']['Location'] == geojsonFile['path_filename'][1]):
+                        if (geojsonFile['path_filename'][0] == path_filename[0] and feature['properties']['Location'] ==
+                                geojsonFile['path_filename'][1]):
                             # add an empty annotation array by default
                             if "annotations" not in feature['properties']: feature['properties']['annotations'] = []
 
@@ -897,7 +903,8 @@ class DBMiddleware():
                             annotation['coleo_vernacular_en'] = str(r['coleo_vernacular_en'])
                             annotation['vascan_region'] = str(r['vascan_region'])
                             annotation['vascan_province'] = str(r['vascan_province'])
-                            annotation['url'] =  'http://' + host + ':' + port + '/' + '/'.join((project, 'files', str(r['image_path_filename'])))
+                            annotation['url'] = 'http://' + host + ':' + port + '/' + '/'.join(
+                                (project, 'files', str(r['image_path_filename'])))
                             feature['properties']['annotations'].append(annotation)
 
             # save the geojson
