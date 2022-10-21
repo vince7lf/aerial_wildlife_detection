@@ -25,7 +25,7 @@ extension="${imgFilename##*.}"
 filename="${imgFilename%.*}"
 destDir="${srcDir}/${filename}"
 shpFilename="${filename}.ms.shp"
-geojsonFilename="${filename}.ms.geojson"
+geojsonFilename="${filename}.ms.template.geojson"
 
 # clean
 _clean() {

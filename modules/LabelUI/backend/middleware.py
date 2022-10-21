@@ -764,7 +764,8 @@ class DBMiddleware():
 
         self.submitAnnotationsExt(project, submissions, tuple(new_ids + ids))
 
-        # WIP update ms.geojson; need to support async & multicollaborative solution. Requirement : not two person can annotate the same image at the same time
+        # TODO : need to support async & multicollaborative solution.
+        # Warning : not two person can save the same images/project at the same second/millisecond (file write/locked/corrupt ?, not tested)
         self.updateMsGeojson(project, submissions)
 
         return 0
@@ -825,7 +826,7 @@ class DBMiddleware():
             # 1imageJPEG/2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile_4_7.jpg
             # head 1imageJPEG/2019-Boucherville-13225474-13410695_JPEG_tile/
             # tail 2019-Boucherville-13225474-13410695_JPEG_tile_4_7.jpg
-            # geojson : 1imageJPEG/2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile.ms.geojson
+            # geojson : 1imageJPEG/2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile.ms.template.geojson
             path_filename = os.path.split(str(r['image_path_filename']))
             splitted_path_filename = os.path.normpath(str(r['image_path_filename'])).split(os.path.sep)
             geojsonTemplateFullFilepath = os.path.join(projectFolder, path_filename[0],

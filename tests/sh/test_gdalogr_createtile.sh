@@ -98,7 +98,7 @@ _test_jpg_nogps() {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi
-  [[ -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+  [[ -f "${repo[1]}/${filename}/${filename}.ms.template.geojson" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
@@ -175,11 +175,11 @@ _test_jpg_gps() {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi
-  [[ ! -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+  [[ ! -f "${repo[1]}/${filename}/${filename}.ms.template.geojson" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  if ! grep -q "\"coordinates\".*-73.*45.*-73.*45.*-73.*45.*-73.*45.*-73.*45" "${repo[1]}/${filename}/${filename}.ms.geojson"; then {
+  if ! grep -q "\"coordinates\".*-73.*45.*-73.*45.*-73.*45.*-73.*45.*-73.*45" "${repo[1]}/${filename}/${filename}.ms.template.geojson"; then {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi
@@ -241,7 +241,7 @@ _test_tiff_notgeo() {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi
-  [[ -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+  [[ -f "${repo[1]}/${filename}/${filename}.ms.template.geojson" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
@@ -322,11 +322,11 @@ _test_geotiff() {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi
-  [[ ! -f "${repo[1]}/${filename}/${filename}.ms.geojson" ]] && {
+  [[ ! -f "${repo[1]}/${filename}/${filename}.ms.template.geojson" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
   }
-  if ! grep -q "\"coordinates\".*-73.*45.*-73.*45.*-73.*45.*-73.*45.*-73.*45" "${repo[1]}/${filename}/${filename}.ms.geojson"; then {
+  if ! grep -q "\"coordinates\".*-73.*45.*-73.*45.*-73.*45.*-73.*45.*-73.*45" "${repo[1]}/${filename}/${filename}.ms.template.geojson"; then {
     echo -e "${RED}Failed${NC}"
     exit 0
   }; fi

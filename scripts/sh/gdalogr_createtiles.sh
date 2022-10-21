@@ -75,7 +75,7 @@ _normalizeExtension() {
 
 _convertTIFFToJPEG() {
   # convert to geoTiff; compress like JPEG default 75%; to keep same size as original JPEG
-  # important to specify 'worldfile=no' here. Otherwise the geojson will contain real coordinates, which we do not want here. the ms.geojson (mapserver) will be generated net step/script
+  # important to specify 'worldfile=no' here. Otherwise the geojson will contain real coordinates, which we do not want here. the ms.template.geojson (mapserver) will be generated net step/script
   gdal_translate -of JPEG -co worldfile=no ${srcDir}/${imgFilename} ${srcDir}/${imgFilenameNotGeo} >${devnull} 2>&1
 
   # removes files that can help geolocalized the jpg
