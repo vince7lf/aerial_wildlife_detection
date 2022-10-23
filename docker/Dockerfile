@@ -150,7 +150,7 @@ ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 
-CMD bash cp /home/${USERNAME}/app/docker/settings@${AIDE_HOST_ENV_TAG}.ini /home/${USERNAME}/app/docker/settings.ini && docker/container_init.sh && bash AIDE.sh start
+CMD bash cp /home/${USERNAME}/app/docker/settings@${AIDE_HOST_ENV_TAG}.ini /home/${USERNAME}/app/docker/settings.ini && bash docker/container_init.sh && bash AIDE.sh start
 
 # Temporary command to prevent container from stopping if no command is privided
 # CMD tail -f /dev/null
