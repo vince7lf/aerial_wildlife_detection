@@ -141,6 +141,7 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
 
 # download AIDE source code (from local repository)
 COPY . .
+RUN cp /home/${USERNAME}/app/docker/settings@{AIDE_HOST_ENV_TAG}.ini /home/${USERNAME}/app/docker/settings.ini
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
 RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/local/bin/gdalogr_createtiles*.sh
 

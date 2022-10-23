@@ -11,6 +11,7 @@ docker run --name aide_cnt \
  -v aide_images:/home/aide/images \
  -p 8080:8080 \
  -h 'aide_app_host' \
+ -e AIDE_HOST_ENV_TAG=$1 \
  aide_app
 
  # Options:
@@ -20,3 +21,5 @@ docker run --name aide_cnt \
  # -v       - maps volume (note: aide_db_data and aide_images needs to be created before this script is executed)
  # -p       - maps ports
  # -h       - sets hostname (fixed hostname is required for some internal components)
+ # -e      - set host IP:port value depending on the environment ('vbox' local, 'arbutus' HPC, 'gcp' cloud, etc)
+ # sudo AIDE_HOST_ENV_TAG='vbox' docker run [...] -e AIDE_HOST_ENV_TAG [...]
