@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=aide
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG AIDE_HOST_ENV_TAG
 
 # Fix to error due to NVIDIA key rotation
 # W: GPG error: Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease: The following signatures couldn’t be verified because the public key is not available: NO_PUBKEY A4B469963BF863CC
@@ -141,7 +142,7 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
 
 # download AIDE source code (from local repository)
 COPY . .
-RUN cp /home/${USERNAME}/app/docker/settings@{AIDE_HOST_ENV_TAG}.ini /home/${USERNAME}/app/docker/settings.ini
+RUN cp /home/${USERNAME}/app/docker/settings@${AIDE_HOST_ENV_TAG}.ini /home/${USERNAME}/app/docker/settings.ini
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
 RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/local/bin/gdalogr_createtiles*.sh
 
