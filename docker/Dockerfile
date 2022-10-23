@@ -150,7 +150,7 @@ RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/loca
 ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
-
+ENV AIDE_HOST_ENV_TAG=${AIDE_HOST_ENV_TAG}
 CMD bash docker/container_init.sh && bash AIDE.sh start
 
 # Temporary command to prevent container from stopping if no command is privided
