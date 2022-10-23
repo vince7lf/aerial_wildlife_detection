@@ -4,7 +4,7 @@ services:
     hostname: 'aide_app_host' 
     build:
       context:  '..'
-      dockerfile: 'tests/docker/Dockerfile'
+      dockerfile: 'docker/Dockerfile'
     image: 'test_docker_aide_app'
     environment:
       - AIDE_HOST_ENV_TAG=${AIDE_HOST_ENV_TAG}
