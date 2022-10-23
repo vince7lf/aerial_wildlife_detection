@@ -10,16 +10,17 @@ ENV DEBIAN_FRONTEND=noninteractive
 ARG USERNAME=aide
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-ARG AIDE_HOST_ENV_TAG
+
+# AIDE installation starts here
+# specify the root folder where you wish to install AIDE
+WORKDIR /home/$USERNAME/app
 
 # download AIDE source code (from local repository)
 COPY . .
-RUN cp /home/${USERNAME}/app/docker/settings@${AIDE_HOST_ENV_TAG}.ini /home/${USERNAME}/app/docker/settings.ini
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
-ENV AIDE_HOST_ENV_TAG=${AIDE_HOST_ENV_TAG}
 
 CMD bash docker/test.sh
