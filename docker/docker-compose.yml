@@ -17,7 +17,3 @@ services:
       - ..:/home/aide/app:cached
     ports:
       - '8080:8080'
-    environment:
-      - AIDE_HOST_ENV_TAG=${AIDE_HOST_ENV_TAG}
-
-# AIDE_HOST_ENV_TAG=vbox docker-compose up -d
