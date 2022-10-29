@@ -34,14 +34,13 @@ layerMapfile="${layerMapfileDest}/${filename}.map"
 # create destination folder for the layer map file
 mkdir -p ${layerMapfileDest}
 # copy template layer map file into destination folder using the image name
-cp -rap ${templateLayerMapfile} ${layerMapfile}
+cp -fap ${templateLayerMapfile} ${layerMapfile}
 
 # replace the directives:
 # @LAYER_NAME <image_name>
 sudo sed -i "s/^  @LAYER_NAME$/  NAME \"${filename}\"/" ${layerMapfile}
 # @LAYER_CONNECTION "<project_name>/<image_folder_name>/<image_name>/<image_name>.ms.geojson
-str=${destDir//\//\\/}\/${msGeojsonFilename//\//\\/}
-sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${str}\"/" ${layerMapfile}
+sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${destDir//\//\\/}\/${msGeojsonFilename//\//\\/}\"/" ${layerMapfile}
 # @LAYER_DATA <image_name>.ms
 sudo sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_TITLE <image_name>.ms
@@ -51,7 +50,7 @@ sudo sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 4
 
 # add a reference into the main /app/mapserv/aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
-sudo sed -i "s/^  # @INCLUDE$/  INCLUDE \"./${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
+sudo sed -i "s/^  # @INCLUDE$/  INCLUDE \".\/${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
 # insert a new line with # @INCLUDE for the next time need INCLUDE
 # TODO
 
