@@ -40,7 +40,8 @@ cp -rap ${templateLayerMapfile} ${layerMapfile}
 # @LAYER_NAME <image_name>
 sudo sed -i "s/^  @LAYER_NAME$/  NAME \"${filename}\"/" ${layerMapfile}
 # @LAYER_CONNECTION "<project_name>/<image_folder_name>/<image_name>/<image_name>.ms.geojson
-sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${destDir//\//\\/}\/${msGeojsonFilename//\//\\/}\"/" ${layerMapfile}
+str=${destDir//\//\\/}\/${msGeojsonFilename//\//\\/}
+sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${str}\"/" ${layerMapfile}
 # @LAYER_DATA <image_name>.ms
 sudo sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_TITLE <image_name>.ms
