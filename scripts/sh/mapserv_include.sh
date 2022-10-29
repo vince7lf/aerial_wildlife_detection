@@ -48,12 +48,9 @@ sudo sed -i "s/^    @LAYER_METADATA_WFS_TITLE$/    \"wfs_title\" \"${filename}\"
 # @LAYER_METADATA_WFS_EXTENT get the extent lat lon of the geojson using gdal
 sudo sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 45.626178 -73.46664 45.626179\"/" ${layerMapfile}
 
-# add a reference into the main /app/mapserv/aide.map file
+# add the INCLUDE directive into the main aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
-sudo sed -i "/^  # @INCLUDE$/a\ \ # @INCLUDE" ${aideMapfile}
-# add if not already there
+# insert a new line with # @INCLUDE for the next time need INCLUDE if not already there
+grep -q "  # @INCLUDE" "${aideMapfile}" || sudo sed -i "/^  # @INCLUDE$/a\ \ # @INCLUDE" ${aideMapfile}
+# add the layer map reference into the main /app/mapserv/aide.map file if not already there
 grep -q "./${srcDir}\/${filename}/${filename}.map" "${aideMapfile}" || sudo sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
-# insert a new line with # @INCLUDE for the next time need INCLUDE
-# TODO
-
-# [ ${DEBUG} = true ] && mapserv_include.sh "$1" "$2" "$3" true || nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" true >/dev/null 2>&1 &
