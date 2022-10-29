@@ -42,7 +42,7 @@ sudo sed -i "s/^  @LAYER_NAME$/  NAME \"${filename}\"/" ${layerMapfile}
 # @LAYER_CONNECTION "<project_name>/<image_folder_name>/<image_name>/<image_name>.ms.geojson
 sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${destDir//\//\\/}\/${msGeojsonFilename//\//\\/}\"/" ${layerMapfile}
 # @LAYER_DATA <image_name>.ms
-sudo sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}\"/" ${layerMapfile}
+sudo sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}.ms\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_TITLE <image_name>.ms
 sudo sed -i "s/^    @LAYER_METADATA_WFS_TITLE$/    \"wfs_title\" \"${filename}\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_EXTENT get the extent lat lon of the geojson using gdal
@@ -50,6 +50,7 @@ sudo sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 4
 
 # add a reference into the main /app/mapserv/aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
+sudo sed -i "/^  # @INCLUDE$/a  # @INCLUDE$/" ${aideMapfile}
 sudo sed -i "s/^  # @INCLUDE$/  INCLUDE \".\/${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
 # insert a new line with # @INCLUDE for the next time need INCLUDE
 # TODO
