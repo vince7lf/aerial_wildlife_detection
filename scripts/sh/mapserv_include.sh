@@ -13,7 +13,7 @@
 # set echo off
 DEBUG=$4
 devnull=/dev/null
-[ ${DEBUG} = true ] && set -xe
+[ ${DEBUG} = true ] && set -x
 
 # imgFilename='test_266_tile.jpg'
 # srcDir='/tmp/test/gdal'
