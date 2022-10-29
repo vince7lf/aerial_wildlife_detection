@@ -38,8 +38,9 @@ MAP
 
   SIZE 400 300
   SYMBOLSET "/app/mapserv/symbols/symbols.txt"
-  # EXTENT -180 -90 180 90
-  EXTENT -73.46665 45.626178 -73.46664 45.626179
+  # Hard code a wide extent
+  EXTENT -180 -90 180 90
+  # EXTENT -73.46665 45.626178 -73.46664 45.626179
   # EXTENT -73.469041 45.626145 -73.464742 45.627092
   # EXTENT -73.4 45.6 -73.3 45.5
   # UNITS DD
@@ -84,6 +85,7 @@ MAP
     "init=epsg:4326"
   END
 
-  INCLUDE "./test-jpg-gps-1/1imageJPEG/1imageJPEG.map"
-
+  # Insert here the layer's .map files for each projects
+  # INCLUDE "./test-jpg-gps-1/1imageJPEG/1imageJPEG.map"
+  # @INCLUDE
 END

@@ -148,5 +148,8 @@ if [ ${#tiles[@]} -eq 0 ]; then exit 0; fi
 #  echo $tile
 #done
 
+# create the layer's map file and include it into the main aide.map file
+# [ ${DEBUG} = true ] && mapserv_include.sh "$1" "$2" "$3" true || nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" true >/dev/null 2>&1 &
+
 # assume always good, no errors
 exit 1
