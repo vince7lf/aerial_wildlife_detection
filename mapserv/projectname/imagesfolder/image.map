@@ -1,0 +1,32 @@
+LAYER
+  DEBUG ON
+
+  NAME "boucherville"
+  TYPE POINT
+  STATUS ON
+
+  CONNECTIONTYPE OGR
+  CONNECTION "test-jpg-gps-1/1imageJPEG/2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile.ms.geojson"
+  #CONNECTION "2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile.ms.geojson"
+  DATA '2019-Boucherville-13225474-13410695_JPEG_tile.ms' # layer name
+  METADATA
+    "wfs_title"         "2019-Boucherville-13225474-13410695_JPEG_tile.ms" ##REQUIRED
+    "wfs_srs"           "EPSG:4326" ## REQUIRED
+    "gml_include_items" "all" ## Optional (serves all attributes for layer)
+    "gml_featureid"     "fid" ## REQUIRED
+    "ows_enable_request" "*"
+    "wfs_enable_request" "*"
+
+    "wfs_extent"        "-73.46665 45.626178 -73.46664 45.626179"
+  END
+  PROJECTION
+    "init=epsg:4326"
+  END
+  CLASS
+    NAME "Photo"
+    SYMBOL "round"
+    SIZE 120
+    COLOR 214 150 150
+  END
+
+END
