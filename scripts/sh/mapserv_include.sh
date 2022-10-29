@@ -51,7 +51,8 @@ sudo sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 4
 # add a reference into the main /app/mapserv/aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
 sudo sed -i "/^  # @INCLUDE$/a\ \ # @INCLUDE" ${aideMapfile}
-sudo sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
+# add if not already there
+[ grep -q "./${srcDir}\/${filename}/${filename}.map" "${aideMapfile}" ] || sudo sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
 # insert a new line with # @INCLUDE for the next time need INCLUDE
 # TODO
 
