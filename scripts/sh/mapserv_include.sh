@@ -53,4 +53,4 @@ sudo sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 4
 # add the layer map reference into the main /app/mapserv/aide.map file if not already there
 grep -q "./${srcDir}\/${filename}/${filename}.map" "${aideMapfile}" || sudo sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${srcDir//\//\\/}\/${filename//\//\\/}\/${filename}.map\"/" ${aideMapfile}
 # insert a new line with # @INCLUDE for the next time need INCLUDE if not already there
-grep -q "  # @INCLUDE" "${aideMapfile}" || sudo sed -i "/^  # @INCLUDE$/a\ \ # @INCLUDE" ${aideMapfile}
+grep -q "  # @INCLUDE" "${aideMapfile}" || sudo sed -i "/^END$/i\ \ # @INCLUDE" ${aideMapfile}
