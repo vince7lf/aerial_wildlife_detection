@@ -38,7 +38,7 @@ cp -fap ${templateLayerMapfile} ${layerMapfile}
 
 # replace the directives:
 # @LAYER_NAME <image_name>
-sudo sed -i "s/^  @LAYER_NAME$/  NAME \"${filename}\"/" ${layerMapfile}
+sudo sed -i "s/^  @LAYER_NAME$/  NAME \"layer-${filename}\"/" ${layerMapfile}
 # @LAYER_CONNECTION "<project_name>/<image_folder_name>/<image_name>/<image_name>.ms.geojson
 sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${destDir//\//\\/}\/${msGeojsonFilename//\//\\/}\"/" ${layerMapfile}
 # @LAYER_DATA <image_name>.ms
