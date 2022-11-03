@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # how-to run the script
-# gdalogr_createtiles_geotiff.sh 2019-Boucherville-13225474-13410695_tile.jpg /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test > /dev/null 2>&1
+# gdalogr_createtiles_geotiff.sh 2019-Boucherville-13225474-13410695_tile.jpg /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test test > /dev/null 2>&1
 
 # this script is a part of a proof of concept, and assume things work as expected.
 # It should not be the way to do, and not used in production and by operations.
@@ -11,7 +11,7 @@
 # -e to display more information
 # set -ex
 # set echo off
-DEBUG=$4
+DEBUG=$5
 devnull=/dev/null
 [ ${DEBUG} = true ] && set -x
 
@@ -21,6 +21,7 @@ imgFilename=$1
 imgFilenameOrg=${imgFilename}
 srcDir=$2
 parentDir=$3
+project=$4
 extension="${imgFilename##*.}"
 filename="${imgFilename%.*}"
 destDir="${srcDir}/${filename}"
@@ -149,7 +150,7 @@ if [ ${#tiles[@]} -eq 0 ]; then exit 0; fi
 #done
 
 # create the layer's map file and include it into the main aide.map file
-[ ${DEBUG} = true ] && mapserv_include.sh "$1" "$2" "$3" true || nohup mapserv_include.sh "$1" "$2" "$3" false >/dev/null 2>&1 &
+[ ${DEBUG} = true ] && mapserv_include.sh "$1" "$2" "$3" "$4" true || nohup mapserv_include.sh "$1" "$2" "$3" "$4" false >/dev/null 2>&1 &
 
 # assume always good, no errors
 exit 1

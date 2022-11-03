@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # how-to run the script
-# ./create_tile.sh > /dev/null 2>&1
+# ./gdalogr_createtiles.sh 2019-Boucherville-13225474-13410695_tile.jpg /mnt/c/Users/User/Downloads/AIDE+MELCC/presence_AIDE/test test > /dev/null 2>&1
 
 # this script is a part of a proof of concept, and assume things work as expected.
 # It should not be the way to do, and not used in production and by operations.
@@ -9,7 +9,7 @@
 
 # -x to exit immediately when an error occurred
 # -e to display more information
-DEBUG=$4
+DEBUG=$5
 devnull=/dev/null
 [ ${DEBUG} = true ] && set -x
 # trick to cut the errors/warnings in the output of the command : redirect to /dev/null and then copy the error output 2 to standard output 1; syntax is: command > /dev/null 2>&1
@@ -23,6 +23,7 @@ imgFilename=$1
 imgFilenameOrg=${imgFilename}
 srcDir=$2
 parentDir=$3
+project=$4
 extension="${imgFilename##*.}"
 filename="${imgFilename%.*}"
 imgFilenameNotGeo="${filename}.jpg"
@@ -162,7 +163,7 @@ fi
 # in the future that script should be the only one and openlayer in the annotation interface should support geolocalized geojson
 # avoid output to nohup.out file with > /dev/null 2>&1
 # run in the background and exit current script. The script gdalogr_createtiles_geotiff.sh will run in the background
-[ ${DEBUG} = true ] && gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" true || nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" false >/dev/null 2>&1 &
+[ ${DEBUG} = true ] && gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" true || nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" false >/dev/null 2>&1 &
 
 # assume always good, no errors
 exit 1

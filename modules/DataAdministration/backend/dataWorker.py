@@ -404,11 +404,11 @@ class DataWorker:
 
         return result
 
-    def gdalogr_createtiles(self, image, destFolder, parent):
+    def gdalogr_createtiles(self, project, image, destFolder, parent):
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
 
-        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent],
+        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project],
                               stdin=subprocess.DEVNULL,
                               stdout=subprocess.PIPE,
                               stderr=subprocess.DEVNULL,
@@ -431,7 +431,7 @@ class DataWorker:
         # if image is a _tile.jpg
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
-        filenames = self.gdalogr_createtiles(filename, destFolder, parent)
+        filenames = self.gdalogr_createtiles(project, filename, destFolder, parent)
 
         if filenames == None: return
 
