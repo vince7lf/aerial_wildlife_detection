@@ -22,7 +22,7 @@ srcDir=$2
 parentDir=$3
 project=$4
 filename="${imgFilename%.*}"
-destDir="${projectDir}/${parentDir}/${filename}"
+destDir="${project}/${parentDir}/${filename}"
 msGeojsonFilename="${filename}.ms.geojson"
 
 mapservFolder="/app/mapserv"
