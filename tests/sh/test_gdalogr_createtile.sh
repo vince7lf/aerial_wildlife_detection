@@ -36,7 +36,9 @@ NC='\033[0m' # No Color
 
 # make sure that the latest scripts are  being used
 sudo cp /tmp/pycharm_remote_debug_hpelitebook850g3/scripts/sh/gdalogr_createtiles*.sh /usr/local/bin
+sudo chmod +x /usr/local/bin/gdalogr_createtiles*.sh
 sudo cp /tmp/pycharm_remote_debug_hpelitebook850g3/scripts/sh/mapserv_include.sh /usr/local/bin
+sudo chmod +x /usr/local/bin/mapserv_include.sh
 
 script=/usr/local/bin/gdalogr_createtiles.sh
 
