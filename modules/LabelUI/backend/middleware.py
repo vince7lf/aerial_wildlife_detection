@@ -831,7 +831,7 @@ class DBMiddleware():
             splitted_path_filename = os.path.normpath(str(r['image_path_filename'])).split(os.path.sep)
             geojsonTemplateFullFilepath = os.path.join(projectFolder, path_filename[0],
                                                        splitted_path_filename[-2] + '.ms.template.geojson')
-            if os.path.exists(geojsonFile['geojsonTemplateFullFilepath']) == False:
+            if 'geojsonTemplateFullFilepath' in geojsonFiles and os.path.exists(geojsonFiles['geojsonTemplateFullFilepath']) == False:
                 continue
 
             geojsonFullFilepath = os.path.join(projectFolder, path_filename[0],
