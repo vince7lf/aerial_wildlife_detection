@@ -53,14 +53,14 @@ _test_jpg_nogps() {
   extension="jpg"
   [[ ! -z $1 && $1 = 'JPG' ]] && extension='JPG'
   [[ ! -z $1 && $1 = 'JPEG' ]] && extension='JPEG'
-  repo=(nogpsinfo_tile.${extension} /app/tests/images/test-${extension}-nogps/test-${extension} test-${extension})
+  repo=(nogpsinfo_tile.${extension} /app/tests/images/test-${extension}-nogps/test-${extension} test-${extension} test-${extension}-nogps)
   filename="${repo[0]%.*}"
   sudo rm -rf "${repo[1]}/${filename}/"
   sudo rm -rf "${repo[1]}/*.tif*"
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${DEBUG}
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} ${DEBUG}
   [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
@@ -111,14 +111,14 @@ _test_jpg_nogps() {
 # -----------------------------------------------------------------------------
 _test_jpg_gps() {
   echo -e "${GREEN}${FUNCNAME[0]}${NC}"
-  repo=(2019-Boucherville-13225474-13410695_tile.jpg /app/tests/images/test-geojpg test-geojpg)
+  repo=(2019-Boucherville-13225474-13410695_tile.jpg /app/tests/images/test-geojpg test-geojpg .)
   filename="${repo[0]%.*}"
   sudo rm -rf "${repo[1]}/${filename}/"
   sudo rm -rf "${repo[1]}/*.tif*"
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${DEBUG}
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} ${DEBUG}
   while [[ $(pgrep -x gdalogr_createtile_geotiff.sh >/dev/null) ]]; do
     echo "running; waiting 1 sec"
     sleep 1
@@ -195,7 +195,7 @@ _test_tiff_notgeo() {
   extension="tif"
   [[ ! -z $1 && $1 = 'TIF' ]] && extension='TIF'
   [[ ! -z $1 && $1 = 'TIFF' ]] && extension='TIFF'
-  repo=(test_notgeotiff_tile.${extension} /app/tests/images/test-${extension}-10/test-${extension} test-${extension})
+  repo=(test_notgeotiff_tile.${extension} /app/tests/images/test-${extension}-10/test-${extension} test-${extension} test-${extension}-10)
   filename="${repo[0]%.*}"
   sudo rm -rf "${repo[1]}/${filename}/"
   sudo rm -rf "${repo[1]}/*.jpg"
@@ -203,7 +203,7 @@ _test_tiff_notgeo() {
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${DEBUG}
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} ${DEBUG}
   [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
@@ -254,14 +254,14 @@ _test_tiff_notgeo() {
 # -----------------------------------------------------------------------------
 _test_geotiff() {
   echo -e "${GREEN}${FUNCNAME[0]}${NC}"
-  repo=(2019-Boucherville-13225474-13410695_tile.tiff /app/tests/images/test-geotiff-9/test-geotiff test-geotiff)
+  repo=(2019-Boucherville-13225474-13410695_tile.tiff /app/tests/images/test-geotiff-9/test-geotiff test-geotiff test-geotiff-9)
   filename="${repo[0]%.*}"
   sudo rm -rf "${repo[1]}/${filename}/"
   sudo rm -rf "${repo[1]}/*.jpg"
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} false
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} false
   while [[ $(pgrep -x gdalogr_createtile_geotiff.sh >/dev/null) ]]; do
     echo "running; waiting 1 sec"
     sleep 1
