@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # how-to run the script
-# sudo bash ./scripts/sh/mapserv_include.sh 2019-Boucherville-13225474-13410695_JPEG_tile.jpg /app/tests/images/test-jpg-gps-1/1imageJPEG 1imageJPEG true
+# bash ./scripts/sh/mapserv_include.sh 2019-Boucherville-13225474-13410695_JPEG_tile.jpg /app/tests/images/test-jpg-gps-1/1imageJPEG 1imageJPEG true
 
 # this script is a part of a proof of concept, and assume things work as expected.
 # It should not be the way to do, and not used in production and by operations.
@@ -52,6 +52,6 @@ sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 45.626
 # add the INCLUDE directive into the main aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
 # add the layer map reference into the main /app/mapserv/aide.map file if not already there
-grep -q "./${destDir}\/${filename}.map" "${aideMapfile}" || sudo sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${destDir//\//\\/}\/${filename}.map\"/" ${aideMapfile}
+grep -q "./${destDir}\/${filename}.map" "${aideMapfile}" || sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${destDir//\//\\/}\/${filename}.map\"/" ${aideMapfile}
 # insert a new line with # @INCLUDE for the next time need INCLUDE if not already there
-grep -q "  # @INCLUDE" "${aideMapfile}" || sudo sed -i "/^END$/i\ \ # @INCLUDE" ${aideMapfile}
+grep -q "  # @INCLUDE" "${aideMapfile}" || sed -i "/^END$/i\ \ # @INCLUDE" ${aideMapfile}

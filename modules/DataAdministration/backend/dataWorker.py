@@ -408,9 +408,13 @@ class DataWorker:
         # trigger script
         # retrieve the images generated and adds them to the image array to be added to the database, as if they were added manually
 
+        tilenames = []
+        # with open("/tmp/gdalogr_createtiles.log", "w") as f:
         proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project],
                               stdin=subprocess.DEVNULL,
+                              # stdout=f,
                               stdout=subprocess.PIPE,
+                              # stderr=f,
                               stderr=subprocess.DEVNULL,
                               universal_newlines=True,
                               bufsize=0)
@@ -418,7 +422,6 @@ class DataWorker:
         if proc.returncode == 0: return None
 
         # no output to fetch, assume no error; proof of concept mode
-        tilenames = []
         for line in proc.stdout.splitlines():
             tilenames.append(line)
 
