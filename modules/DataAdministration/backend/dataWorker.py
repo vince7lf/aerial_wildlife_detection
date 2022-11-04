@@ -412,10 +412,10 @@ class DataWorker:
         # with open("/tmp/gdalogr_createtiles.log", "w") as f:
         proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project, "false"],
                               stdin=subprocess.DEVNULL,
-                              stdout=f,
-                              # stdout=subprocess.PIPE,
-                              stderr=f,
-                              # stderr=subprocess.DEVNULL,
+                              # stdout=f,
+                              stdout=subprocess.PIPE,
+                              # stderr=f,
+                              stderr=subprocess.DEVNULL,
                               universal_newlines=True,
                               bufsize=0)
 
