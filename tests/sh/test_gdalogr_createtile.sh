@@ -60,7 +60,7 @@ _test_jpg_nogps() {
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} ${DEBUG}
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${repo[3]} ${DEBUG}
   [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
@@ -118,7 +118,7 @@ _test_jpg_gps() {
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} ${DEBUG}
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${repo[3]} ${DEBUG}
   while [[ $(pgrep -x gdalogr_createtile_geotiff.sh >/dev/null) ]]; do
     echo "running; waiting 1 sec"
     sleep 1
@@ -203,7 +203,7 @@ _test_tiff_notgeo() {
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} ${DEBUG}
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${repo[3]} ${DEBUG}
   [[ -f "${repo[1]}/${filename}.jpg.aux.xml" ]] && {
     echo -e "${RED}Failed${NC}"
     exit 0
@@ -261,7 +261,7 @@ _test_geotiff() {
   sudo rm -rf "${repo[1]}/*.jpg.aux.xml"
   sudo rm -rf "${repo[1]}/*.wld"
   sudo rm -rf "${repo[1]}/*.jgw"
-  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2] ${repo[3]} false
+  sudo bash ${script} ${repo[0]} ${repo[1]} ${repo[2]} ${repo[3]} false
   while [[ $(pgrep -x gdalogr_createtile_geotiff.sh >/dev/null) ]]; do
     echo "running; waiting 1 sec"
     sleep 1
