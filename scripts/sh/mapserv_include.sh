@@ -39,15 +39,15 @@ cp -fap ${templateLayerMapfile} ${layerMapfile}
 
 # replace the directives:
 # @LAYER_NAME <image_name>
-sudo sed -i "s/^  @LAYER_NAME$/  NAME \"layer-${filename}\"/" ${layerMapfile}
+sed -i "s/^  @LAYER_NAME$/  NAME \"layer-${filename}\"/" ${layerMapfile}
 # @LAYER_CONNECTION "<project_name>/<image_folder_name>/<image_name>/<image_name>.ms.geojson
-sudo sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${srcDir//\//\\/}\/${msGeojsonFilename//\//\\/}\"/" ${layerMapfile}
+sed -i "s/^  @LAYER_CONNECTION$/  CONNECTION \"${srcDir//\//\\/}\/${msGeojsonFilename//\//\\/}\"/" ${layerMapfile}
 # @LAYER_DATA <image_name>.ms
-sudo sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}.ms\"/" ${layerMapfile}
+sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}.ms\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_TITLE <image_name>.ms
-sudo sed -i "s/^    @LAYER_METADATA_WFS_TITLE$/    \"wfs_title\" \"${filename}\"/" ${layerMapfile}
+sed -i "s/^    @LAYER_METADATA_WFS_TITLE$/    \"wfs_title\" \"${filename}\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_EXTENT get the extent lat lon of the geojson using gdal
-sudo sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 45.626178 -73.46664 45.626179\"/" ${layerMapfile}
+sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 45.626178 -73.46664 45.626179\"/" ${layerMapfile}
 
 # add the INCLUDE directive into the main aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"

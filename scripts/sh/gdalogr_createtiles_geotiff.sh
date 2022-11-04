@@ -26,7 +26,8 @@ extension="${imgFilename##*.}"
 filename="${imgFilename%.*}"
 destDir="${srcDir}/${filename}"
 shpFilename="${filename}.ms.shp"
-geojsonFilename="${filename}.ms.template.geojson"
+geojsonTemplateFilename="${filename}.ms.template.geojson"
+geojsonFilename="${filename}.ms.geojson"
 
 # clean
 _clean() {
@@ -125,7 +126,7 @@ gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIn
 
 # create .geojson and generate .tiff tiles
 # output and error piped to /dev/null
-ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonFilename} ${destDir}/${shpFilename} >/dev/null 2>&1
+ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonTemplateFilename} ${destDir}/${shpFilename} >/dev/null 2>&1
 
 # loop through the .tiff files and convert the tiff to jpg if we need to share them; tiff won't appear in the database.
 tiles=()
@@ -136,7 +137,8 @@ for f in ${destDir}/*_tile_*_*.tif; do
 done
 
 # change .tif to .jpg into the .geojson
-sed -i 's/\.tif/\.jpg/g' ${destDir}/${geojsonFilename}
+sed -i 's/\.tif/\.jpg/g' ${destDir}/${geojsonTemplateFilename}
+cp -fap ${destDir}/${geojsonTemplateFilename} ${destDir}/${geojsonFilename}
 
 # remove unecessary files
 _clean
