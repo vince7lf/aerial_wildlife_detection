@@ -89,8 +89,8 @@ RUN apt-get update \
     && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
     && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
-    && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -124,4 +124,4 @@ ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 CMD bash test.sh
 
 # Temporary command to prevent container from stopping if no command is privided
-# CMD tail -f /dev/null
+CMD tail -f /dev/null
