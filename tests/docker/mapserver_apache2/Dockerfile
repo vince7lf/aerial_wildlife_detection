@@ -114,6 +114,7 @@ RUN sudo apt-get install software-properties-common \
 COPY . .
 
 RUN sudo mkdir -p /app && sudo cp -rap mapserv /app/mapserv
+RUN sudo chmod a+rx test.sh
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app
