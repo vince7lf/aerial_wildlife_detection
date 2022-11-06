@@ -121,6 +121,7 @@ ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 
+CMD service apache2 start
 CMD bash test.sh
 
 # Temporary command to prevent container from stopping if no command is privided
