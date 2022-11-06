@@ -48,6 +48,34 @@ RUN apt-get update \
 # specify the root folder where you wish to install AIDE
 WORKDIR /home/$USERNAME/app
 
+# Install gdal ogr
+# ============================ GDALOGR STARTS ==========================================
+# pre-requirement to use add-apt-repository
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
+
+RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
+    && apt-get update \
+    && apt-get install -y gdal-bin \
+    && apt-get install -y libgdal-dev \
+    && apt-get install -y python3-pip \
+    && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
+    && export C_INCLUDE_PATH=/usr/include/gdal \
+    && ogrinfo --version \
+    # fix an error in the installation
+    && pip3 install --upgrade --no-cache-dir setuptools==57.5.0 \
+    && pip3 install GDAL==2.4.2 \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+# ============================ GDALOGR ENDS ==========================================
+
 # setup apache and mapserver
 # ============================ APACHE2 STARTS ==========================================
 RUN sudo apt-get -y install apache2 \
