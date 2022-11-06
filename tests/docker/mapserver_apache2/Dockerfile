@@ -85,7 +85,7 @@ RUN apt-get update \
     && sudo a2enmod fastcgi alias \
     && sudo chmod 755 /var/log/apache2 \
     && sudo chmod 755 /var/log \
-    && port=8888 \
+    && port=8081 \
     && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
     && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
