@@ -103,7 +103,7 @@ RUN sudo apt-get install software-properties-common \
     && sudo add-apt-repository ppa:ubuntugis/ppa \
     && sudo apt-get update \
     && sudo apt-get -y install cgi-mapserver \
-    && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
+    # && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
