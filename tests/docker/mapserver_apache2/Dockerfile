@@ -51,16 +51,16 @@ WORKDIR /home/$USERNAME/app
 # Install gdal ogr
 # ============================ GDALOGR STARTS ==========================================
 # pre-requirement to use add-apt-repository
-RUN apt-get update && \
-    apt-get install -y software-properties-common \
+RUN apt-get update \
+    && apt-get install -y software-properties-common \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
-    && apt-get update \
+RUN add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
     && apt-get install -y gdal-bin \
     && apt-get install -y libgdal-dev \
     && apt-get install -y python3-pip \
@@ -78,7 +78,8 @@ RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
 
 # setup apache and mapserver
 # ============================ APACHE2 STARTS ==========================================
-RUN sudo apt-get -y install apache2 \
+RUN apt-get update \
+    && sudo apt-get -y install apache2 \
     && sudo wget https://mirrors.edge.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
     && sudo dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
     && sudo a2enmod fastcgi alias \
@@ -99,7 +100,10 @@ IncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
 
 # setup mapserver
 # ============================ MAPSERVER STARTS ==========================================
-RUN sudo apt-get -y install cgi-mapserver \
+RUN sudo apt-get install software-properties-common \
+    && sudo add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
+    && sudo apt-get -y install cgi-mapserver \
     && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
     # Clean up
     && apt-get autoremove -y \
