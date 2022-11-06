@@ -88,8 +88,7 @@ RUN apt-get update \
     && port=8888 \
     && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
-    && sudo cat "# Include the mapserver configurations: \
-IncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
+    && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
     && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
     && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
     # Clean up
