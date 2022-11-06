@@ -11,8 +11,8 @@ ARG USERNAME=aide
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
-    apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
+    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
 # Setup basic packages, environment and user
 RUN apt-get update \
@@ -52,7 +52,7 @@ WORKDIR /home/$USERNAME/app
 # ============================ GDALOGR STARTS ==========================================
 # pre-requirement to use add-apt-repository
 RUN apt-get update && \
-    apt-get install -y software-properties-common && \
+    apt-get install -y software-properties-common \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
