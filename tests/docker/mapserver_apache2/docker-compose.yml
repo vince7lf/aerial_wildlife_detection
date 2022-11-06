@@ -8,8 +8,8 @@ services:
   aide_app:
     hostname: 'aide_app_host' 
     build:
-      context:  '..'
-      dockerfile: 'docker/Dockerfile'
+      context:  '.'
+      dockerfile: 'Dockerfile'
     image: 'aide_app'
     volumes:
       - aide_db_data:/var/lib/postgresql/10/main
