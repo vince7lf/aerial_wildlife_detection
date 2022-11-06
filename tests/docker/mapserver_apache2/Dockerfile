@@ -120,4 +120,4 @@ ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 
-CMD bash docker/test.sh
+CMD bash test.sh
