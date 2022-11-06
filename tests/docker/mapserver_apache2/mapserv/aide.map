@@ -1,0 +1,60 @@
+MAP
+  CONFIG "MS_ERRORFILE" "/var/log/mapserv/ms_error.txt"
+  CONFIG "CPL_DEBUG" "ON"
+  CONFIG "CPL_TIMESTAMP" "ON"
+  CONFIG "PROJ_DEBUG" "ON"
+  CONFIG "ON_MISSING_DATA" "LOG"
+  DEBUG 50
+
+  NAME "AIDE WFS Service"
+  STATUS ON
+
+  SIZE 400 300
+  SYMBOLSET "/app/mapserv/symbols/symbols.txt"
+  # Hard code a wide extent, like quebec province
+  EXTENT -180 -90 180 90
+  # UNITS DD
+  SHAPEPATH "/app/images"
+  # IMAGECOLOR 255 255 255
+  FONTSET "/app/mapserv/fonts/fonts.txt"
+
+  WEB
+      IMAGEPATH "/app/mapserv/tmp"
+      IMAGEURL "/ms_tmp/"
+      METADATA
+          "wfs_title"          "WFS Demo Server for MapServer" ## REQUIRED
+          "wfs_onlineresource" "http://localhost:7788/ms/wfs_aide?" ## Recommended
+          "wfs_srs"            "EPSG:4326 EPSG:4269 EPSG:3978 EPSG:3857" ## Recommended
+          "wfs_abstract"       "This text describes my WFS service." ## Recommended
+          "ows_enable_request" "*"
+          "wfs_enable_request" "*"  # necessary 
+          "ows_contactorganization"     "Vincent L.F."
+
+          "ows_keywordlist"                     ""              # removes warnings
+          "ows_fees"                            ""              # removes warnings
+          "ows_accessconstraints"               ""              # removes warnings
+          "ows_service_onlineresource"          ""              # removes warnings
+          "ows_contactperson"                   ""              # removes warnings
+          "ows_contactposition"                 ""              # removes warnings
+          "ows_contactvoicetelephone"           ""              # removes warnings
+          "ows_contactfacsimiletelephone"       ""              # removes warnings
+          "ows_address"                         ""              # removes warnings
+          "ows_city"                            ""              # removes warnings
+          "ows_stateorprovince"                 ""              # removes warnings
+          "ows_postcode"                        ""              # removes warnings
+          "ows_country"                         ""              # removes warnings
+          "ows_contactelectronicmailaddress"    ""              # removes warnings
+          "ows_hoursofservice"                  ""              # removes warnings
+          "ows_contactinstructions"             ""              # removes warnings
+          "ows_role"                            ""              # removes warnings
+
+      END
+  END
+  
+  PROJECTION
+    "init=epsg:4326"
+  END
+
+  # Insert here the layer's .map files for each projects
+  # @INCLUDE
+END

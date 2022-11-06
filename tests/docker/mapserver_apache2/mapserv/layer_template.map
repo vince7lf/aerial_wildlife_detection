@@ -1,0 +1,31 @@
+LAYER
+  DEBUG ON
+
+  @LAYER_NAME
+  TYPE POINT
+  STATUS ON
+
+  CONNECTIONTYPE OGR
+  @LAYER_CONNECTION
+  @LAYER_DATA
+  METADATA
+    @LAYER_METADATA_WFS_TITLE
+    "wfs_srs"           "EPSG:4326" ## REQUIRED
+    "gml_include_items" "all" ## Optional (serves all attributes for layer)
+    "gml_featureid"     "fid" ## REQUIRED
+    "ows_enable_request" "*"
+    "wfs_enable_request" "*"
+
+    @LAYER_METADATA_WFS_EXTENT
+  END
+  PROJECTION
+    "init=epsg:4326"
+  END
+  CLASS
+    NAME "Photo"
+    SYMBOL "round"
+    SIZE 120
+    COLOR 214 150 150
+  END
+
+END
