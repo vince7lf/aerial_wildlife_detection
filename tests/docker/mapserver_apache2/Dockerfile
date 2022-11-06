@@ -112,7 +112,8 @@ RUN sudo apt-get install software-properties-common \
 
 # download AIDE source code (from local repository)
 COPY . .
-RUN cp -rap mapserv /app/mapserv
+
+RUN sudo mkdir -p /app && sudo cp -rap mapserv /app/mapserv
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app
