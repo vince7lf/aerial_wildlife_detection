@@ -4,6 +4,7 @@ set -x
 echo ${PYTHONPATH}
 echo ${AIDE_CONFIG_PATH}
 echo ${AIDE_MODULES}
-echo ${AIDE_HOST_ENV_TAG}
+echo ${AIDE_ENV}
 
-cat ${AIDE_CONFIG_PATH}
+sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
+
