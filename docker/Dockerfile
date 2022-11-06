@@ -30,7 +30,7 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) exiftool installed
-    && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release exiftool\
+    && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release exiftool \
     #
     && conda install python=3.7 \
     # TBC if all of this is required (from AIDE scripts)
@@ -76,7 +76,11 @@ RUN pip install --no-cache-dir -U -r docker/requirements.txt
 # pre-requirement to use add-apt-repository
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
-    rm -rf /var/lib/apt/lists/*
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
 
 RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
     && apt-get update \
@@ -88,7 +92,12 @@ RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
     && ogrinfo --version \
     # fix an error in the installation
     && pip3 install --upgrade --no-cache-dir setuptools==57.5.0 \
-    && pip3 install GDAL==2.4.2
+    && pip3 install GDAL==2.4.2 \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Setup PostgreSQL database
 ENV LOC_REGION=Europe
@@ -107,6 +116,10 @@ RUN ln -fs /usr/share/zoneinfo/$LOC_REGION/$LOC_TIMEZONE /etc/localtime \
     && sudo sed -i "s/\s*#\s*listen_addresses\s=\s'localhost'/listen_addresses = '\*'/g" /etc/postgresql/$version/main/postgresql.conf \
     && echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$version/main/pg_hba.conf > /dev/null 
     #&& sudo systemctl enable postgresql
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
 # ============================ DB SERVER ONLY ENDS ======================================
 
@@ -116,7 +129,11 @@ RUN sudo apt-get update && sudo apt-get install -y rabbitmq-server \
 # optional: if the port for RabbitMQ is anything else than 5672, execute the following line:
     && port=5672   # replace with your port \
     && sudo sed -i "s/^\s*#\s*NODE_PORT\s*=.*/NODE_PORT=$port/g" /etc/rabbitmq/rabbitmq-env.conf 
-    #&& sudo systemctl enable rabbitmq-server.service 
+    #&& sudo systemctl enable rabbitmq-server.service
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN sudo apt-get update && sudo apt-get -y install redis-server \
     # make sure Redis stores its messages in an accessible folder (we're using /var/lib/redis/aide.rdb here)
@@ -135,15 +152,51 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
     && port=6379 \
     && sudo sed -i "s/^\s*port\s*.*/port $port/g" /etc/redis/redis.conf \
     # ensure only ipv4 is bound (to work properly on Docker without changing it's configuration)
-    && sudo sed -i "s/^\s*bind\s*.*/bind 127.0.0.1/g" /etc/redis/redis.conf 
+    && sudo sed -i "s/^\s*bind\s*.*/bind 127.0.0.1/g" /etc/redis/redis.conf
     #&& sudo systemctl enable redis-server.service
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
 # ============================ AI BACKEND ENDS ==========================================
+
+# setup apache and mapserver
+# ============================ APACHE2 STARTS ==========================================
+RUN sudo apt-get -y install apache2 \
+    && sudo wget https://mirrors.edge.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
+    && sudo dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
+    && sudo a2enmod fastcgi alias \
+    && sudo chmod 755 /var/log/apache2 \
+    && sudo chmod 755 /var/log \
+    && port=8888 \
+    && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
+    && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
+    && sudo cat "# Include the mapserver configurations: \
+IncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
+    && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+# ============================ APACHE2 ENDS ==========================================
+
+# setup mapserver
+# ============================ MAPSERVER STARTS ==========================================
+RUN sudo apt-get -y install cgi-mapserver \
+    && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
+    # Clean up
+    && apt-get autoremove -y \
+    && apt-get clean -y \
+    && rm -rf /var/lib/apt/lists/*
+# ============================ MAPSERVER ENDS ==========================================
 
 # download AIDE source code (from local repository)
 COPY . .
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
 RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/local/bin/gdalogr_createtiles*.sh
 RUN cp scripts/sh/mapserv_include.sh /usr/local/bin && chmod a+rx /usr/local/bin/mapserv_include.sh
+RUN cp mapserv /app/mapserv
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app

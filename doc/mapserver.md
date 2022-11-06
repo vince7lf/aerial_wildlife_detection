@@ -47,7 +47,9 @@ MapServer version 7.4.1 OUTPUT=PNG OUTPUT=JPEG OUTPUT=KML SUPPORTS=PROJ SUPPORTS
 
 #### fastcgi module 
 
-Source : Mapserver 7.4.4 documentation file is not up-to-date. Using instead <https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-as-a-web-server-and-reverse-proxy-for-apache-on-one-ubuntu-18-04-server>
+Source : Mapserver 7.4.4 documentation file is not up-to-date. 
+
+Using instead <https://www.digitalocean.com/community/tutorials/how-to-configure-nginx-as-a-web-server-and-reverse-proxy-for-apache-on-one-ubuntu-18-04-server>
 
 Install the fastcgi module but also PHP-FPM (to test the fastcgi module other than with mapserver)
 
@@ -92,7 +94,8 @@ sudo apachectl -t
 sudo systemctl reload apache2
 ```
 
-If you see the warning _Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message._, you can safely ignore it for now. We’ll configure server names later.
+If you see the warning _Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message._, 
+you can safely ignore it for now. We’ll configure server names later.
 
 ### Test php and mapserver integration under apache2   
 

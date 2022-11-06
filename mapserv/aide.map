@@ -1,31 +1,4 @@
 MAP
-# in qgis 
-# http://localhost:7788/cgi-bin/mapserv?map=/home/vince/ms4w_apps/poc_aide_melcc/services/wfs_aide/aide_wfs_service.map&SRS=EPSG:4326&VERSION=2.0.0&COUNTS=100&TYPENAME=boucherville
-# Working 20221027 : http://localhost:7788/ms/wfs_aide?SRS=EPSG:4326&VERSION=1.1.0&COUNTS=100&TYPENAME=boucherville
-# USE VERSION 1.1 OR 1.0, otherwise ERROR Analysis of DescribeFeatureType response failed for url (...) Cannot find schema root element
-# CHECK IF DUE TO APACHE config like url mapping /ms/wfs/aide, SetEnv MAP_FILE, alias /ms To be investigated
-# no need to use OUTPUTFORMAT
-# move the folder with images and ms.geojsoin under ./data behind /home/vince/ms4w_apps/poc_aide_melcc/services/wfs_aide/data
-# Use full path of map file and 'cgi-bin/mapserv' URI
-# Do not set SetEnv in Apache
-    # SetEnv MS_MAP_PATTERN "^(\/home\/vince)?\/ms4w\/apps\/((?!\.{2})[_A-Za-z0-9\-\.]+\/{1})*([_A-Za-z0-9\-\.]+\.(map))$"
-    # SetEnv MS_MAP_NO_PATH "any_value_is_ok"
-    # SetEnv AIDE_WFS_MAP_SERVICE "/home/vince/ms4w_apps/poc_aide_melcc/services/wfs_aide/aide_wfs_service.map"
-    # SetEnv MS_MAPFILE "/home/vince/ms4w_apps/poc_aide_melcc/services/wfs_aide/aide_wfs_service.map"
-
-# To debug : 
-## Follow logs : 
-### Mapserver error logs
-# /var/log/mapserv/ms_error.txt
-### Apache error log and access log
-# /var/log/apache2/error.log
-# /var/log/apache2/access.log
-## in browser use /cgi-bin/mapserv and full path of the map file without any SetEnv set in apache2 conf files (mapserver.conf)
-## test getcapabilities 
-# http://localhost:7788/cgi-bin/mapserv?map=/home/vince/ms4w_apps/poc_aide_melcc/services/wfs_aide/aide_wfs_service.map&SRS=EPSG:4326&VERSION=2.0.0&COUNTS=100&TYPENAME=boucherville&REQUEST=getcapabilities&SERVICE=WFS
-## test getfeature
-# http://localhost:7788/cgi-bin/mapserv?map=/home/vince/ms4w_apps/poc_aide_melcc/services/wfs_aide/aide_wfs_service.map&SRS=EPSG:4326&VERSION=2.0.0&COUNTS=100&TYPENAME=boucherville&REQUEST=getfeature&SERVICE=WFS
-
   CONFIG "MS_ERRORFILE" "/var/log/mapserv/ms_error.txt"
   CONFIG "CPL_DEBUG" "ON"
   CONFIG "CPL_TIMESTAMP" "ON"
@@ -38,11 +11,8 @@ MAP
 
   SIZE 400 300
   SYMBOLSET "/app/mapserv/symbols/symbols.txt"
-  # Hard code a wide extent
+  # Hard code a wide extent, like quebec province
   EXTENT -180 -90 180 90
-  # EXTENT -73.46665 45.626178 -73.46664 45.626179
-  # EXTENT -73.469041 45.626145 -73.464742 45.627092
-  # EXTENT -73.4 45.6 -73.3 45.5
   # UNITS DD
   SHAPEPATH "/app/images"
   # IMAGECOLOR 255 255 255
@@ -86,6 +56,5 @@ MAP
   END
 
   # Insert here the layer's .map files for each projects
-  # INCLUDE "./test-jpg-gps-1/1imageJPEG/1imageJPEG.map"
   # @INCLUDE
 END

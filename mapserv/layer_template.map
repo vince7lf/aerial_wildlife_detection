@@ -2,19 +2,14 @@ LAYER
   DEBUG ON
 
   @LAYER_NAME
-  # NAME "boucherville"
   TYPE POINT
   STATUS ON
 
   CONNECTIONTYPE OGR
   @LAYER_CONNECTION
-  # CONNECTION "test-jpg-gps-1/1imageJPEG/2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile.ms.geojson"
-  #CONNECTION "2019-Boucherville-13225474-13410695_JPEG_tile/2019-Boucherville-13225474-13410695_JPEG_tile.ms.geojson"
   @LAYER_DATA
-  #DATA '2019-Boucherville-13225474-13410695_JPEG_tile.ms' # layer name
   METADATA
     @LAYER_METADATA_WFS_TITLE
-    #"wfs_title"         "2019-Boucherville-13225474-13410695_JPEG_tile.ms" ##REQUIRED
     "wfs_srs"           "EPSG:4326" ## REQUIRED
     "gml_include_items" "all" ## Optional (serves all attributes for layer)
     "gml_featureid"     "fid" ## REQUIRED
@@ -22,7 +17,6 @@ LAYER
     "wfs_enable_request" "*"
 
     @LAYER_METADATA_WFS_EXTENT
-    #"wfs_extent"        "-73.46665 45.626178 -73.46664 45.626179"
   END
   PROJECTION
     "init=epsg:4326"

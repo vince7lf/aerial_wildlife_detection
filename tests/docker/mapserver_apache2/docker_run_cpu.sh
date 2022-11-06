@@ -1,15 +1,16 @@
+#!/bin/bash
+set -x
+
 docker volume ls | grep -q aide_images || docker volume create aide_images
 docker volume ls | grep -q aide_db_data || docker volume create aide_db_data
 
 docker run --name aide_cnt \
- --gpus device=0 \
  --rm \
  -v `pwd`:/home/aide/app \
  -v aide_db_data:/var/lib/postgresql/10/main \
  -v aide_images:/home/aide/images \
  -p 8080:8080 \
  -h 'aide_app_host' \
- -e AIDE_HOST_ENV_TAG=$1 \
  aide_app
 
  # Options:
@@ -20,4 +21,3 @@ docker run --name aide_cnt \
  # -p       - maps ports
  # -h       - sets hostname (fixed hostname is required for some internal components)
  # -e      - set host IP:port value depending on the environment ('vbox' local, 'arbutus' HPC, 'gcp' cloud, etc)
- # sudo AIDE_HOST_ENV_TAG='vbox' docker run [...] -e AIDE_HOST_ENV_TAG [...]
