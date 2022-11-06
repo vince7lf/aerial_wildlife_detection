@@ -8,7 +8,7 @@ services:
   aide_app:
     hostname: 'aide_app_host' 
     build:
-      context: '../..'
+      context: '..'
       dockerfile: 'docker/Dockerfile'
     image: 'aide_app'
     volumes:
