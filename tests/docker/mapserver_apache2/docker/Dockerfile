@@ -91,7 +91,7 @@ RUN apt-get update \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-available/alias.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\/mapserv\/tmp\/\"" /etc/apache2/mods-available/alias.conf \
     && sudo a2enmod cgid fastcgi alias \
-    && sudo a2ensite -f 000-default.conf
+    && sudo a2ensite -f 000-default.conf \\
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
