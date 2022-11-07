@@ -1,9 +1,6 @@
 #!/bin/bash
 set -x
 
-echo ${AIDE_ENV}
-sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
-
 sudo systemctl enable redis-server.service
 sudo service redis-server start
 

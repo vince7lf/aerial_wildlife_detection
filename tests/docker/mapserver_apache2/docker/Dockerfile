@@ -88,9 +88,9 @@ RUN apt-get update \
     && port=8081 \
     && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
-    && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
+    && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /home/${USERNAME}/app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\"" /etc/apache2/mods-enabled/alias.conf \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -114,7 +114,6 @@ RUN sudo apt-get install software-properties-common \
 COPY . .
 
 RUN chmod a+rx docker/container_init.sh && chmod a+rx test.sh
-RUN sudo mkdir -p /app && sudo cp -rap mapserv /app/mapserv
 RUN sudo chmod a+rx test.sh
 
 # Set to proper settings file
