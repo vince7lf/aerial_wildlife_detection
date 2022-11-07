@@ -75,19 +75,15 @@ RUN pip install --no-cache-dir -U -r docker/requirements.txt
 # Install gdal ogr
 # ============================ GDALOGR STARTS ==========================================
 # pre-requirement to use add-apt-repository
-RUN apt-get update \
-    && apt-get install -y software-properties-common \
+RUN apt-get update && apt-get install -y software-properties-common \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN add-apt-repository ppa:ubuntugis/ppa \
-    && sudo apt-get update \
-    && apt-get install -y gdal-bin \
-    && apt-get install -y libgdal-dev \
-    && apt-get install -y python3-pip \
+RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
+    && apt-get install -y gdal-bin libgdal-dev python3-pip \
     && export CPLUS_INCLUDE_PATH=/usr/include/gdal \
     && export C_INCLUDE_PATH=/usr/include/gdal \
     && ogrinfo --version \
@@ -115,7 +111,7 @@ RUN ln -fs /usr/share/zoneinfo/$LOC_REGION/$LOC_TIMEZONE /etc/localtime \
     # modify authentication
     # NOTE: you might want to manually adapt these commands for increased security; the following makes postgres listen to all global connections
     && sudo sed -i "s/\s*#\s*listen_addresses\s=\s'localhost'/listen_addresses = '\*'/g" /etc/postgresql/$version/main/postgresql.conf \
-    && echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$version/main/pg_hba.conf > /dev/null
+    && echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$version/main/pg_hba.conf > /dev/null \
     #&& sudo systemctl enable postgresql
     # Clean up
     && apt-get autoremove -y \
@@ -129,7 +125,7 @@ RUN ln -fs /usr/share/zoneinfo/$LOC_REGION/$LOC_TIMEZONE /etc/localtime \
 RUN sudo apt-get update && sudo apt-get install -y rabbitmq-server \
 # optional: if the port for RabbitMQ is anything else than 5672, execute the following line:
     && port=5672   # replace with your port \
-    && sudo sed -i "s/^\s*#\s*NODE_PORT\s*=.*/NODE_PORT=$port/g" /etc/rabbitmq/rabbitmq-env.conf
+    && sudo sed -i "s/^\s*#\s*NODE_PORT\s*=.*/NODE_PORT=$port/g" /etc/rabbitmq/rabbitmq-env.conf \
     #&& sudo systemctl enable rabbitmq-server.service
     # Clean up
     && apt-get autoremove -y \
@@ -153,7 +149,7 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
     && port=6379 \
     && sudo sed -i "s/^\s*port\s*.*/port $port/g" /etc/redis/redis.conf \
     # ensure only ipv4 is bound (to work properly on Docker without changing it's configuration)
-    && sudo sed -i "s/^\s*bind\s*.*/bind 127.0.0.1/g" /etc/redis/redis.conf
+    && sudo sed -i "s/^\s*bind\s*.*/bind 127.0.0.1/g" /etc/redis/redis.conf \
     #&& sudo systemctl enable redis-server.service
     # Clean up
     && apt-get autoremove -y \
