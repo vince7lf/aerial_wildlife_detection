@@ -8,7 +8,7 @@ services:
   aide_app:
     hostname: 'aide_app_host' 
     build:
-      context:  '..'
+      context: '..'
       dockerfile: 'docker/Dockerfile'
     image: 'aide_app'
     volumes:
@@ -17,5 +17,6 @@ services:
       - ..:/home/aide/app:cached
     ports:
       - '8080:8080'
+      - '8081:8081'
     environment:
       - AIDE_ENV=${AIDE_ENV}

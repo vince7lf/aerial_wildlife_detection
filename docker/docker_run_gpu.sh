@@ -1,3 +1,6 @@
+#!/bin/bash
+set -x
+
 docker volume ls | grep -q aide_images || docker volume create aide_images
 docker volume ls | grep -q aide_db_data || docker volume create aide_db_data
 
@@ -8,7 +11,9 @@ docker run --name aide_cnt \
  -v aide_db_data:/var/lib/postgresql/10/main \
  -v aide_images:/home/aide/images \
  -p 8080:8080 \
+ -p 8081:8081 \
  -h 'aide_app_host' \
+ -e AIDE_ENV:gcp \
  aide_app
 
  # Options:
