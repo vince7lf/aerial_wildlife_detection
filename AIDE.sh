@@ -6,7 +6,10 @@
 # * AIDE_MODULES
 # 
 # 2020-21 Benjamin Kellenberger
-set -x 
+set -x
+
+[ ${AIDE_ENV} = "vbox" ] && export AIDE_MODULES=LabelUI,FileServer
+
 function start {
 
     IFS=',' read -ra ADDR <<< "$AIDE_MODULES"
