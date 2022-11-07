@@ -93,8 +93,7 @@ RUN apt-get update \
     && sudo sed -i "/^<\/IfModule>$/i\t\tAlias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
     && sudo sed -i "/^<\/IfModule>$/i\t<Directory \/usr\/lib\/cgi-bin>" /etc/apache2/mods-enabled/fastcgi.conf \
     && sudo sed -i "/^<\/IfModule>$/i\t\tRequire all granted" /etc/apache2/mods-enabled/fastcgi.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\t<\/Directory>" /etc/apache2/mods-enabled/fastcgi.conf
-
+    && sudo sed -i "/^<\/IfModule>$/i\t<\/Directory>" /etc/apache2/mods-enabled/fastcgi.conf \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
