@@ -82,18 +82,16 @@ RUN apt-get update \
     && sudo apt-get -y install apache2 \
     && sudo wget https://mirrors.edge.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
     && sudo dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
-    && sudo a2enmod fastcgi alias \
     && sudo chmod 755 /var/log/apache2 \
     && sudo chmod 755 /var/log \
     && port=8081 \
-    && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
+    && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-available/000-default.conf \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
     && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /home/${USERNAME}/app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\/mapserv\/tmp\/\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ <Directory \/usr\/lib\/cgi-bin>" /etc/apache2/mods-enabled/fastcgi.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Require all granted" /etc/apache2/mods-enabled/fastcgi.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ <\/Directory>" /etc/apache2/mods-enabled/fastcgi.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-available/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\/mapserv\/tmp\/\"" /etc/apache2/mods-available/alias.conf \
+    && sudo a2enmod cgid fastcgi alias \
+    && sudo a2ensite -f 000-default.conf
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \

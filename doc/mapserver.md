@@ -55,6 +55,7 @@ Install the fastcgi module but also PHP-FPM (to test the fastcgi module other th
 
 ```
 sudo apt install apache2 php-fpm
+sudo apt-get install php libapache2-mod-php
 wget https://mirrors.edge.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb
 sudo dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb
 a2enmod actions fastcgi alias
@@ -119,3 +120,98 @@ You should see an HTML page with the message _No query information to decode. QU
 ## GDAL
 
 source : <https://mothergeo-py.readthedocs.io/en/latest/development/how-to/gdal-ubuntu-pkg.html>
+
+# MAJOR NOTES ABOUT THE INSTALLATION
+
+## Enable Apache2 modules and default site 
+Enable modules, conf and sites (do not forget sites) modifying the configuration files first and then using _a2enmod_ and _a2ensite_. _a2enconf_ never used but could with `a2enconf serve-cgi-bin`.
+
+### site /etc/apache2/sites-available/000-default.conf
+Change the port. 
+
+Enable it. 
+```
+a2ensite -f 000-default.conf
+```
+
+### alias /etc/apache2/mods-available/alias.conf
+
+Set the alias : 
+```
+        ...
+        
+        Alias /ms "/usr/lib/cgi-bin/mapserv"
+        Alias /ms_tmp/ "/home/aide/app/mapserv/tmp/"
+
+</IfModule>
+```
+
+Enable. 
+
+```
+a2enmod alias
+```
+
+## Disable Apache2 modules and default site 
+ 
+To disable, use -f with the commands 
+
+```
+a2dismod -f alias
+a2dissite -f 000-default.conf
+```
+
+## Error in apache2 /var/log/apache2/error.log AH01630: client denied by server configuration: /usr/lib/cgi-bin/mapserv
+
+Enable cgid and fastcgi to enable
+
+`a2enmod cgid fastcgi`
+
+Do not change _/etc/apache2/conf-enabled/serve-cgi-bin.conf_ but that explains the error
+```
+<IfModule mod_alias.c>
+        <IfModule mod_cgi.c>
+                Define ENABLE_USR_LIB_CGI_BIN
+        </IfModule>
+
+        <IfModule mod_cgid.c>
+                Define ENABLE_USR_LIB_CGI_BIN
+        </IfModule>
+
+        <IfDefine ENABLE_USR_LIB_CGI_BIN>
+                ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+                <Directory "/usr/lib/cgi-bin">
+                        AllowOverride None
+                        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                        Require all granted
+                </Directory>
+        </IfDefine>
+</IfModule>
+
+```
+
+## Error in browser msSetErrorFile(): General error message. Failed to open MS_ERRORFILE /var/www/html/wfs/log/ms_error.txt
+Using <http://127.0.0.1:7781/cgi-bin/mapserv?map=/var/www/html/wfs/wfs_service.map&SERVICE=WFS&REQUEST=GetCapabilities&LAYERS=province>
+
+Make ms_error accessible and writeable by apache2 and mapserv 
+```
+touch /var/www/html/wfs/log/ms_error.txt
+chown www-data:www-data /var/www/html/wfs/log/ms_error.txt
+```
+
+## Error No query information to decode. QUERY_STRING is set, but empty.  
+using <http://127.0.0.1:7781/ms/wfs_aide>
+
+That means it works
+
+## Error msCGILoadMap(): Web application error. Mapfile not found in environment variables and this server is not configured for full paths.
+Using <http://127.0.0.1:7781/ms/wfs_aide?map=/var/www/html/wfs/wfs_service.map&SERVICE=WFS&REQUEST=GetCapabilities>
+
+Using alias ms/wfs_aide and map-... into same URL. Removes the map== 
+
+## Error Internal Server Error
+Using <http://127.0.0.1:7781/ms/wfs_aide?SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0>
+
+## URL test
+<http://127.0.0.1:7781/cgi-bin/mapserv?map=/var/www/html/wfs/wfs_service.map&SERVICE=WFS&REQUEST=GetCapabilities>
+<http://127.0.0.1:7781/cgi-bin/mapserv?map=/var/www/html/wfs/wfs_service.map&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0>
