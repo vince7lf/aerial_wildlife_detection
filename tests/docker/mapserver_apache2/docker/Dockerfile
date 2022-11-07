@@ -90,7 +90,7 @@ RUN apt-get update \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
     && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /home/${USERNAME}/app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\/mapserv\/tmp\"" /etc/apache2/mods-enabled/alias.conf \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -103,6 +103,9 @@ RUN sudo apt-get install software-properties-common \
     && sudo add-apt-repository ppa:ubuntugis/ppa \
     && sudo apt-get update \
     && sudo apt-get -y install cgi-mapserver \
+    && sudo mkdir /var/log/mapserv \
+    && sudo touch /var/log/mapserv/ms_error.txt \
+    && sudo chown www-data:www-data /var/log/mapserv/ms_error.txt \
     # && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
     # Clean up
     && apt-get autoremove -y \
