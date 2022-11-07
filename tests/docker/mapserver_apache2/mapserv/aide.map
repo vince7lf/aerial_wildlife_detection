@@ -14,7 +14,7 @@ MAP
   # Hard code a wide extent, like quebec province
   EXTENT -180 -90 180 90
   # UNITS DD
-  SHAPEPATH "/home/aide/app/images"
+  SHAPEPATH "/home/aide/images"
   # IMAGECOLOR 255 255 255
   FONTSET "/home/aide/app/mapserv/fonts/fonts.txt"
 
