@@ -10,20 +10,20 @@ MAP
   STATUS ON
 
   SIZE 400 300
-  SYMBOLSET "/app/mapserv/symbols/symbols.txt"
+  SYMBOLSET "/home/aide/app/mapserv/symbols/symbols.txt"
   # Hard code a wide extent, like quebec province
   EXTENT -180 -90 180 90
   # UNITS DD
-  SHAPEPATH "/app/images"
+  SHAPEPATH "/home/aide/app/images"
   # IMAGECOLOR 255 255 255
-  FONTSET "/app/mapserv/fonts/fonts.txt"
+  FONTSET "/home/aide/app/mapserv/fonts/fonts.txt"
 
   WEB
-      IMAGEPATH "/app/mapserv/tmp"
+      IMAGEPATH "/home/aide/app/mapserv/tmp"
       IMAGEURL "/ms_tmp/"
       METADATA
           "wfs_title"          "WFS Demo Server for MapServer" ## REQUIRED
-          "wfs_onlineresource" "http://localhost:7788/ms/wfs_aide?" ## Recommended
+          "wfs_onlineresource" "http://localhost:8081/ms/wfs_aide?" ## Recommended
           "wfs_srs"            "EPSG:4326 EPSG:4269 EPSG:3978 EPSG:3857" ## Recommended
           "wfs_abstract"       "This text describes my WFS service." ## Recommended
           "ows_enable_request" "*"
