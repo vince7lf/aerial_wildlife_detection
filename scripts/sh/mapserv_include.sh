@@ -25,7 +25,7 @@ filename="${imgFilename%.*}"
 destDir="${project}/${parentDir}/${filename}"
 msGeojsonFilename="${filename}.ms.geojson"
 
-mapservFolder="/app/mapserv"
+mapservFolder="/home/aide/app/mapserv"
 aideMapfile="${mapservFolder}/aide.map"
 templateLayerMapfile="${mapservFolder}/layer_template.map"
 layerMapfileDest=${mapservFolder}/${destDir}
