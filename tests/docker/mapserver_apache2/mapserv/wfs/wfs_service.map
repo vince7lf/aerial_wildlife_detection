@@ -1,0 +1,146 @@
+# in browser: 
+# Test WMS Capabilities 
+# http://127.0.0.1:8787/cgi-bin/mapserv.exe?map=/ms4w/apps/poc_aide_melcc/services/wms/aide_wms_service.map&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetCapabilities
+# http://127.0.0.1:8787/ms/wfs?map=/ms4w/apps/poc_aide_melcc/services/wfs/aide_wwfs_service.map&SERVICE=WFS&VERSION=1.1.0&REQUEST=GetCapabilities
+# http://127.0.0.1:8787/ms/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetCapabilities
+
+# In QGIS :
+# add the URL http://127.0.0.1:8787/ms/wfs?SRS=EPSG:4326&VERSION=2.0.0&COUNTS=100&OUTPUTFORMAT=text/xml;subtype%3Dgml/3.1.1&TYPENAME=continents,province
+# The OUTFORMAT is VERY important. Error occurs otherwise with a wrong TYPENAME=ms:province Not found
+# VERSION 2.0.0 is right
+
+# In Apache : 
+#  <IfModule alias_module>
+# ...
+# Alias /ms "C:/ms4w/Apache/cgi-bin/mapserv.exe"
+# </IfModule>
+
+# <Location "/ms/wfs">
+#    SetHandler cgi-script
+#    Options ExecCGI
+#     # Specific MapServer environment
+#     # refer to <https://www.mapserver.org/optimization/environment_variables.html#environment-variables>
+#     SetEnv MS_MAP_PATTERN "^(C:)?\/ms4w\/apps\/((?!\.{2})[_A-Za-z0-9\-\.]+\/{1})*([_A-Za-z0-9\-\.]+\.(map))$"
+#     SetEnv MS_MAP_NO_PATH "any_value_is_ok"
+#     SetEnv AIDE_WFS_MAP_SERVICE "/ms4w/apps/poc_aide_melcc/services/wfs/aide_wfs_service.map"
+#     SetEnv MS_MAPFILE "/ms4w/apps/poc_aide_melcc/services/wfs/aide_wfs_service.map"
+#     # do not set the MODE here as the test of the GetCapabilities will fail
+#     # SetEnv MS_MODE "map"
+#     SetEnv MS_ERRORFILE "C:/ms4w/tmp/ms_error.txt"
+#     SetEnv MS_DEBUGLEVEL 1
+# </Location>
+
+MAP
+  CONFIG "MS_ERRORFILE" "/var/log/mapserv/ms_error.txt"
+  CONFIG "CPL_DEBUG" "ON"
+  CONFIG "CPL_TIMESTAMP" "ON"
+  CONFIG "PROJ_DEBUG" "ON"
+  CONFIG "ON_MISSING_DATA" "LOG"
+  DEBUG 50
+
+  NAME "WFS Service"
+  STATUS ON
+
+  SIZE 400 300
+  SYMBOLSET "./symbols/symbols.txt"
+  EXTENT -180 -90 180 90
+#   UNITS DD
+  SHAPEPATH "./data"
+  IMAGECOLOR 255 255 255
+  FONTSET "./fonts/fonts.txt"
+
+  WEB
+      IMAGEPATH "/app/mapserv/"
+      IMAGEURL "/ms_tmp/"
+      METADATA
+          "wfs_title"          "WFS Demo Server for MapServer" ## REQUIRED
+          "wfs_onlineresource" "http://localhost:7788/ms/wfs?" ## Recommended
+          "wfs_srs"            "EPSG:4326 EPSG:4269 EPSG:3978 EPSG:3857" ## Recommended
+          "wfs_abstract"       "This text describes my WFS service." ## Recommended
+          "ows_enable_request" "*"
+          "wfs_enable_request" "*"  # necessary 
+          "ows_contactorganization"     "Vincent L.F."
+
+          "ows_keywordlist"                     ""              # removes warnings
+          "ows_fees"                            ""              # removes warnings
+          "ows_accessconstraints"               ""              # removes warnings
+          "ows_service_onlineresource"          ""              # removes warnings
+          "ows_contactperson"                   ""              # removes warnings
+          "ows_contactposition"                 ""              # removes warnings
+          "ows_contactvoicetelephone"           ""              # removes warnings
+          "ows_contactfacsimiletelephone"       ""              # removes warnings
+          "ows_address"                         ""              # removes warnings
+          "ows_city"                            ""              # removes warnings
+          "ows_stateorprovince"                 ""              # removes warnings
+          "ows_postcode"                        ""              # removes warnings
+          "ows_country"                         ""              # removes warnings
+          "ows_contactelectronicmailaddress"    ""              # removes warnings
+          "ows_hoursofservice"                  ""              # removes warnings
+          "ows_contactinstructions"             ""              # removes warnings
+          "ows_role"                            ""              # removes warnings
+
+      END
+  END
+  
+  PROJECTION
+    "init=epsg:4326"
+  END
+
+  LAYER
+    DEBUG ON
+
+    NAME "continents"
+    TYPE POLYGON
+    STATUS ON
+    DATA 'countries_area/World_Continents'
+    METADATA
+      "wfs_title"         "World continents" ##REQUIRED
+      "wfs_srs"           "EPSG:4326" ## REQUIRED
+      "gml_include_items" "all" ## Optional (serves all attributes for layer)
+      "gml_featureid"     "FID" ## REQUIRED
+      "ows_enable_request" "*"
+      "wfs_enable_request" "*"
+    END
+    PROJECTION
+      "init=epsg:4326"
+    END
+    CLASS
+      NAME 'World Continents'
+      STYLE
+        COLOR 255 128 128
+        OUTLINECOLOR 96 96 96
+      END
+    END
+  END
+
+  LAYER
+    DEBUG ON
+
+    NAME "province"
+    TYPE POLYGON
+    DATA "prov/province"
+    STATUS ON
+    METADATA
+        "wfs_title" "province"
+        # "wfs_srs" "EPSG:4326"
+        "wfs_srs" "EPSG:4326 EPSG:1188"
+        "gml_include_items" "all" ## Optional (serves all attributes for layer)
+        "gml_featureid"     "CODE" ## REQUIRED
+        "ows_enable_request" "*"
+        "wfs_enable_request" "*"  # necessary 
+      END
+    PROJECTION
+        "init=epsg:4326"
+    END
+    CLASSITEM "NAME"
+    CLASS
+        NAME "province"
+        EXPRESSION "Quebec"
+        STYLE
+            WIDTH 1
+            OUTLINECOLOR 0 0 0
+            COLOR 255 0 0
+        END
+    END
+  END  
+END

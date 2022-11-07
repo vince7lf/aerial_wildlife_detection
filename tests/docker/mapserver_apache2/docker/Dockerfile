@@ -90,7 +90,7 @@ RUN apt-get update \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
     && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /home/${USERNAME}/app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\/mapserv\/tmp\/\"" /etc/apache2/mods-enabled/alias.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ <Directory \/usr\/lib\/cgi-bin>" /etc/apache2/mods-enabled/fastcgi.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Require all granted" /etc/apache2/mods-enabled/fastcgi.conf \
     && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ <\/Directory>" /etc/apache2/mods-enabled/fastcgi.conf \
