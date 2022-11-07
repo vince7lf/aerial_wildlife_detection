@@ -113,6 +113,7 @@ RUN sudo apt-get install software-properties-common \
 # download AIDE source code (from local repository)
 COPY . .
 
+RUN chmod a+rx docker/container_init.sh && chmod a+rx test.sh
 RUN sudo mkdir -p /app && sudo cp -rap mapserv /app/mapserv
 RUN sudo chmod a+rx test.sh
 
@@ -121,5 +122,7 @@ ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 
+CMD bash docker/container_init.sh && bash test.sh
+
 # Temporary command to prevent container from stopping if no command is privided
-CMD service apache2 start && bash test.sh && tail -f /dev/null
+# CMD tail -f /dev/null
