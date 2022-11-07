@@ -22,15 +22,15 @@ ARG USER_GID=$USER_UID
 # pkill -9 gpg-agent
 # restart gpg-agent :
 # source <(gpg-agent --daemon)
-RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub && \
-    apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
+    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 
 # Setup basic packages, environment and user
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) exiftool installed
-    && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release exiftool \
+    && apt-get -y install vim git openssh-client iproute2 procps iproute2 lsb-release exiftool \
     #
     && conda install python=3.7 \
     # TBC if all of this is required (from AIDE scripts)
@@ -73,17 +73,18 @@ RUN pip install --no-cache-dir -U -r docker/requirements.txt
 #RUN pip install git+https://github.com/facebookresearch/detectron2.git
 
 # Install gdal ogr
+# ============================ GDALOGR STARTS ==========================================
 # pre-requirement to use add-apt-repository
-RUN apt-get update && \
-    apt-get install -y software-properties-common && \
+RUN apt-get update \
+    && apt-get install -y software-properties-common \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
-    && apt-get update \
+RUN add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
     && apt-get install -y gdal-bin \
     && apt-get install -y libgdal-dev \
     && apt-get install -y python3-pip \
@@ -97,7 +98,7 @@ RUN add-apt-repository ppa:ubuntugis/ppa && sudo apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
-
+# ============================ GDALOGR ENDS ==========================================
 
 # Setup PostgreSQL database
 ENV LOC_REGION=Europe
@@ -114,7 +115,7 @@ RUN ln -fs /usr/share/zoneinfo/$LOC_REGION/$LOC_TIMEZONE /etc/localtime \
     # modify authentication
     # NOTE: you might want to manually adapt these commands for increased security; the following makes postgres listen to all global connections
     && sudo sed -i "s/\s*#\s*listen_addresses\s=\s'localhost'/listen_addresses = '\*'/g" /etc/postgresql/$version/main/postgresql.conf \
-    && echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$version/main/pg_hba.conf > /dev/null 
+    && echo "host    all             all             0.0.0.0/0               md5" | sudo tee -a /etc/postgresql/$version/main/pg_hba.conf > /dev/null
     #&& sudo systemctl enable postgresql
     # Clean up
     && apt-get autoremove -y \
@@ -128,7 +129,7 @@ RUN ln -fs /usr/share/zoneinfo/$LOC_REGION/$LOC_TIMEZONE /etc/localtime \
 RUN sudo apt-get update && sudo apt-get install -y rabbitmq-server \
 # optional: if the port for RabbitMQ is anything else than 5672, execute the following line:
     && port=5672   # replace with your port \
-    && sudo sed -i "s/^\s*#\s*NODE_PORT\s*=.*/NODE_PORT=$port/g" /etc/rabbitmq/rabbitmq-env.conf 
+    && sudo sed -i "s/^\s*#\s*NODE_PORT\s*=.*/NODE_PORT=$port/g" /etc/rabbitmq/rabbitmq-env.conf
     #&& sudo systemctl enable rabbitmq-server.service
     # Clean up
     && apt-get autoremove -y \
@@ -162,19 +163,21 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
 
 # setup apache and mapserver
 # ============================ APACHE2 STARTS ==========================================
-RUN sudo apt-get -y install apache2 \
+RUN sudo apt-get update \
+    && sudo apt-get -y install apache2 \
     && sudo wget https://mirrors.edge.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
     && sudo dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
     && sudo a2enmod fastcgi alias \
     && sudo chmod 755 /var/log/apache2 \
     && sudo chmod 755 /var/log \
-    && port=8888 \
-    && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-enabled/000-default.conf \
+    && port=8081 \
+    && sudo sed -i "s/:80/:${port}/" /etc/apache2/sites-available/000-default.conf \
     && sudo sed -i "s/Listen 80/Listen ${port}/" /etc/apache2/ports.conf \
-    && sudo cat "# Include the mapserver configurations: \
-IncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
-    && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-enabled/alias.conf \
-    && sudo sed -i "/^\<\/IfModule\>$/i\ \ \ \ Alias \/ms_tmp\/ \"\/app\/mapserv\/\"" /etc/apache2/mods-enabled/alias.conf \
+    && sudo echo -e "# Include the mapserver configurations: \nIncludeOptional /home/${USERNAME}/app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms \"\/usr\/lib\/cgi-bin\/mapserv\"" /etc/apache2/mods-available/alias.conf \
+    && sudo sed -i "/^<\/IfModule>$/i\ \ \ \ \ \ \ \ Alias \/ms_tmp\/ \"\/home\/${USERNAME}\/app\/mapserv\/tmp\/\"" /etc/apache2/mods-available/alias.conf \
+    && sudo a2enmod cgid fastcgi alias \
+    && sudo a2ensite -f 000-default.conf \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -183,8 +186,14 @@ IncludeOptional /app/mapserv/mapserv.conf" >> /etc/apache2/apache2.conf \
 
 # setup mapserver
 # ============================ MAPSERVER STARTS ==========================================
-RUN sudo apt-get -y install cgi-mapserver \
-    && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
+RUN sudo apt-get install software-properties-common \
+    && sudo add-apt-repository ppa:ubuntugis/ppa \
+    && sudo apt-get update \
+    && sudo apt-get -y install cgi-mapserver \
+    && sudo mkdir /var/log/mapserv \
+    && sudo touch /var/log/mapserv/ms_error.txt \
+    && sudo chown www-data:www-data /var/log/mapserv/ms_error.txt \
+    # && sudo ln -s /usr/bin/mapserv /usr/lib/cgi-bin/mapserv \
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
@@ -196,7 +205,6 @@ COPY . .
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
 RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/local/bin/gdalogr_createtiles*.sh
 RUN cp scripts/sh/mapserv_include.sh /usr/local/bin && chmod a+rx /usr/local/bin/mapserv_include.sh
-RUN cp mapserv /app/mapserv
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app
