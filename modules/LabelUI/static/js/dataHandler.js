@@ -500,6 +500,10 @@ class DataHandler {
                         }
                     } catch {
                     }
+
+                    // submit generation of the annotation file
+                    _exportShareAnnotations()
+
                 }
             },
             error: function (xhr, status, error) {
@@ -517,6 +521,45 @@ class DataHandler {
             }
         });
     }
+
+    _exportShareAnnotations() {
+
+        var self = this;
+        return $.ajax({
+            url: 'requestDownloadAnnotations',
+            type: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: {"dataType":"annotation","extra_fields":{"meta":false}},
+            dataType: 'json',
+            success: function (response) {
+                // check status
+                if (response['status'] !== 0) {
+                    // error
+                    //TODO: make proper messaging system
+                    alert('Error: ' + response['message']);
+                    return $.Deferred();
+                } else {
+                    // submitted generation of the annotation file
+                    // the annotation file is now available under http://localhost:7780/test-mapserver6/files/test-mapserver6.txt or on the server under /app/images/test-mapserver6
+                }
+            },
+            error: function (xhr, status, error) {
+                if (error == 'Unauthorized') {
+                    return window.verifyLogin((self._submitAnnotations).bind(self));
+
+                } else {
+                    // error
+                    if (!silent) {
+                        //TODO: make proper messaging system
+                        alert('Unexpected error: ' + error);
+                        return $.Deferred();
+                    }
+                }
+            }
+        });
+    }
+
+
 
     _loadFixedBatch(batch) {
         var self = this;
