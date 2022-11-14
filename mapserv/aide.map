@@ -12,7 +12,8 @@ MAP
   SIZE 400 300
   SYMBOLSET "/home/aide/app/mapserv/symbols/symbols.txt"
   # Hard code a wide extent, like quebec province
-  EXTENT -180 -90 180 90
+  # EXTENT -180 -90 180 90
+  EXTENT -77.1356416416588502 44.8246057661527431 -67.1366446378126511 49.4040720519291412
   # UNITS DD
   SHAPEPATH "/home/aide/images"
   # IMAGECOLOR 255 255 255

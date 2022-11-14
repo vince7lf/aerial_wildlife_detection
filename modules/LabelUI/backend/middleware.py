@@ -847,7 +847,6 @@ class DBMiddleware():
                                  'geojsonFullFilepath': geojsonFullFilepath})
 
         server_host_port = self.config.getProperty('Server', 'static_host_port')
-        dataServer_uri = self.config.getProperty('Server', 'dataServer_uri')
 
         for geojsonFile in geojsonFiles:
             # read geojson as dict

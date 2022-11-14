@@ -47,7 +47,8 @@ sed -i "s/^  @LAYER_DATA$/  DATA \"${filename}.ms\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_TITLE <image_name>.ms
 sed -i "s/^    @LAYER_METADATA_WFS_TITLE$/    \"wfs_title\" \"${filename}\"/" ${layerMapfile}
 # @LAYER_METADATA_WFS_EXTENT get the extent lat lon of the geojson using gdal
-sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 45.626178 -73.46664 45.626179\"/" ${layerMapfile}
+# sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-73.46665 45.626178 -73.46664 45.626179\"/" ${layerMapfile}
+sed -i "s/^    @LAYER_METADATA_WFS_EXTENT$/    \"wfs_extent\" \"-77.1356416416588502 44.8246057661527431 -67.1366446378126511 49.4040720519291412\"/" ${layerMapfile}
 
 # add the INCLUDE directive into the main aide.map file
 # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
