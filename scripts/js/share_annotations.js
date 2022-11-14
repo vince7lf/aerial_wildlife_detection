@@ -1,13 +1,13 @@
 const http = require('http');
 
-let server_port = 'http://localhost:7780'
+let server_port = 'http://localhost:8080'
 let request_url = '/test-mapserver6/requestDownloadAnnotations'
 
 const postData = JSON.stringify({"dataType": "annotation", "extra_fields": {"meta": false}});
 
 const options = {
     hostname: 'localhost',
-    port: 7780,
+    port: 8080,
     path: request_url,
     method: 'POST',
     headers: {
