@@ -877,7 +877,7 @@ class DBMiddleware():
                         path_filename = os.path.split(str(r['image_path_filename']))
 
                         if (geojsonFile['path_filename'][0] == path_filename[0] and feature['properties']['Location'] ==
-                                geojsonFile['path_filename'][1]):
+                                path_filename[1]):
                             # add an empty annotation array by default
                             if "annotations" not in feature['properties']: feature['properties']['annotations'] = []
 

@@ -218,8 +218,8 @@ Using <http://127.0.0.1:7781/ms/wfs_aide?SERVICE=WFS&REQUEST=GetCapabilities&VER
 
 ## Docker vs Dev
 
-In the docker container, the mapserver workdir is located under '/home/aide/app/mapserv'.
-Therefore in dev mode on the VBox VM, the mapserver files need to be located in the same folder. 
+In the docker container, the mapserver workdir is located under _/home/aide/app/mapserv_ and images in _/home/aide/images_.
+Therefore in dev mode on the VBox VM, the mapserver's files need to be located in the same folder. 
 Create a new user 'aide' and move the mapserver folder into '/home/aide/app/' with the owner:group set to 'aide:aide'.
 
 ```
@@ -227,4 +227,13 @@ sudo adduser aide
 sudo mkdir -p /home/aide/app
 sudo cp -rap /app/aerial_wildlife_detection/mapserv /home/aide/app
 sudo chown -R aide:aide /home/aide/app
+sudo chmod -R 777 /home/aide/app
 ```
+
+Make sure that _/etc/apache2/apache.conf_ points to _/home/aide/app/mapserv/mapserv.conf_ 
+
+As per the images, the easiest is to create a soft symbolic link between where the images location in dev and the expected location in the map file. 
+
+```sudo ln -s /app/images /home/aide/images```
+
+To debug the execution of the script in Python, check _modules/DataAdministration/backend/dataWorker.py_ and uncomment the lines to write output to _/tmp/gdalogr_createtiles.log_
