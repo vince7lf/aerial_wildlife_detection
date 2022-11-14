@@ -360,7 +360,7 @@ class DataAdministrator:
                 if 'extra_fields' in params:
                     extraFields = params['extra_fields']
                 else:
-                    extra_fields = {
+                    extraFields = {
                         'meta': False
                     }
 
@@ -390,7 +390,31 @@ class DataAdministrator:
 
             except Exception as e:
                 abort(401, str(e))
-        
+
+        # data download
+        @enable_cors
+        @self.app.post('/<project>/requestDownloadAnnotations')
+        def requestDownloadAnnotations(project):
+            # parse parameters
+            try:
+                taskID = self.middleware.prepareDataDownload(project,
+                                                             'admin',
+                                                             'annotation',
+                                                             None,
+                                                             None,
+                                                             {
+                                                                 'meta': False
+                                                             },
+                                                             {
+                                                                 'baseName': 'filename',
+                                                                 'prefix': None,
+                                                                 'suffix': None
+                                                             },
+                                                             'rgb')
+                return {'response': taskID}
+
+            except Exception as e:
+                abort(401, str(e))
 
         @enable_cors
         @self.app.route('/<project>/downloadData/<filename:re:.*>')
