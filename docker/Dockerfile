@@ -19,8 +19,8 @@ ARG USER_GID=$USER_UID
 # dirmngr already running and zoombie process
 # restart VM will solve. Kill zoombie process will also.
 # fix : kill gpg-agent before sudo docker-compose build
-# pkill -9 gpg-agent
-# restart gpg-agent :
+# `pkill -9 gpg-agent` or `killall gpg-agent || true` or `gpgconf --kill gpg-agent` or `gpg-connect-agent reloadagent /bye`
+# do not restart gpg-agent
 # source <(gpg-agent --daemon)
 RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
     && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
