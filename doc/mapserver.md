@@ -1,4 +1,4 @@
-# Install and configure mapserver to serve images
+# Install and configure mapserver to serve image's annotations through WFS
 
 _mapserver_ stable version for Ubuntu is the version 7.4.4 as we speak. 
 Version 8.0 is still in dev mod and not available as a stable release. 
@@ -215,3 +215,16 @@ Using <http://127.0.0.1:7781/ms/wfs_aide?SERVICE=WFS&REQUEST=GetCapabilities&VER
 ## URL test
 <http://127.0.0.1:7781/cgi-bin/mapserv?map=/var/www/html/wfs/wfs_service.map&SERVICE=WFS&REQUEST=GetCapabilities>
 <http://127.0.0.1:7781/cgi-bin/mapserv?map=/var/www/html/wfs/wfs_service.map&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0>
+
+## Docker vs Dev
+
+In the docker container, the mapserver workdir is located under '/home/aide/app/mapserv'.
+Therefore in dev mode on the VBox VM, the mapserver files need to be located in the same folder. 
+Create a new user 'aide' and move the mapserver folder into '/home/aide/app/' with the owner:group set to 'aide:aide'.
+
+```
+sudo adduser aide
+sudo mkdir -p /home/aide/app
+sudo cp -rap /app/aerial_wildlife_detection/mapserv /home/aide/app
+sudo chown -R aide:aide /home/aide/app
+```
