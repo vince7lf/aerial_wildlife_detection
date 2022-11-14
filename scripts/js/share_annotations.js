@@ -1,5 +1,12 @@
 // For fun .. not used. Done it in javascript ref file modules/LabelUI/static/js/dataHandler.js _exportShareAnnotations
+// curl 'http://localhost:7780/test-mapserver6/requestDownloadAnnotations' \
+//   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
+//   -H 'Content-Type: application/json; charset=UTF-8' \
+//   -H 'Origin: http://localhost:7780' \
+//   --data-raw '{"dataType":"annotation","extra_fields":{"meta":false}}' \
+//   --compressed
 
+// run: node share_annotations.js
 const http = require('http');
 
 const postData = JSON.stringify({"dataType": "annotation", "extra_fields": {"meta": false}});
