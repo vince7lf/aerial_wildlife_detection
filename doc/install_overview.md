@@ -46,13 +46,13 @@ Here's how to install and launch AIDE with Docker on the current machine:
 ```
 3. Clone the AIDE repository: `git clone https://github.com/microsoft/aerial_wildlife_detection.git && cd aerial_wildlife_detection/`
 4. **Important:** modify the `docker/settings.ini` file and replace the default super user credentials (section `[Project]`) with new values. Make sure to review and update the other default settings as well, if needed.
-5. Install:
-    ```bash
-        cd docker
-        sudo docker-compose build
-        # or sudo docker-compose build --no-cache to rebuild completely
-        cd ..
-    ```
+   5. Install:
+       ```bash
+           cd docker
+           AIDE_ENV=dev sudo -E docker-compose build
+           # or AIDE_ENV=dev sudo -E docker-compose build --no-cache to rebuild completely
+           cd ..
+       ```
 6. Launch:
     * With Docker:
     ```bash
@@ -62,7 +62,7 @@ Here's how to install and launch AIDE with Docker on the current machine:
     * With Docker Compose (note that Docker Compose currently does not provide support for GPUs):
     ```bash
         cd docker
-        sudo docker-compose up
+        AIDE_ENV=arbutus sudo -E docker-compose up &
     ```
 
 7. To export as tar file
@@ -88,8 +88,8 @@ sudo service docker stop
 sudo service docker start
 git fetch --tags
 git checkout AIDE+MELCC-1.8
-sudo docker-compose build
-sudo docker-compose up &
+AIDE_ENV=dev sudo -E docker-compose build
+AIDE_ENV=arbutus sudo -E docker-compose up &
 ```
 
 Wait 2 minutes until it completely started. Then launch the respective, URL port 8080.

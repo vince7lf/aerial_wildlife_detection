@@ -258,8 +258,9 @@ sudo service docker stop
 sudo service docker start
 git checkout AIDE+MELCC-<tag>
 git pull
-sudo docker-compose build
-sudo docker-compose up &
+AIDE_ENV=dev sudo -E docker-compose build
+AIDE_ENV=arbutus sudo -E docker-compose up &
+
 ```
 
 Wait until completely started, including celery workers. 
@@ -354,8 +355,8 @@ sudo service docker stop
 sudo service docker start
 git checkout AIDE+MELCC-<tag>
 git pull
-sudo docker-compose build
-sudo docker-compose up &
+AIDE_ENV=dev sudo -E docker-compose build
+AIDE_ENV=arbutus sudo -E docker-compose up &
 ```
 
 Wait until completely started, including celery workers. 

@@ -1,15 +1,15 @@
 # with sudo before
-docker image rm aide_app
-docker container ls
-docker exec -it aide_cnt /bin/bash
-docker container prune
-docker image prune
-docker container stop 7248f6178212
-docker container stop docker_aide_app_1
+sudo docker image rm aide_app
+sudo docker container ls
+sudo docker exec -it aide_cnt /bin/bash
+sudo docker container prune
+sudo docker image prune
+sudo docker container stop 7248f6178212
+sudo docker container stop docker_aide_app_1
 
 # AIDE
 cd docker/
-docker-compose build &
-docker-compose up
+AIDE_ENV=dev sudo -E docker-compose build
+AIDE_ENV=arbutus sudo -E docker-compose up &
 cd ..
 docker/docker_run_cpu.sh
