@@ -1,3 +1,5 @@
+// For fun .. not used. Done it in javascript ref file modules/LabelUI/static/js/dataHandler.js _exportShareAnnotations
+
 const http = require('http');
 
 const postData = JSON.stringify({"dataType": "annotation", "extra_fields": {"meta": false}});

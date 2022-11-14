@@ -538,7 +538,7 @@ class DataHandler {
                     }
 
                     // submit generation of the annotation file
-                    this._exportShareAnnotations();
+                    self._exportShareAnnotations();
 
                 }
             },
