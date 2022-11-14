@@ -480,10 +480,10 @@ class DataHandler {
             dataType: 'json',
             success: function (response) {
                 // check status
-                if (response['response'] !== 0) {
+                if (response['response'] === false) {
                     // error
                     //TODO: make proper messaging system
-                    alert('Error: ' + response);
+                    alert('Error: ' + JSON.stringify(response));
                     return $.Deferred();
                 } else {
                     // submitted generation of the annotation file
