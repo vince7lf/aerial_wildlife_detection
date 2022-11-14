@@ -856,6 +856,9 @@ class DataWorker:
         destPath = os.path.join(self.tempDir, 'aide/downloadRequests', project)
         os.makedirs(destPath, exist_ok=True)
         destPath = os.path.join(destPath, filename)
+        filename_shared = project + fileExtension
+        projectFolder = os.path.join(self.config.getProperty('FileServer', 'staticfiles_dir'), project)
+        destPath_shared = os.path.join(projectFolder, filename_shared)
 
         # generate query
         queryArgs = []
@@ -1024,6 +1027,9 @@ class DataWorker:
             mainFile.writestr('labelclasses.csv', lcStr)
 
         mainFile.close()
+
+         # Copy the file to the public project folder, with the name of the project. Overwrite it if exists with latest
+        shutil.copyfile(destPath, destPath_shared)
 
         return filename
 
