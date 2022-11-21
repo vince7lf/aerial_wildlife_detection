@@ -352,3 +352,10 @@ git config -e
 - Push the main branch content to remote repo GitHub
 
 `git push -u origin main`
+
+## install Pyenv on ubuntu to have multiple version of Python
+
+ref : 
+- <https://medium.datadriveninvestor.com/how-to-install-and-manage-multiple-python-versions-on-linux-916990dabe4b>
+- <https://ubunlog.com/en/pyenv-instala-multiples-versiones-de-python-en-tu-sistema/>
+- <https://realpython.com/intro-to-pyenv/>

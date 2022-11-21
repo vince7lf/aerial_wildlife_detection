@@ -31,7 +31,8 @@ Source : Mapserver 7.4.4 documentation file is not up-to-date. Using <https://tr
 Check the available version of mapserver (which is named _cgi-mapserver_ in the repo PPA; and binary is _mapserv_): 
 `apt list -a cgi-mapserver`
 
-Install the latest available using `sudo apt install cgi-mapserver`, which is _cgi-mapserver/bionic,now 7.4.1-1~bionic0 amd64_ in my case.
+Install the latest available, which is _cgi-mapserver/bionic,now 7.4.1-1~bionic0 amd64_ in my case.
+`sudo apt install cgi-mapserver`
 
 Test the installation
 
@@ -116,6 +117,19 @@ You should see an HTML page with the message _No query information to decode. QU
 
 
 # Install dependencies
+
+## pyenv 
+
+Install Pyenv on ubuntu to have multiple version of Python
+
+ref : 
+- <https://medium.datadriveninvestor.com/how-to-install-and-manage-multiple-python-versions-on-linux-916990dabe4b>
+- <https://ubunlog.com/en/pyenv-instala-multiples-versiones-de-python-en-tu-sistema/>
+- <https://realpython.com/intro-to-pyenv/>
+
+## exiftool
+
+`sudo apt-get update && sudo apt-get install exiftool`
 
 ## GDAL
 
@@ -228,6 +242,9 @@ sudo mkdir -p /home/aide/app
 sudo cp -rap /app/aerial_wildlife_detection/mapserv /home/aide/app
 sudo chown -R aide:aide /home/aide/app
 sudo chmod -R 777 /home/aide/app
+sudo mkdir /var/log/mapserv
+sudo touch /var/log/mapserv/ms_error.txt
+sudo chown www-data:www-data /var/log/mapserv/ms_error.txt
 ```
 
 Make sure that _/etc/apache2/apache.conf_ points to _/home/aide/app/mapserv/mapserv.conf_ 

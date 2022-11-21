@@ -7,13 +7,26 @@
 # It should not be the way to do, and not used in production and by operations.
 # no logging and no error management.
 
-# -x to exit immediately when an error occurred
-# -e to display more information
+# -x to display more information
+# -e to exit immediately when an error occurred
 # set -ex
 # set echo off
 DEBUG=$5
 devnull=/dev/null
-[ ${DEBUG} = true ] && set -x
+[ ${DEBUG} = true ] && set -ex
+# trick to cut the errors/warnings in the output of the command : redirect to /dev/null and then copy the error output 2 to standard output 1; syntax is: command > /dev/null 2>&1
+[ ${DEBUG} = true ] && devnull=1 # when debug is true, need to specify an output file descriptor to replace /dev/null; in that case we replace /dev/null by error output 2
+# In that case the syntax is: command > 2 2>&1. The 2>&1 is important in case the command output errors/warnings we do not want to display
+
+# to force Python 3.7.9; requires pyenv
+if [ ${DEBUG} = true ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  # Pyenv initialization
+  if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init --path)"
+  fi
+fi
 
 # imgFilename='test_266_tile.jpg'
 # srcDir='/tmp/test/gdal'
@@ -52,11 +65,11 @@ _cleanAll() {
   rm -rf ${srcDir}/${filename}.wld
   rm -rf ${srcDir}/${filename}.jgw
 
-  [[ "${extension,,}" =~ "jpeg"|"jpg" ]] && rm -rf ${srcDir}/${filename}.tif*
+  [[ "${extension,,}" =~ "jpeg"|"jpg" ]] && rm -rf ${srcDir}/${filename}.tif* || true
   [[ "${extension,,}" =~ "tif"|"tiff" ]] && {
     rm -rf ${srcDir}/${filename}.jpg
     rm -rf ${srcDir}/${filename}.jpeg
-  }
+  } || true
 
   rm -rf ${destDir}
 }
@@ -65,7 +78,7 @@ _normalizeExtension() {
   # uppercase extension becomes lowercase
   imgFilename="${filename}.${extension,,}"
   # jpeg becomes jpg
-  [[ "${extension,,}" = "jpeg" ]] && imgFilename="${filename}.jpg"
+  [[ "${extension,,}" = "jpeg" ]] && imgFilename="${filename}.jpg" || true
 
   cp -rap ${srcDir}/${imgFilenameOrg} ${srcDir}/${imgFilename}
 }
@@ -88,7 +101,7 @@ _convertJPEGToTIFF() {
   echo -e "0.00000001\n0\n0\n-0.00000001\n-${lonx}\n${laty}" >${srcDir}/${wldFilename}
 
   # convert to geoTiff; compress like JPEG default 75%; to keep same size as original JPEG
-  gdal_translate -of GTiff -a_srs EPSG:4326 -co COMPRESS=JPEG ${srcDir}/${imgFilename} ${srcDir}/${geoTiffFilename} >/dev/null 2>&1
+  gdal_translate -of GTiff -a_srs EPSG:4326 -co COMPRESS=JPEG ${srcDir}/${imgFilename} ${srcDir}/${geoTiffFilename} || true >/dev/null 2>&1
 
   cp -rap ${srcDir}/${jgwFilename} ${destDir}
   cp -rap ${srcDir}/${wldFilename} ${destDir}
@@ -100,7 +113,7 @@ _convertTIFFToJPEG() {
   wldFilename="${filename}.wld"
 
   # convert to geoTiff; compress like JPEG default 75%; to keep same size as original JPEG
-  gdal_translate -of JPEG -co worldfile=yes ${srcDir}/${imgFilename} ${srcDir}/${jpgFilename} >/dev/null 2>&1
+  gdal_translate -of JPEG -co worldfile=yes ${srcDir}/${imgFilename} ${srcDir}/${jpgFilename} || true >/dev/null 2>&1
 
   cp -rap ${srcDir}/${jpgFilename} ${destDir}
   cp -rap ${srcDir}/${wldFilename} ${destDir}
@@ -114,8 +127,8 @@ _normalizeExtension
 
 mkdir -p ${destDir}
 cp -rap ${srcDir}/${imgFilename} ${destDir}
-[[ "${extension,,}" =~ "jpeg"|"jpg" ]] && _convertJPEGToTIFF
-[[ "${extension,,}" =~ "tif"|"tiff" ]] && _convertTIFFToJPEG
+[[ "${extension,,}" =~ "jpeg"|"jpg" ]] && _convertJPEGToTIFF || true
+[[ "${extension,,}" =~ "tif"|"tiff" ]] && _convertTIFFToJPEG || true
 
 # create tile as shapefile
 # output and error piped to /dev/null
@@ -124,11 +137,11 @@ cp -rap ${srcDir}/${imgFilename} ${destDir}
 # -ps 128 128: each tile in the pyramid will be a 128x128 GeoTIFF
 # -co “TILED=YES”: each GeoTIFF tile in the pyramid will be inner tiled
 # -co “COMPRESS=JPEG”: each GeoTIFF tile in the pyramid will be JPEG compressed (trades small size for higher performance, try out it without this parameter too)
-gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilename} >/dev/null 2>&1
+gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilename} || true >/dev/null 2>&1
 
 # create .geojson and generate .tiff tiles
 # output and error piped to /dev/null
-ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonTemplateFilename} ${destDir}/${shpFilename} >/dev/null 2>&1
+ogr2ogr -f GeoJSON -s_srs crs:84 -t_srs crs:84 ${destDir}/${geojsonTemplateFilename} ${destDir}/${shpFilename} || true >/dev/null 2>&1
 
 # loop through the .tiff files and convert the tiff to jpg if we need to share them; tiff won't appear in the database.
 tiles=()

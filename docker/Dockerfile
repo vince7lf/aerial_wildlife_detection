@@ -163,7 +163,6 @@ RUN sudo apt-get update \
     && sudo apt-get -y install apache2 \
     && sudo wget https://mirrors.edge.kernel.org/ubuntu/pool/multiverse/liba/libapache-mod-fastcgi/libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
     && sudo dpkg -i libapache2-mod-fastcgi_2.4.7~0910052141-1.2_amd64.deb \
-    && sudo a2enmod fastcgi alias \
     && sudo chmod 755 /var/log/apache2 \
     && sudo chmod 755 /var/log \
     && port=8081 \
