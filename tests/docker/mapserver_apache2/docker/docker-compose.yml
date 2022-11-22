@@ -4,6 +4,8 @@ volumes:
     name: aide_db_data
   aide_images:
     name: aide_images
+  aide_mapserv:
+    name: aide_mapserv
 services:
   aide_app:
     hostname: 'aide_app_host' 
@@ -14,6 +16,7 @@ services:
     volumes:
       - aide_db_data:/var/lib/postgresql/10/main
       - aide_images:/home/aide/images
+      - aide_mapserv:/home/aide/app/mapserv
       - ..:/home/aide/app:cached
     ports:
       - '8080:8080'

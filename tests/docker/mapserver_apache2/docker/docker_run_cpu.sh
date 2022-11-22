@@ -3,12 +3,14 @@ set -x
 
 docker volume ls | grep -q aide_images || docker volume create aide_images
 docker volume ls | grep -q aide_db_data || docker volume create aide_db_data
+docker volume ls | grep -q aide_mapserv || docker volume create aide_mapserv
 
 docker run --name aide_cnt \
  --rm \
  -v `pwd`:/home/aide/app \
  -v aide_db_data:/var/lib/postgresql/10/main \
  -v aide_images:/home/aide/images \
+ -v aide_mapserv:/home/aide/app/mapserv \
  -p 8080:8080 \
  -h 'aide_app_host' \
  aide_app
