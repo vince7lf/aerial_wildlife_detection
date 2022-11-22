@@ -434,11 +434,6 @@ Removes mapserver integration
 
 ```
 rm -rf /home/aide/app/mapserv/test-mapserver-arbutus-debug-4
-# or 
-rm -rf /app/mapserv/test-mapserver-arbutus-debug-4
-
-sed -i '/INCLUDE.*test-mapserver-arbutus-debug-4.*/d' /app/mapserv/aide.map
-# or 
 sed -i '/INCLUDE.*test-mapserver-arbutus-debug-4.*/d' /home/aide/app/mapserv/aide.map
 ```
 

@@ -14,9 +14,27 @@ Arbutus : After a boot, mount manually the /app drive
 
 Here's how to install and launch AIDE with Docker on the current machine:
 
-1. Download and install [Docker](https://docs.docker.com/engine/install) as well as [Docker Compose](https://docs.docker.com/compose/install)
+1. Download and install [Docker] as well as [Docker Compose](https://docs.docker.com/compose/install/linux/)
 ```
-  snap install docker
+  # DO NOT INSTALL DOCKJER WITH WITH SNAP OR YUM ON UBUNTU !!!! I DID AGAIN THE MISTAKE 2022-11-22 AND LOST A DAY. Follow directions HERE https://docs.docker.com/engine/install/ubuntu/
+  # Docker latest version
+  sudo apt-get update
+  sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  sudo apt-get update
+  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+  sudo service docker start 
+  sudo docker run hello-world
+    
+  # Docker compose
   sudo apt-get remove docker-compose
   sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
@@ -32,9 +50,14 @@ Here's how to install and launch AIDE with Docker on the current machine:
   sudo rsync -aP /var/lib/docker/ /app/var/lib/docker
   sudo mv /var/lib/docker /var/lib/docker.old
   sudo service docker start
+  sudo snap start docker
   
   # if an error still occurs with space (snapd) stop docker service and restart it (restart seems not to do the same job)
   # ERROR: Could not install packages due to an OSError: [Errno 28] No space left on device
+  
+  # ERROR Failed to stop docker.service: Unit docker.service not loaded. 
+  # ERROR Failed to start docker.service: Unit docker.service not found. 
+  # Because you did not install docker on Ubuntu correctly, like using sudo apt isntall docker, which is nmot the right way. Need to install it using docker installation for Ubuntu (and not on debian or else like snap or yum) 
 ```
 3. If you want to use a GPU (and only then), you have to install the NVIDIA container toolkit:
 ```bash
@@ -96,3 +119,13 @@ Wait 2 minutes until it completely started. Then launch the respective, URL port
 
 * remote dev : <http://206.12.94.82:8080/>
 * GCP : <http://35.208.225.49:8080/>
+
+# ERROR port already bind
+
+Finding the PID of the process using a specific port on unix ubuntu
+
+```
+ubuntu@tes2:~$ sudo ss -lptn 'sport = :8081'
+State                                 Recv-Q                                  Send-Q                                                                    Local Address:Port                                                                   Peer Address:Port
+LISTEN                                0                                       128                                                                                   *:8081                                                                              *:*                                     users:(("apache2",pid=1379,fd=4),("apache2",pid=1378,fd=4),("apache2",pid=1376,fd=4),("apache2",pid=1374,fd=4))
+```

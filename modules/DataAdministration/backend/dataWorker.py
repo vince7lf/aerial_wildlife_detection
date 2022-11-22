@@ -410,31 +410,31 @@ class DataWorker:
 
         tilenames = []
         # IN DEBUG MODE ENABLE THAT LINE
-        with open("/tmp/gdalogr_createtiles.log", "w") as f:
+        # with open("/tmp/gdalogr_createtiles.log", "w") as f:
         # IN DEBUG MODE TAB 4 CHAR THAT LINE AND CHANGER FLAG "false" TO "true"
-            proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project, "true"],
-        # proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project, "false"],
+        #     proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project, "true"],
+        proc = subprocess.run(["gdalogr_createtiles.sh", image, destFolder, parent, project, "false"],
                           stdin=subprocess.DEVNULL,
                           # IN DEBUG MODE ENABLE THAT LINE
                           # stdout=f,
                           # IN DEBUG MODE DISABLE THAT LINE
                           stdout=subprocess.PIPE,
                           # IN DEBUG MODE ENABLE THAT LINE
-                          stderr=f,
+                          # stderr=f,
                           # IN DEBUG MODE DISABLE THAT LINE
-                          # stderr=subprocess.DEVNULL,
+                          stderr=subprocess.DEVNULL,
                           universal_newlines=True,
                           bufsize=0)
 
-            # IN DEBUG MODE TAB 4 CHAR THAT LINE
-            if proc.returncode == 0: return None
+        # IN DEBUG MODE TAB 4 CHAR THAT LINE
+        if proc.returncode == 0: return None
 
-            # IN DEBUG MODE TAB 4 CHAR THAT LINE
-            # no output to fetch, assume no error; proof of concept mode
-            for line in proc.stdout.splitlines():
-                # filter only lines containing '.jpg' at the end
-                if ".jpg" in line.lower():
-                    tilenames.append(line)
+        # IN DEBUG MODE TAB 4 CHAR THAT LINE
+        # no output to fetch, assume no error; proof of concept mode
+        for line in proc.stdout.splitlines():
+            # filter only lines containing '.jpg' at the end
+            if ".jpg" in line.lower():
+                tilenames.append(line)
 
         # IN DEBUG MODE DO NOT DO ANYTHING
         return tilenames

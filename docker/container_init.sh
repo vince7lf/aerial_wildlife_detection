@@ -10,6 +10,9 @@ echo ${AIDE_ENV}
 
 sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
 
+host=$(python util/configDef.py --section=Server --parameter=static_host)
+sudo sed -i "s/localhost/${host}/" /home/aide/app/mapserv/aide.map
+
 sudo systemctl enable apache2.service
 sudo service apache2 start
 

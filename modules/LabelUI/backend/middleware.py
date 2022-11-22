@@ -846,7 +846,8 @@ class DBMiddleware():
                                  'geojsonTemplateFullFilepath': geojsonTemplateFullFilepath,
                                  'geojsonFullFilepath': geojsonFullFilepath})
 
-        server_host_port = self.config.getProperty('Server', 'static_host_port')
+        server_host = self.config.getProperty('Server', 'static_host')
+        server_port = self.config.getProperty('Server', 'static_port')
 
         for geojsonFile in geojsonFiles:
             # read geojson as dict
@@ -900,7 +901,7 @@ class DBMiddleware():
                             annotation['coleo_vernacular_en'] = str(r['coleo_vernacular_en'])
                             annotation['vascan_region'] = str(r['vascan_region'])
                             annotation['vascan_province'] = str(r['vascan_province'])
-                            annotation['url'] = 'http://' + server_host_port + '/' + '/'.join(
+                            annotation['url'] = 'http://' + server_host + ":" + server_port + '/' + '/'.join(
                                 (project, 'files', str(r['image_path_filename'])))
                             feature['properties']['annotations'].append(annotation)
 
