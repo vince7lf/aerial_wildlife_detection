@@ -403,6 +403,9 @@ class DataWorker:
             'imgs_error': imgs_error
         }
 
+        # VLF update map file
+        self.updateAideMapFile()
+
         return result
 
     def gdalogr_createtiles(self, project, image, destFolder, parent):
@@ -439,6 +442,25 @@ class DataWorker:
 
         # IN DEBUG MODE DO NOT DO ANYTHING
         return tilenames
+
+    def updateAideMapFile(self):
+        # trigger script
+        # update file /home/aide/app/mapserv/aide.map
+
+        proc = subprocess.run(["update_aide_map.sh", "false"],
+                          stdin=subprocess.DEVNULL,
+                          # IN DEBUG MODE ENABLE THAT LINE
+                          # stdout=f,
+                          # IN DEBUG MODE DISABLE THAT LINE
+                          stdout=subprocess.PIPE,
+                          # IN DEBUG MODE ENABLE THAT LINE
+                          # stderr=f,
+                          # IN DEBUG MODE DISABLE THAT LINE
+                          stderr=subprocess.DEVNULL,
+                          universal_newlines=True,
+                          bufsize=0)
+
+        return None
 
     def uploadImagesEx(self, project, filename, destFolder, parent):
 

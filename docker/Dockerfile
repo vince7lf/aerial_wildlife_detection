@@ -200,6 +200,7 @@ COPY . .
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
 RUN cp scripts/sh/gdalogr_createtiles*.sh /usr/local/bin && chmod a+rx /usr/local/bin/gdalogr_createtiles*.sh
 RUN cp scripts/sh/mapserv_include.sh /usr/local/bin && chmod a+rx /usr/local/bin/mapserv_include.sh
+RUN cp scripts/sh/update_aide_map.sh /usr/local/bin && chmod a+rx /usr/local/bin/update_aide_map.sh
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app
