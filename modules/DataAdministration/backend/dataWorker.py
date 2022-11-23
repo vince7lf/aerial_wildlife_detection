@@ -437,9 +437,6 @@ class DataWorker:
             if ".jpg" in line.lower():
                 tilenames.append(line)
 
-        # add some time in case other images gets processed
-        time.sleep(1)
-
         # IN DEBUG MODE DO NOT DO ANYTHING
         return tilenames
 
