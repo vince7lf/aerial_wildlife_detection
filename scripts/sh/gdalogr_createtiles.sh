@@ -175,7 +175,8 @@ fi
 # in the future that script should be the only one and openlayer in the annotation interface should support geolocalized geojson
 # avoid output to nohup.out file with > /dev/null 2>&1
 # run in the background and exit current script. The script gdalogr_createtiles_geotiff.sh will run in the background
-[ ${DEBUG} = true ] && gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" true || nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" false >/dev/null 2>&1 &
+#[ ${DEBUG} = true ] && gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" true || nohup gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" false >/dev/null 2>&1 &
+[ ${DEBUG} = true ] && gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" true || gdalogr_createtiles_geotiff.sh "$1" "$2" "$3" "$4" false >/dev/null 2>&1 &
 
 # assume always good, no errors
 exit 1
