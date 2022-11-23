@@ -11,7 +11,7 @@
 # -e to display more information
 # set -ex
 # set echo off
-DEBUG=$5
+DEBUG=$1
 devnull=/dev/null
 [ ${DEBUG} = true ] && set -ex
 
@@ -20,13 +20,15 @@ aideMapfile="${mapservFolder}/aide.map"
 
 schemas=$(sudo -u postgres psql -d ailabeltooldb -p 17685 -tc "select shortname from aide_admin.project;")
 for schema in ${schemas}; do
+    [ ! -d "${mapservFolder}/${schema}" ] && continue
     pushd ${mapservFolder}/${schema}
     map_files=$(find ./ -iname "*.map" -type f)
     for map_file in ${map_files}; do
+      map_file=`echo "${map_file}" | cut -d '/' -f2-`
       # add the INCLUDE directive into the main aide.map file
       # INCLUDE "./<project_name>/<image_folder_name>/<image_name>.map"
       # add the layer map reference into the main /app/mapserv/aide.map file if not already there
-      grep -q "${map_file}" "${aideMapfile}" || sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \"${map_file}\"/" ${aideMapfile}
+      grep -q "./${schema}/${map_file}" "${aideMapfile}" || sed -i "0,/^  # @INCLUDE$/s//  INCLUDE \".\/${schema//\//\\/}\/${map_file//\//\\/}\"/" ${aideMapfile}
       # insert a new line with # @INCLUDE for the next time need INCLUDE if not already there
       grep -q "  # @INCLUDE" "${aideMapfile}" || sed -i "/^END$/i\ \ # @INCLUDE" ${aideMapfile}
     done
