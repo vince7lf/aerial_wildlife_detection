@@ -17,6 +17,7 @@ import tempfile
 import zipfile
 from datetime import datetime
 from uuid import UUID
+import time
 
 import pytz
 from PIL import Image
@@ -435,6 +436,9 @@ class DataWorker:
             # filter only lines containing '.jpg' at the end
             if ".jpg" in line.lower():
                 tilenames.append(line)
+
+        # add some time in case other images gets processed
+        time.sleep(1)
 
         # IN DEBUG MODE DO NOT DO ANYTHING
         return tilenames
