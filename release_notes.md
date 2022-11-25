@@ -10,6 +10,10 @@
 
 ## Releases
 
+v1.9 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-11-25
+- merged with branch docker-mapserver
+- new TAG AIDE+MELCC-1.9
+
 v1.8 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-10-12
 - merged with branch mapserver
 - new TAG AIDE+MELCC-1.8
