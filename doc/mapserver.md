@@ -254,3 +254,10 @@ As per the images, the easiest is to create a soft symbolic link between where t
 ```sudo ln -s /app/images /home/aide/images```
 
 To debug the execution of the script in Python, check _modules/DataAdministration/backend/dataWorker.py_ and uncomment the lines to write output to _/tmp/gdalogr_createtiles.log_
+
+## ERROR ArcGIS Pro WFS Proxy server got bad address from remote server (verify the server is running). (status code 504). 
+
+If following error occur, it's because there is a localhost in the aide.map. 
+> WFSZLibStreamReader::Init() failed.
+> Proxy server got bad address from remote server (verify the server is running). (status code 504).
+> URL: http://localhost:8081/ms/wfs_aide?SERVICE=WFS&VERSION=1.1.0&REQUEST=DescribeFeatureType&TYPENAME=layer-four_tile
