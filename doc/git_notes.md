@@ -38,6 +38,9 @@ git stash show
 git stash apply
 git fetch # to retrieve metadata from remote original project; and git diff ...origin after to see changes before a git pull
 
+# add upstream remote
+git remote add upstream git@github.com:microsoft/aerial_wildlife_detection.git
+
 git fetch origin --prune --prune-tags
 
 git diff ...origin
