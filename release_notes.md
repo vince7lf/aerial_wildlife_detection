@@ -10,6 +10,10 @@
 
 ## Releases
 
+v1.9.1 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2023-01-19
+- merged with branch issue85_monolabelling
+- new TAG AIDE+MELCC-1.9.1
+
 v1.9 AIDE+MELCC vincent.lefalher@usherbrooke.ca 2022-11-25
 - merged with branch docker-mapserver
 - new TAG AIDE+MELCC-1.9
