@@ -222,7 +222,8 @@ class MapOlElement extends AbstractRenderElement {
             let URLImageParts = selectedFeature.fileName.split('\\').pop().split('/');
             let filenameParts = URLImageParts.slice(-1).pop().split('.');
 
-            if (filenameParts[0] + '.jpg' === location) {
+            if (filenameParts[0] + '.jpg' === location ||
+                filenameParts[0] + '.tif' === location) {
                 return true;
             }
         }
