@@ -78,6 +78,8 @@ root@aide_app_host:/home/aide/app#
 
 ```
 root@aide_app_host:/home/aide/app# sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/<hostname>-ailabeltooldb-`date +%Y%m%dT%H%M%S`.dump
+
+exemple : sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-graham-ailabeltooldb-`date +%Y%m%dT%H%M%S`.dump
 ```
 
 ### Transfer the dump
@@ -96,7 +98,9 @@ The application folder in the container is _/home/aide/app_ and is mapped to tha
 From the host, you can _scp_ the dump file to another host. 
 
 ```
-ubuntu@tes2:/app/images$ scp /app/aerial_wildlife_detection/backup/<hostname>-ailabeltooldb-<dump datetime>.dump user@host:/path/to/app/folder/backup   
+ubuntu@tes2:/app/images$ scp /app/aerial_wildlife_detection/backup/<hostname>-ailabeltooldb-<dump datetime>.dump user@host:/path/to/app/folder/backup
+
+exemple : scp /app/aerial_wildlife_detection/backup/tes2-graham-ailabeltooldb-20230310T144830.dump user@host:/path/to/app/folder/backup   
 ```
 
 ### Restore the dump
@@ -201,6 +205,9 @@ From the host, you can _tar_ the images folder:
 
 ```
 ubuntu@tes2:/app/images$ sudo tar -cvf /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data .  
+
+exemple : sudo tar -cvf /app/aerial_wildlife_detection/backup/tes2-graham-aide_images-SainteHelene_140_107_H01-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data/SainteHelene_140_107_H01 .
+
 ```
 
 ### Transfer the images

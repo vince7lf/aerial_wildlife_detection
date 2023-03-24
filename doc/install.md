@@ -279,3 +279,73 @@ source .bashrc
 ### Launch the modules
 
 See [here](launch_aide.md)
+
+# Debugging tes2@arbutus
+
+Après le redémarrage du serveur tes2, il y a eu des erreurs étranges.
+
+Voici la procédure è fairte après le redémararge du serveur : 
+
+```
+# s'il y a des erreurs avec l'interface réseau default de docker et éviter les doublons :  
+sudo docker network prune
+sudo docker network list
+
+# S'assurer que le service apache2 est arrêté sur le hôte et ne prend pas le port 8081
+sudo netstat -ano -p tcp | grep 8081
+sudo systemctl disable apache2 && sudo systemctl stop apache2
+
+# S'assurer que le service postgresql est arrêter sur le hôte et ne prend pas le port 176
+sudo netstat -ano -p tcp | grep 17685
+sudo systemctl disable postgresql && sudo systemctl stop postgresql
+
+# S"assurer que le répertoire _data n'appartient à root:root et permission 700
+# cat docker-compose.yml
+# aide_db_data:/var/lib/postgresql/10/main
+
+# /app/var/lib/docker/volumes/aide_db_data/_data
+sudo chown _apt:mlocate /app/var/lib/docker/volumes/aide_db_data/_data
+sudo chmod 700 /app/var/lib/docker/volumes/aide_db_data/_data
+
+# faire un rebuild (attention +90 minutes)
+AIDE_ENV=dev sudo -E docker-compose build --no-cache
+
+S'il y a une erreur au apt-get update
+# W: GPG error: Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease: The following signatures couldn’t be verified because the public key is not available: NO_PUBKEY A4B469963BF863CC
+# E: The repository ‘Index of /compute/cuda/repos/ubuntu1804/x86_64 8 InRelease’ is not signed.
+# if error gpg: can't connect (...): IPC connect call failed
+
+Il faut enlever la clé qui est mauvaise et ajouter celle qui est bonne. 
+RUN apt-key del 7fa2af0 && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+
+À noter que la méthode recommandée par NVIDIA ne fonctionnera pas car il faut installer wget, mais il faut que le repo cache soit possible avec apt-get update .. mais le apt-get update ne fonctionne pas justement.  
+# NE FONCTIONNE PAS CAR apt-get -y install wget n'est pas possible car la cache du repo n'est pas bonne car apt-get update échoue avec l'erreur InRelease: The following signatures couldn’t be verified because the public key is not available: NO_PUBKEY A4B469963BF863CC    
+#RUN apt-get -y install wget && apt-key del 7fa2af80 && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb && dpkg -i cuda-keyring_1.0-1_all.deb
+
+# if error : gpg: WARNING: unable to fetch URI No dirmngr
+# dirmngr already running and zoombie process
+# restart VM will solve. Kill zoombie process will also.
+# fix : kill gpg-agent before sudo docker-compose build
+# `pkill -9 gpg-agent` or `killall gpg-agent || true` or `gpgconf --kill gpg-agent` or `gpg-connect-agent reloadagent /bye`
+# do not restart gpg-agent
+# source <(gpg-agent --daemon)
+
+# TOUT CE BLOQUE NE FONCTIONNE PAS
+RUN pkill -9 gpg-agent || true
+RUN gpgconf --kill gpg-agent || true
+RUN killall gpg-agent || true
+RUN gpg-connect-agent reloadagent /bye || true
+
+# CECI NE FONCTIONNE PAS
+#RUN wget https://linux-clients.seafile.com/seafile.asc -O /usr/share/keyrings/seafile-keyring.asc
+
+# CECI NE FONCTIONNE PAS
+#RUN apt-get -y install wget && apt-key del 7fa2af80 && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb && dpkg -i cuda-keyring_1.0-1_all.deb
+
+# CECI NE FONCTIONNE PAS
+#RUN apt-get update && gpg-agent --daemon && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
+#    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+
+# CECI FONCTIONNE : 
+RUN apt-key del 7fa2af0 && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+```
