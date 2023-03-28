@@ -511,3 +511,27 @@ aide_app_1  | Pre-flight checks failed; aborting launch of AIDE.
 docker_aide_app_1 exited with code 0
 
 ```
+
+
+# After the serveur restart :
+
+```
+shutdown and restart
+sudo shutdown -r now
+
+# mount the volume
+sudo mount /dev/vdb1 /app
+
+#  VERY IMPORTANT Restart docker service after the mount, because the images are located on the mounted volume
+sudo service docker restart
+
+# move to the docker folder containing the Dockerfile and docker-compose init files 
+cd /app/aerial_wildlife_detection/docker/
+
+# build image to make sure everything is still ok
+AIDE_ENV=dev sudo -E docker-compose build
+
+# Start container
+AIDE_ENV=arbutus sudo -E docker-compose up &
+```
+
