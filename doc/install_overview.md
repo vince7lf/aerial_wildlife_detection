@@ -522,8 +522,16 @@ sudo shutdown -r now
 # mount the volume
 sudo mount /dev/vdb1 /app
 
-#  VERY IMPORTANT Restart docker service after the mount, because the images are located on the mounted volume
+# VERY IMPORTANT Restart docker service after the mount, because the images are located on the mounted volume
 sudo service docker restart
+
+# disable apache2 and postgresql services on host system to prevent port binding
+sudo systemctl disable apache2 && sudo systemctl stop apache2
+sudo systemctl disable postgresql && sudo systemctl stop postgresql
+
+# Make sure the _data folder of postgresql is not owned by root and permission 700  
+sudo chown _apt:mlocate /app/var/lib/docker/volumes/aide_db_data/_data
+sudo chmod 700 /app/var/lib/docker/volumes/aide_db_data/_data
 
 # move to the docker folder containing the Dockerfile and docker-compose init files 
 cd /app/aerial_wildlife_detection/docker/
