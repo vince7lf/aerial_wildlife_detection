@@ -552,3 +552,5 @@ If you login with the right password, but an error show a login error, then ther
 ## Error no menu on the left
 If you have trouble to login with the right password, and you finally can login but missing the menu on the left, then you have something wrong with the cache. 
 
+# Error no image showin-up 
+If there is no image showing up but they have been uploaded successfully, it's probably because there is a '.' in the filename. Or it does not end with _tile.jpg. 
