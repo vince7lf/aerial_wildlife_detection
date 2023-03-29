@@ -15,7 +15,7 @@ Arbutus : After a boot, mount manually the /app drive
 Here's how to install and launch AIDE with Docker on the current machine:
 
 1. Download and install [Docker] as well as [Docker Compose](https://docs.docker.com/compose/install/linux/)
-```
+```bash
   # DO NOT INSTALL DOCKER WITH WITH SNAP OR YUM ON UBUNTU !!!! I DID AGAIN THE MISTAKE 2022-11-22 AND LOST A DAY. Follow directions HERE https://docs.docker.com/engine/install/ubuntu/
   # Docker latest version
   sudo apt-get update
