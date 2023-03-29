@@ -1,0 +1,12 @@
+{
+"Espèce": [
+	{     "name":"Chamaedaphne calyculata",     "color":"#095797",     "vascan_id": "5504",     "coleo_vernacular_fr": "cassandre caliculé",     "coleo_vernacular_en": "leatherleaf",     "vascan_port": "Arbuste",     "vascan_statut_repartition": "Indigène"   }
+,
+	{     "name":"Kalmia angustifolia",     "color":"#095797",     "vascan_id": "5529",     "coleo_vernacular_fr": "kalmia à feuilles étroites",     "coleo_vernacular_en": "sheep laurel",     "vascan_port": "Arbuste",     "vascan_statut_repartition": "Indigène"   }
+,
+	{     "name":"Andromeda polifolia",     "color":"#095797",     "vascan_id": "5487",     "coleo_vernacular_fr": "andromède à feuilles de polium",     "coleo_vernacular_en": "bog rosemary",     "vascan_port": "Arbuste",     "vascan_statut_repartition": "Indigène"   }
+,
+	{     "name":"Rhododendron groenlandicum",     "color":"#095797",     "vascan_id": "5557",     "coleo_vernacular_fr": "thé du Labrador",     "coleo_vernacular_en": "common Labrador tea",     "vascan_port": "Arbuste",     "vascan_statut_repartition": "Indigène"   }
+,
+	{     "name":"Larix laricina",     "color":"#095797",     "vascan_id": "7166",     "coleo_vernacular_fr": "mélèze laricin",     "coleo_vernacular_en": "tamarack",     "vascan_port": "Arbre",     "vascan_statut_repartition": "Indigène"   }
+]}

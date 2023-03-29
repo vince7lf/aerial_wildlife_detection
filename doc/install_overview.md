@@ -543,3 +543,12 @@ AIDE_ENV=dev sudo -E docker-compose build
 AIDE_ENV=arbutus sudo -E docker-compose up &
 ```
 
+## Error upload image 
+If you have the image being uploaded infinitely (Message is "uploading..."), you might have a connection with the VPN that prevent good communication between the browser and the server. Disconnect from the VPN (if possible).
+
+## Error login
+If you login with the right password, but an error show a login error, then there is an issue with the application and it needs to be restarted.  
+
+## Error no menu on the left
+If you have trouble to login with the right password, and you finally can login but missing the menu on the left, then you have something wrong with the cache. 
+
