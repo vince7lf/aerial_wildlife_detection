@@ -1,7 +1,30 @@
-FROM pytorch/pytorch:1.7.1-cuda11.0-cudnn8-devel
+#FROM pytorch/pytorch:1.7.1-cuda11.0-cudnn8-devel
+FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
+
+#
+# ============================ PROXY SETUP STARTS ==========================================
+#
+# lowercase http_proxy required for miniconda
+#ENV http_proxy=http://guest:guest@mandataire.ti.umontreal.ca:80/
+#ENV https_proxy=http://guest:guest@mandataire.ti.umontreal.ca:80/
+#ENV HTTP_PROXY=http://guest:guest@mandataire.ti.umontreal.ca:80/
+#ENV HTTPS_PROXY=http://guest:guest@mandataire.ti.umontreal.ca:80/
+
+# RUN echo "http_proxy=http://guest:guest@mandataire.ti.umontreal.ca:80/\n"\
+# "https_proxy=http://guest:guest@mandataire.ti.umontreal.ca:80/"\
+# >> /etc/environment
+# RUN echo "==" && echo "Contenu de /etc/environment" && cat /etc/environment && echo "=="
+
+# RUN echo "Acquire::http::Proxy \"http://guest:guest@mandataire.ti.umontreal.ca\";\n"\
+# "Acquire::https::Proxy \"http://guest:guest@mandataire.ti.umontreal.ca:80\";"\
+# >> /etc/apt/apt.conf.d/02proxy
+# RUN echo "==" && echo "Contenu de /etc/apt/apt.conf.d/02proxy" && cat /etc/apt/apt.conf.d/02proxy && echo "=="
+#
+# ============================ PROXY SETUP ENDS ==========================================
+#
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
@@ -22,16 +45,27 @@ ARG USER_GID=$USER_UID
 # `pkill -9 gpg-agent` or `killall gpg-agent || true` or `gpgconf --kill gpg-agent` or `gpg-connect-agent reloadagent /bye`
 # do not restart gpg-agent
 # source <(gpg-agent --daemon)
-RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
-    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+#RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
+#    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN pkill -9 gpg-agent || true
+RUN gpgconf --kill gpg-agent || true
+RUN killall gpg-agent || true
+RUN gpg-connect-agent reloadagent /bye || true
+
+#RUN rm /etc/apt/sources.list.d/cuda.list
+#RUN rm /etc/apt/sources.list.d/nvidia-ml.list
+RUN apt-key del 7fa2af80
+RUN sed -i '/developer\.download\.nvidia\.com\/compute\/cuda\/repos/d' /etc/apt/sources.list
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+# RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
 
 # Setup basic packages, environment and user
 RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) exiftool installed
-    && apt-get -y install vim git openssh-client iproute2 procps iproute2 lsb-release exiftool \
-    #
+    && apt-get -y install vim git openssh-client iproute2 procps iproute2 lsb-release exiftool curl wget landscape-common \
+    # && apt-get update && conda config --set ssl_verify false && conda install python=3.7 \
     && conda install python=3.7 \
     # TBC if all of this is required (from AIDE scripts)
     && apt-get -y install libpq-dev python3.7-dev wget systemd \
