@@ -7,6 +7,28 @@ FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 
+# ============================ UdeM PROXY SETUP BEGINS ======================================
+# UdeM Proxy setting
+ENV HTTP_PROXY=http://mandataire.ti.umontreal.ca:80/
+ENV HTTPS_PROXY=http://mandataire.ti.umontreal.ca:80/
+ENV http_proxy=http://mandataire.ti.umontreal.ca:80/
+ENV https_proxy=http://mandataire.ti.umontreal.ca:80/
+
+RUN echo "http_proxy=http://mandataire.ti.umontreal.ca:80/\n"\
+"https_proxy=http://mandataire.ti.umontreal.ca:80/"\
+>> /etc/environment
+RUN echo "==" && echo "Contenu de /etc/environment" && cat /etc/environment && echo "=="
+ 
+RUN echo "Acquire::http::Proxy \"http://mandataire.ti.umontreal.ca\";\n"\
+"Acquire::https::Proxy \"http://mandataire.ti.umontreal.ca:80\";"\
+>> /etc/apt/apt.conf.d/02proxy
+RUN echo "==" && echo "Contenu de /etc/apt/apt.conf.d/02proxy" && cat /etc/apt/apt.conf.d/02proxy && echo "=="
+ 
+#RUN echo "==" && echo "Contenu de /etc/systemd/system/docker.service.d/proxy.conf" && cat /etc/systemd/system/docker.service.d/proxy.conf && echo "=="
+ 
+RUN echo "==" && echo "Contenu de /etc/resolv.conf" && cat /etc/resolv.conf && echo "=="
+# ============================ UdeM PROXY SETUP ENDS ======================================
+
 # temporary fix for NVIDIA rotating public keys at the moment:
 # https://forums.developer.nvidia.com/t/invalid-public-key-for-cuda-apt-repository/212901/6
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
@@ -27,10 +49,11 @@ RUN add-apt-repository -y ppa:ubuntugis/ppa \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
-    && apt-get -y install git openssh-client iproute2 procps iproute2 lsb-release \
+    && apt-get -y install vim git openssh-client iproute2 procps iproute2 lsb-release \
     #
+    && apt-get -y install python3.8 python3.8-distutils python3.8-dev python3-pip \
     # TBC if all of this is required (from AIDE scripts)
-    && apt-get -y install libpq-dev python-dev wget systemd \
+    && apt-get -y install libpq-dev wget systemd \
     #
     # Install pylint
     && /opt/conda/bin/pip install pylint \
@@ -59,7 +82,19 @@ RUN add-apt-repository -y ppa:ubuntugis/ppa \
 WORKDIR /home/$USERNAME/app
 
 # create environment (requires conda or miniconda) - on the second thought, I don't need environment for docker image
-# RUN conda create -y -n aide python=3.7
+RUN echo $PATH
+RUN _debug=$(which python); echo $_debug && _debug=$(whereis python); echo $_debug
+RUN _debug=$(which pip); echo $_debug && _debug=$(whereis pip); echo $_debug
+
+RUN rm -rf /opt/conda
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+RUN _debug=$(which python); echo $_debug && _debug=$(whereis python); echo $_debug
+RUN _debug=$(which pip); echo $_debug && _debug=$(whereis pip); echo $_debug
+
+RUN python -m pip install --upgrade pip
+
+#RUN conda create -y -n aide python=3.8
 COPY docker/requirements.txt docker/requirements.txt
 # COPY docker/lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
@@ -69,7 +104,7 @@ RUN pip install -r docker/requirements.txt
 # Detectron2: we can now install it directly through the requirements.txt file
 ##TODO: temporary fix until detectron2's requirements are resolved
 #RUN pip install -U git+https://github.com/facebookresearch/fvcore.git
-#RUN pip install git+https://github.com/facebookresearch/detectron2.git
+RUN pip install git+https://github.com/facebookresearch/detectron2.git
 
 # ============================ DB SERVER ONLY BEGINS ======================================
 # Setup PostgreSQL database
