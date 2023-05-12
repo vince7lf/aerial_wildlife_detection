@@ -117,6 +117,7 @@ def assemble_marketplace_metadata(modelLibrary, labelclasses: list, modelName: s
 
     meta = MARKETPLACE_METADATA.copy()
     meta['name'] = modelName
+    meta['labelclasses'] = labelclasses
     meta['description'] = description
     meta['ai_model_library'] = modelLibrary
     meta['annotation_type'] = modelLibraryMeta['annotationType']
