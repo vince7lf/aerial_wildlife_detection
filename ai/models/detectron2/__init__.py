@@ -18,7 +18,7 @@ from .labels.torchvisionClassifier.resnet import (ResNet18,
 from .labels.torchvisionClassifier.resnext import ResNeXt50, ResNeXt101
 from .labels.torchvisionClassifier.shufflenet import ShuffleNetV2
 from .labels.torchvisionClassifier.squeezenet import SqueezeNet
-from .labels.torchvisionClassifier.vgg import VGG16
+from .labels.torchvisionClassifier.vgg import VGG16, VGG19_bn
 
 from .boundingBoxes.fasterrcnn.fasterrcnn import FasterRCNN
 

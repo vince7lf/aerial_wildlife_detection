@@ -1,0 +1,5 @@
+_BASE_: "Base-TorchvisionClassifier.yaml"
+MODEL:
+  TVCLASSIFIER:
+    FLAVOR: "vgg19_bn"
+    PRETRAINED: True

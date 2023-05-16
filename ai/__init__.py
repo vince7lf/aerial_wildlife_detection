@@ -210,6 +210,15 @@ PREDICTION_MODELS = {
                                              'canAddLabelclasses': True,
                                              'canRemoveLabelclasses': True
                                         },
+     'ai.models.detectron2.VGG19_bn': {
+                                             'name': 'VGG19_bn',
+                                             'author': '(built-in)',
+                                             'description': '<a href="https://github.com/facebookresearch/detectron2" target="_blank">Detectron2</a> implementation of <a href="https://arxiv.org/abs/1409.1556" target="_blank">VGG</a>-19_bn.',
+                                             'annotationType': 'labels',
+                                             'predictionType': 'labels',
+                                             'canAddLabelclasses': True,
+                                             'canRemoveLabelclasses': True
+                                        },
      'ai.models.detectron2.WideResNet50': {
                                              'name': 'Wide ResNet-50',
                                              'author': '(built-in)',
