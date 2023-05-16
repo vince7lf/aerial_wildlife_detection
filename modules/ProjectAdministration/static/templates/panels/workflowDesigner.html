@@ -129,6 +129,9 @@
 <script src="/static/general/js/optionsEngine.js?v={{ version }}"></script>
 <script type="text/javascript">
 
+    debugger;
+    console.log("test")
+
     window.save = undefined;
 
     let getAImodelSettings = $.ajax({
@@ -439,6 +442,9 @@
         }
 
         function runWorkflow() {
+            debugger;
+            console.log("test")
+
             var workflow = window.workflowDesigner.toJSON();
             if(!workflow.hasOwnProperty('tasks')) return;
             return $.ajax({
@@ -585,6 +591,9 @@
 
         //TODO: simple test
         $('#run-workflow').on('click', function() {
+            debugger;
+            console.log("test")
+
             runWorkflow();
         });
 
