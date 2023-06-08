@@ -6,7 +6,8 @@ volumes:
     name: aide_images
 services:
   aide_app:
-    hostname: 'aide_app_host' 
+    hostname: 'aide_app_host'
+    container_name: 'aidev3.0.221126'
     build:
       context:  '..'
       dockerfile: 'docker/Dockerfile'
@@ -14,7 +15,7 @@ services:
       args:
         HTTP_PROXY: 'http://mandataire.ti.umontreal.ca:80/'
         HTTPS_PROXY: 'http://mandataire.ti.umontreal.ca:80/'
-    image: 'aide_app'
+    image: 'aide_app:latest'
     volumes:
       - aide_db_data:/var/lib/postgresql/10/main
       - aide_images:/home/aide/images
