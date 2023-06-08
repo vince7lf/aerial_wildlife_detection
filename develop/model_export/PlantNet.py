@@ -121,7 +121,7 @@ if __name__ == '__main__':
     cfg.merge_from_file(baseConfigFile)
 
     cfg.MODEL.META_ARCHITECTURE = 'TorchvisionClassifier'
-    cfg.MODEL.BACKBONE.NAME = 'ResNet18'
+    cfg.MODEL.BACKBONE.NAME = 'Pl@nNet.ResNet18'
 
     # assemble model state
     modelState = {
