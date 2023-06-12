@@ -31,13 +31,6 @@ python setup/setupDB.py
 sudo systemctl enable postgresql.service
 sudo service postgresql start
 
-# This run inside the container as there is not access to the postgreSQL data from outside of the container  (TODO)
-# Backup the database
-# Pre-requirements : clean the old Dictstates as it takes lots of memory. Usefull to see the loss statistics. Keep the statistics but set the binary dictstate to null (which will generate an error)
-# Run at 2am at night EST time
-# sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-graham-ailabeltooldb-`date +%Y%m%dT%H%M%S`.dump
-(crontab -u root -l 2>/dev/null; echo "* 2 * * * /bin/bash /usr/local/sbin/backup_aide_data.sh") | crontab -u root -
-
 echo "=============================="
 echo "Setup of database IS COMPLETED"
 echo "=============================="
