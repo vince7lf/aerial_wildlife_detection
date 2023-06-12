@@ -6,12 +6,10 @@ volumes:
     name: aide_images
 services:
   aide_app:
-    hostname: 'aide_app_host'
     container_name: 'aidev3.0.221126'
     build:
-      context:  '..'
+      context:  '.'
       dockerfile: 'docker/Dockerfile'
-      network: 'host'
     image: 'aide_app:latest'
     volumes:
       - aide_db_data:/var/lib/postgresql/10/main

@@ -7,31 +7,10 @@ FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ============================ UdeM PROXY SETUP BEGINS ======================================
-# UdeM Proxy setting
-ENV HTTP_PROXY=http://mandataire.ti.umontreal.ca:80/
-ENV HTTPS_PROXY=http://mandataire.ti.umontreal.ca:80/
-ENV http_proxy=http://mandataire.ti.umontreal.ca:80/
-ENV https_proxy=http://mandataire.ti.umontreal.ca:80/
-
-RUN echo "http_proxy=http://mandataire.ti.umontreal.ca:80/\n"\
-"https_proxy=http://mandataire.ti.umontreal.ca:80/"\
->> /etc/environment
-RUN echo "==" && echo "Contenu de /etc/environment" && cat /etc/environment && echo "=="
- 
-RUN echo "Acquire::http::Proxy \"http://mandataire.ti.umontreal.ca\";\n"\
-"Acquire::https::Proxy \"http://mandataire.ti.umontreal.ca:80\";"\
->> /etc/apt/apt.conf.d/02proxy
-RUN echo "==" && echo "Contenu de /etc/apt/apt.conf.d/02proxy" && cat /etc/apt/apt.conf.d/02proxy && echo "=="
- 
-#RUN echo "==" && echo "Contenu de /etc/systemd/system/docker.service.d/proxy.conf" && cat /etc/systemd/system/docker.service.d/proxy.conf && echo "=="
- 
-RUN echo "==" && echo "Contenu de /etc/resolv.conf" && cat /etc/resolv.conf && echo "=="
-# ============================ UdeM PROXY SETUP ENDS ======================================
 
 # temporary fix for NVIDIA rotating public keys at the moment:
 # https://forums.developer.nvidia.com/t/invalid-public-key-for-cuda-apt-repository/212901/6
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+#RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
@@ -98,7 +77,7 @@ RUN python -m pip install --upgrade pip
 COPY docker/requirements.txt docker/requirements.txt
 # COPY docker/lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
-RUN pip install -r docker/requirements.txt
+RUN pip install --no-cache-dir -r docker/requirements.txt
 # RUN pip install lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
 # Detectron2: we can now install it directly through the requirements.txt file
