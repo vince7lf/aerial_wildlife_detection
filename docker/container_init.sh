@@ -4,6 +4,7 @@
 #
 # 2020-22 Jaroslaw Szczegielniak, Benjamin Kellenberger
 #
+set -ex
 
 sudo systemctl enable redis-server.service
 sudo service redis-server start 
@@ -25,11 +26,13 @@ sudo -u postgres psql -p $dbPort -c "GRANT CREATE, CONNECT ON DATABASE \"$dbName
 sudo -u postgres psql -p $dbPort -d $dbName -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 sudo -u postgres psql -p $dbPort -d $dbName -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$dbUser\";"
 
-
 # Create DB schema
 python setup/setupDB.py
 sudo systemctl enable postgresql.service
 sudo service postgresql start
+
+# setup the cronjob to backup the database
+(sudo crontab -u root -l 2>/dev/null; echo "* 2 * * * sudo /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-$(date +%Y%m%dT%H%M%S).log") | sudo crontab -u root -
 
 echo "=============================="
 echo "Setup of database IS COMPLETED"
