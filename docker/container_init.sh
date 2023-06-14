@@ -4,7 +4,23 @@
 #
 # 2020-22 Jaroslaw Szczegielniak, Benjamin Kellenberger
 #
-set -ex
+set -x
+
+lsb_release -a
+uname -a
+landscape-sysinfo
+
+[ ${AIDE_ENV} = "vbox" ] && export AIDE_MODULES=LabelUI,FileServer
+
+echo PYTHONPATH=${PYTHONPATH}
+echo AIDE_CONFIG_PATH=${AIDE_CONFIG_PATH}
+echo AIDE_MODULES=${AIDE_MODULES}
+echo AIDE_ENV=${AIDE_ENV}
+
+sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
+
+host=$(python util/configDef.py --section=Server --parameter=static_host)
+sudo sed -i "s/localhost/${host}/" /home/aide/app/mapserv/aide.map
 
 sudo systemctl enable redis-server.service
 sudo service redis-server start 

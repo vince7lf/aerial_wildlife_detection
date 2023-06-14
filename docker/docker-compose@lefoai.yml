@@ -11,6 +11,10 @@ services:
     build:
       context:  '..'
       dockerfile: 'docker/Dockerfile'
+      network: 'host'
+      args:
+        HTTP_PROXY: 'http://mandataire.ti.umontreal.ca:80/'
+        HTTPS_PROXY: 'http://mandataire.ti.umontreal.ca:80/'
     image: 'aide_app:aidev3.0.221126'
     volumes:
       - aide_db_data:/var/lib/postgresql/10/main

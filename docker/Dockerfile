@@ -7,32 +7,11 @@ FROM pytorch/pytorch:1.12.1-cuda11.3-cudnn8-devel
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 
-# ============================ UdeM PROXY SETUP BEGINS ======================================
-# UdeM Proxy setting
-ENV HTTP_PROXY=http://mandataire.ti.umontreal.ca:80/
-ENV HTTPS_PROXY=http://mandataire.ti.umontreal.ca:80/
-ENV http_proxy=http://mandataire.ti.umontreal.ca:80/
-ENV https_proxy=http://mandataire.ti.umontreal.ca:80/
-
-RUN echo "http_proxy=http://mandataire.ti.umontreal.ca:80/\n"\
-"https_proxy=http://mandataire.ti.umontreal.ca:80/"\
->> /etc/environment
-RUN echo "==" && echo "Contenu de /etc/environment" && cat /etc/environment && echo "=="
- 
-RUN echo "Acquire::http::Proxy \"http://mandataire.ti.umontreal.ca\";\n"\
-"Acquire::https::Proxy \"http://mandataire.ti.umontreal.ca:80\";"\
->> /etc/apt/apt.conf.d/02proxy
-RUN echo "==" && echo "Contenu de /etc/apt/apt.conf.d/02proxy" && cat /etc/apt/apt.conf.d/02proxy && echo "=="
- 
-#RUN echo "==" && echo "Contenu de /etc/systemd/system/docker.service.d/proxy.conf" && cat /etc/systemd/system/docker.service.d/proxy.conf && echo "=="
- 
-RUN echo "==" && echo "Contenu de /etc/resolv.conf" && cat /etc/resolv.conf && echo "=="
-# ============================ UdeM PROXY SETUP ENDS ======================================
-
 # temporary fix for NVIDIA rotating public keys at the moment:
 # https://forums.developer.nvidia.com/t/invalid-public-key-for-cuda-apt-repository/212901/6
+RUN apt-key del 7fa2af80
+RUN sed -i '/developer\.download\.nvidia\.com\/compute\/cuda\/repos/d' /etc/apt/sources.list
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
@@ -82,15 +61,9 @@ RUN add-apt-repository -y ppa:ubuntugis/ppa \
 WORKDIR /home/$USERNAME/app
 
 # create environment (requires conda or miniconda) - on the second thought, I don't need environment for docker image
-RUN echo $PATH
-RUN _debug=$(which python); echo $_debug && _debug=$(whereis python); echo $_debug
-RUN _debug=$(which pip); echo $_debug && _debug=$(whereis pip); echo $_debug
-
 RUN rm -rf /opt/conda
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-RUN _debug=$(which python); echo $_debug && _debug=$(whereis python); echo $_debug
-RUN _debug=$(which pip); echo $_debug && _debug=$(whereis pip); echo $_debug
 
 RUN python -m pip install --upgrade pip
 
@@ -165,7 +138,7 @@ ENV PYTHONPATH=/home/${USERNAME}/app
 ENV AIDE_CONFIG_PATH=/home/${USERNAME}/app/docker/settings.ini
 ENV AIDE_MODULES=LabelUI,AIController,AIWorker,FileServer
 
-CMD bash /home/aide/app/docker/container_init.sh \
+CMD bash /home/${USERNAME}/app/docker/container_init.sh \
     && bash AIDE.sh start
 
 # Temporary command to prevent container from stopping if no command is privided
