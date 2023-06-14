@@ -4,6 +4,7 @@
 #
 # 2020-22 Jaroslaw Szczegielniak, Benjamin Kellenberger
 #
+set -ex
 
 sudo systemctl enable redis-server.service
 sudo service redis-server start 
@@ -25,18 +26,13 @@ sudo -u postgres psql -p $dbPort -c "GRANT CREATE, CONNECT ON DATABASE \"$dbName
 sudo -u postgres psql -p $dbPort -d $dbName -c "CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";"
 sudo -u postgres psql -p $dbPort -d $dbName -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO \"$dbUser\";"
 
-
 # Create DB schema
 python setup/setupDB.py
 sudo systemctl enable postgresql.service
 sudo service postgresql start
 
-# This run inside the container as there is not access to the postgreSQL data from outside of the container  (TODO)
-# Backup the database
-# Pre-requirements : clean the old Dictstates as it takes lots of memory. Usefull to see the loss statistics. Keep the statistics but set the binary dictstate to null (which will generate an error)
-# Run at 2am at night EST time
-# sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-graham-ailabeltooldb-`date +%Y%m%dT%H%M%S`.dump
-(crontab -u root -l 2>/dev/null; echo "* 2 * * * /bin/bash /usr/local/sbin/backup_aide_data.sh") | crontab -u root -
+# setup the cronjob to backup the database
+(sudo crontab -u root -l 2>/dev/null; echo "* 2 * * * sudo /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-$(date +%Y%m%dT%H%M%S).log") | sudo crontab -u root -
 
 echo "=============================="
 echo "Setup of database IS COMPLETED"

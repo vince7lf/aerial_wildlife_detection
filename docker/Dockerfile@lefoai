@@ -31,7 +31,6 @@ RUN echo "==" && echo "Contenu de /etc/resolv.conf" && cat /etc/resolv.conf && e
 
 # temporary fix for NVIDIA rotating public keys at the moment:
 # https://forums.developer.nvidia.com/t/invalid-public-key-for-cuda-apt-repository/212901/6
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
 RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1804/x86_64/7fa2af80.pub
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
@@ -82,15 +81,9 @@ RUN add-apt-repository -y ppa:ubuntugis/ppa \
 WORKDIR /home/$USERNAME/app
 
 # create environment (requires conda or miniconda) - on the second thought, I don't need environment for docker image
-RUN echo $PATH
-RUN _debug=$(which python); echo $_debug && _debug=$(whereis python); echo $_debug
-RUN _debug=$(which pip); echo $_debug && _debug=$(whereis pip); echo $_debug
-
 RUN rm -rf /opt/conda
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1 \
     && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-RUN _debug=$(which python); echo $_debug && _debug=$(whereis python); echo $_debug
-RUN _debug=$(which pip); echo $_debug && _debug=$(whereis pip); echo $_debug
 
 RUN python -m pip install --upgrade pip
 
