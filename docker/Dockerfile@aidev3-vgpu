@@ -132,6 +132,7 @@ RUN sudo apt-get update && sudo apt-get -y install redis-server \
 # download AIDE source code (from local repository)
 COPY . .
 RUN chmod a+rx docker/container_init.sh && chmod a+rx AIDE.sh
+RUN cp aide_backup_data.sh /usr/local/sbin && chmod a+rx /usr/local/sbin/aide_backup_data.sh
 
 # Set to proper settings file
 ENV PYTHONPATH=/home/${USERNAME}/app

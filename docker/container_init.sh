@@ -16,11 +16,11 @@ echo PYTHONPATH=${PYTHONPATH}
 echo AIDE_CONFIG_PATH=${AIDE_CONFIG_PATH}
 echo AIDE_MODULES=${AIDE_MODULES}
 echo AIDE_ENV=${AIDE_ENV}
+echo AIDE_VERSION=${AIDE_VERSION}
 
 sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
 
 host=$(python util/configDef.py --section=Server --parameter=static_host)
-sudo sed -i "s/localhost/${host}/" /home/aide/app/mapserv/aide.map
 
 sudo systemctl enable redis-server.service
 sudo service redis-server start 
@@ -29,7 +29,8 @@ echo "============================="
 echo "Setup of database IS STARTING"
 echo "============================="
 pgVersion=10
-dbName=$(python util/configDef.py --section=Database --parameter=name) 
+dbName=$(python util/configDef.py --section=Database --parameter=name)
+export AIDE_DB=dbName
 dbUser=$(python util/configDef.py --section=Database --parameter=user)
 dbPassword=$(python util/configDef.py --section=Database --parameter=password)
 dbPort=$(python util/configDef.py --section=Database --parameter=port)

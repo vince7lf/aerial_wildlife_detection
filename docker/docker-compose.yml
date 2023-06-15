@@ -7,11 +7,11 @@ volumes:
 services:
   aide_app:
     hostname: 'aide_app_host'
-    container_name: 'aidev3.0.221126'
+    container_name: 'aide${AIDE_VERSION}'
     build:
       context:  '..'
       dockerfile: 'docker/Dockerfile'
-    image: 'aide_app:aidev3.0.221126'
+    image: 'aide_app:aide${AIDE_VERSION}'
     volumes:
       - aide_db_data:/var/lib/postgresql/10/main
       - aide_images:/home/aide/images
@@ -20,3 +20,4 @@ services:
       - '8080:8080'
     environment:
       - AIDE_ENV=${AIDE_ENV}
+      - AIDE_VERSION=${AIDE_VERSION}
