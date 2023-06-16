@@ -9,6 +9,7 @@ aide_env=$1
 tag=$2
 
 git checkout ${tag}
+git pull
 
 rm docker-compose.yml
 mv docker-compose@${aide_env}.yml docker-compose.yml
