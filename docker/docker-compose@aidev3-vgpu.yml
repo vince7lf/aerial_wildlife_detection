@@ -1,24 +1,20 @@
 version: '3.7'
 volumes:
-  aide_db_data:
-    name: aide_db_data
-  aide_images:
-    name: aide_images
+  aidev3_db_data:
+    name: aidev3_db_data
+  aidev3_images:
+    name: aidev3_images
 services:
-  aide_app:
-    hostname: 'aide_app_host'
+  aidev3_app:
+    hostname: 'aidev3_app_host'
     container_name: 'aide${AIDE_VERSION}'
     build:
       context:  '..'
       dockerfile: 'docker/Dockerfile'
-      network: 'host'
-      args:
-        HTTP_PROXY: 'http://mandataire.ti.umontreal.ca:80/'
-        HTTPS_PROXY: 'http://mandataire.ti.umontreal.ca:80/'
-    image: 'aide_app:aide${AIDE_VERSION}'
+    image: 'aidev3_app:aide${AIDE_VERSION}'
     volumes:
-      - aide_db_data:/var/lib/postgresql/10/main
-      - aide_images:/home/aide/images
+      - aidev3_db_data:/var/lib/postgresql/10/main
+      - aidev3_images:/home/aide/images
       - ..:/home/aide/app:cached
     ports:
       - '8080:8080'

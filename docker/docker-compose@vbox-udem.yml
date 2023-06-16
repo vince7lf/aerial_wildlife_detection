@@ -13,8 +13,8 @@ services:
       dockerfile: 'docker/Dockerfile'
     image: 'aidev3_app:aide${AIDE_VERSION}'
     volumes:
-      - /app/aide/v3/docker/volumes/db_data:/var/lib/postgresql/10/main
-      - /app/aide/v3/docker/volumes/images:/home/aide/images
+      - aidev3_db_data:/var/lib/postgresql/10/main
+      - aidev3_images:/home/aide/images
       - ..:/home/aide/app:cached
     ports:
       - '8080:8080'
