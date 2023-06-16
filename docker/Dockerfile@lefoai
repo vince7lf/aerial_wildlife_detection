@@ -50,7 +50,7 @@ RUN add-apt-repository -y ppa:ubuntugis/ppa \
     && apt-get -y install --no-install-recommends apt-utils dialog 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
-    && apt-get -y install vim git openssh-client iproute2 procps iproute2 lsb-release landscape-sysinfo \
+    && apt-get -y install vim git openssh-client iproute2 procps iproute2 lsb-release landscape-common \
     #
     && apt-get -y install python3.8 python3.8-distutils python3.8-dev python3-pip \
     # TBC if all of this is required (from AIDE scripts)
