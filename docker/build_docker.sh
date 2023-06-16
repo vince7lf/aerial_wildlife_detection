@@ -15,7 +15,7 @@ mv docker-compose@${aide_env}.yml docker-compose.yml
 rm Dockerfile
 mv Dockerfile@${aide_env} Dockerfile
 
-AIDE_VERSION=${tag} AIDE_ENV=${aide_env} sudo -E docker compose build
+AIDE_VERSION=${tag} AIDE_ENV=${aide_env} sudo -E docker compose build -f docker-compose.yml
 
 # reset all changes to avoid pb next time to pull
 git checkout -f
