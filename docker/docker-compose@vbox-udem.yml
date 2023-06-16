@@ -5,7 +5,7 @@ volumes:
   /app/aide/v3/docker/volumes/images:
     name: aidev3_images
 services:
-  /app/aide_app:
+  aidev3_app:
     hostname: 'aidev3_app_host'
     container_name: 'aide${AIDE_VERSION}'
     build:
