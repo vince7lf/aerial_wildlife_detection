@@ -31,9 +31,14 @@ RUN echo "==" && echo "Contenu de /etc/resolv.conf" && cat /etc/resolv.conf && e
 
 # temporary fix for NVIDIA rotating public keys at the moment:
 # https://forums.developer.nvidia.com/t/invalid-public-key-for-cuda-apt-repository/212901/6
-RUN apt-key del 7fa2af80
-RUN sed -i '/developer\.download\.nvidia\.com\/compute\/cuda\/repos/d' /etc/apt/sources.list
-RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+# Update nvidia GPG key
+RUN rm /etc/apt/sources.list.d/cuda.list \
+    && rm /etc/apt/sources.list.d/nvidia-ml.list \
+    && apt-key del 7fa2af80 \
+    && apt-get update && apt-get install -y --no-install-recommends wget \
+    && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb \
+    && dpkg -i cuda-keyring_1.0-1_all.deb \
+    && apt-get update
 
 # This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
 # property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
