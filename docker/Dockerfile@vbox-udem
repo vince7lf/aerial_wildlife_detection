@@ -75,6 +75,7 @@ RUN python -m pip install --upgrade pip
 COPY docker/requirements.txt docker/requirements.txt
 # COPY docker/lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
+# install python packages required; no cache when not enought memory; pip caching will be purge
 RUN pip install -r docker/requirements.txt --no-cache-dir
 # RUN pip install lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
 
@@ -82,6 +83,11 @@ RUN pip install -r docker/requirements.txt --no-cache-dir
 ##TODO: temporary fix until detectron2's requirements are resolved
 #RUN pip install -U git+https://github.com/facebookresearch/fvcore.git
 RUN pip install git+https://github.com/facebookresearch/detectron2.git
+
+# purge pip caching
+RUN pip cache purge \
+    && rm ~/.cache/pip \
+    && rm -rf /root/.cache/pip
 
 # ============================ DB SERVER ONLY BEGINS ======================================
 # Setup PostgreSQL database
