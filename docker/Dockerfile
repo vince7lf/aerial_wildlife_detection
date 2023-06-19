@@ -86,7 +86,7 @@ RUN pip install git+https://github.com/facebookresearch/detectron2.git
 
 # purge pip caching
 RUN pip cache purge \
-    && rm ~/.cache/pip \
+    && rm -rf ~/.cache/pip \
     && rm -rf /root/.cache/pip
 
 # ============================ DB SERVER ONLY BEGINS ======================================
