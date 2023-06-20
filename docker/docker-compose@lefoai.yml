@@ -7,7 +7,7 @@ volumes:
 services:
   aidev3_app:
     hostname: 'aidev3_app_host'
-    container_name: 'aide${AIDE_VERSION}'
+    container_name: 'aidev3_cnt'
     build:
       context:  '..'
       dockerfile: 'docker/Dockerfile'
