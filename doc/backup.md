@@ -87,7 +87,7 @@ exemple : sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/
 The application running inside the container is mapped to the host through a volume. 
 Within the application folder there is a backup folder that can be used to share the backups between the host and the container.
 
-By default the application folder on the host is _/app/aerial_wildlife_detection/docker_.
+By default the application folder on the host is _/app/aerial_wildlife_detection/backup_.
 
 The application folder in the container is _/home/aide/app_ and is mapped to that folder.
 
