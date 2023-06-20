@@ -206,8 +206,15 @@ From the host, you can _tar_ the images folder:
 ```
 ubuntu@tes2:/app/images$ sudo tar -cvf /app/aerial_wildlife_detection/backup/<hostname>-aide_images-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data .  
 
-exemple : sudo tar -cvf /app/aerial_wildlife_detection/backup/tes2-graham-aide_images-SainteHelene_140_107_H01-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data/SainteHelene_140_107_H01 .
+exemples : 
 
+sudo tar -cvf /app/aerial_wildlife_detection/backup/tes2-graham-aide_images-SainteHelene_140_107_H01-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data/SainteHelene_140_107_H01 .
+
+cd /app/var/lib/docker/volumes/aide_images/_data/
+sudo find . -maxdepth 1 -type d -name "*_H0*" -exec tar -cvf /app/aerial_wildlife_detection/backup/tes2-arbutus-aide_images-H0-`date +%Y%m%dT%H%M%S`.tar {} +
+
+TO BE TESTED : 
+sudo find /app/var/lib/docker/volumes/aide_images/_data/ -maxdepth 1 -type d -name "*_H0*" -exec tar -cvf /app/aerial_wildlife_detection/backup/tes2-arbutus-aide_images-H0-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data/ {} +
 ```
 
 ### Transfer the images

@@ -1,12 +1,16 @@
 #!/bin/bash
 set -x
 
+lsb_release -a
+uname -a
+landscape-sysinfo
+
 [ ${AIDE_ENV} = "vbox" ] && export AIDE_MODULES=LabelUI,FileServer
 
-echo ${PYTHONPATH}
-echo ${AIDE_CONFIG_PATH}
-echo ${AIDE_MODULES}
-echo ${AIDE_ENV}
+echo PYTHONPATH=${PYTHONPATH}
+echo AIDE_CONFIG_PATH=${AIDE_CONFIG_PATH}
+echo AIDE_MODULES=${AIDE_MODULES}
+echo AIDE_ENV=${AIDE_ENV}
 
 sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
 
@@ -22,6 +26,11 @@ sudo service redis-server start
 echo "============================="
 echo "Setup of database IS STARTING"
 echo "============================="
+# Make sure /var/lib/postgresql/10/main is owned by postgres; somehow it changes; not investigated
+sudo chown -R postgres:postgres /var/lib/postgresql/10/main
+sudo chmod 700 /var/lib/postgresql/10/main
+sudo ls -altrh /var/lib/postgresql/10/main
+
 dbName=$(python util/configDef.py --section=Database --parameter=name) 
 dbUser=$(python util/configDef.py --section=Database --parameter=user)
 dbPassword=$(python util/configDef.py --section=Database --parameter=password)
