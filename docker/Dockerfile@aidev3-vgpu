@@ -71,6 +71,12 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1 \
 
 RUN python -m pip install --upgrade pip
 
+# 20230703 Avoid Error :  AttributeError: module 'lib' has no attribute 'X509_V_FLAG_CB_ISSUER_CHECK'
+#RUN apt remove python3-pip -y \
+#    && wget https://bootstrap.pypa.io/get-pip.py \
+#    && python get-pip.py
+RUN pip install pyopenssl --upgrade
+
 #RUN conda create -y -n aide python=3.8
 COPY docker/requirements.txt docker/requirements.txt
 # COPY docker/lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl lib/librabbitmq-2.0.0-cp37-cp37m-linux_x86_64.whl
@@ -88,7 +94,6 @@ RUN pip install git+https://github.com/facebookresearch/detectron2.git
 RUN pip cache purge \
     && rm -rf ~/.cache/pip \
     && rm -rf /root/.cache/pip
-
 
 # ============================ DB SERVER ONLY BEGINS ======================================
 # Setup PostgreSQL database
