@@ -293,7 +293,7 @@ Result will be a prompt inside the container. like `root@aide_app_host:/home/aid
 
 `bash AIDE.sh stop` will stop the docker container (killing guniron processes stops the docker container)
 
-Instead just stop the celery workers and reset the postgreslq service (trop / start):
+Instead just stop the celery workers and reset the postgreslq service (stop / start):
 
 ```
 export PYTHONPATH=/home/aide/app
