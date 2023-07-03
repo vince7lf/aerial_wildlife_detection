@@ -30,6 +30,11 @@ dbUser=$(python util/configDef.py --section=Database --parameter=user)
 dbPassword=$(python util/configDef.py --section=Database --parameter=password)
 dbPort=$(python util/configDef.py --section=Database --parameter=port)
 sudo sed -i "s/\s*port\s*=\s[0-9]*/port = $dbPort/g" /etc/postgresql/$pgVersion/main/postgresql.conf
+
+# 20230703 Avoid Error: Config owner (postgres:105) and data owner (systemd-resolve:104) do not match, and config owner is not root
+chown -R postgres:postgres /etc/postgresql/$pgVersion/main
+chown -R postgres:postgres /var/lib/postgresql/$pgVersion/main
+
 sudo service postgresql restart
 
 sudo -u postgres psql -p $dbPort -tc "SELECT 1 FROM pg_roles WHERE pg_roles.rolname='$dbUser'" | grep -q 1 || sudo -u postgres psql -p $dbPort -c "CREATE USER \"$dbUser\" WITH PASSWORD '$dbPassword';"
@@ -41,6 +46,7 @@ sudo -u postgres psql -p $dbPort -d $dbName -c "GRANT ALL PRIVILEGES ON ALL TABL
 # Create DB schema
 python setup/setupDB.py
 sudo systemctl enable postgresql.service
+
 sudo service postgresql start
 
 # setup the cronjob to backup the database

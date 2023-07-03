@@ -1,14 +1,14 @@
-docker volume ls | grep -q aide_images || docker volume create aide_images
-docker volume ls | grep -q aide_db_data || docker volume create aide_db_data
+docker volume ls | grep -q aidev3_images || docker volume create aidev3_images
+docker volume ls | grep -q aidev3_db_data || docker volume create aidev3_db_data
 
-docker run --name aide_cnt \
+docker run --name aidev3_cnt \
  --rm \
  -v `pwd`:/home/aide/app \
- -v aide_db_data:/var/lib/postgresql/10/main \
- -v aide_images:/home/aide/images \
+ -v aidev3_db_data:/var/lib/postgresql/10/main \
+ -v aidev3_images:/home/aide/images \
  -p 8080:8080 \
- -h 'aide_app_host' \
- aide_app
+ -h 'aidev3_app_host' \
+ aidev3_app:aide_latest
 
  # Options:
  # --name   - container name
