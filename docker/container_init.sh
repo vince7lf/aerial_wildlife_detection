@@ -34,6 +34,7 @@ sudo sed -i "s/\s*port\s*=\s[0-9]*/port = $dbPort/g" /etc/postgresql/$pgVersion/
 # 20230703 Avoid Error: Config owner (postgres:105) and data owner (systemd-resolve:104) do not match, and config owner is not root
 chown -R postgres:postgres /etc/postgresql/$pgVersion/main
 chown -R postgres:postgres /var/lib/postgresql/$pgVersion/main
+sudo chmod 700 /var/lib/postgresql/$pgVersion/main
 
 sudo service postgresql restart
 
