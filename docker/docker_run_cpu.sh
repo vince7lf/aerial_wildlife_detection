@@ -1,14 +1,19 @@
-docker volume ls | grep -q aidev3_images || docker volume create aidev3_images
-docker volume ls | grep -q aidev3_db_data || docker volume create aidev3_db_data
+docker volume ls | grep -q ${VOLUME_VERSION}_images || docker volume create ${VOLUME_VERSION}_images
+docker volume ls | grep -q ${VOLUME_VERSION}_db_data || docker volume create ${VOLUME_VERSION}_db_data
 
-docker run --name aidev3_cnt \
+docker run --name ${VOLUME_VERSION}_cnt \
  --rm \
  -v `pwd`:/home/aide/app \
- -v aidev3_db_data:/var/lib/postgresql/10/main \
- -v aidev3_images:/home/aide/images \
+ -v ${VOLUME_VERSION}_db_data:/var/lib/postgresql/10/main \
+ -v ${VOLUME_VERSION}_images:/home/aide/images \
  -p 8080:8080 \
- -h 'aidev3_app_host' \
- aidev3_app:aide_latest
+ -p 17685:17685 \
+ -h "aide_host_${AIDE_VERSION}" \
+ -e AIDE_ENV=${AIDE_ENV} \
+ -e AIDE_VERSION=${AIDE_VERSION} \
+ -e VOLUME_VERSION=${VOLUME_VERSION} \
+ aidev3_app:aide_${AIDE_VERSION}
+
 
  # Options:
  # --name   - container name
