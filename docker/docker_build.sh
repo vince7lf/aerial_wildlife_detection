@@ -6,6 +6,7 @@ LATEST_TAG=latest
 
 git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
+git pull
 
 # aide_env=lefoai
 # tag=v3.0.0b20230615T1610EST
@@ -48,5 +49,6 @@ AIDE_VERSION=${AIDE_VERSION} \
 # reset and clean
 git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
+git pull
 git branch -D tmpb_${AIDE_VERSION} || true
 git branch -D tmpb_${LATEST_TAG} || true
