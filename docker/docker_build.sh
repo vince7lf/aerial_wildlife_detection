@@ -46,6 +46,8 @@ AIDE_VERSION=${AIDE_VERSION} \
   --file Dockerfile@${AIDE_ENV} \
   ..
 
+sudo docker image prune --force
+
 # reset and clean
 git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
