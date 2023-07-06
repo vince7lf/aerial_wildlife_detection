@@ -8,13 +8,13 @@ git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
 git pull
 
+git fetch --all --tags --force
+
 # aide_env=lefoai
 # tag=v3.0.0b20230615T1610EST
 # tag=v3.0-for-ivado-multienv
 # volume=aidev3
 # proxy=http://mandataire.ti.umontreal.ca:80/
-
-git fetch --all --tags
 
 # checkout latest tag
 git branch -D tmpb_${LATEST_TAG} || true
