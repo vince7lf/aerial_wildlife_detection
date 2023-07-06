@@ -24,11 +24,14 @@ source ../versions.txt
 echo ${AIDE_VERSION}
 echo ${DOCKER_VOLUME_VERSION}
 
+# delete and checkout version
 git branch --delete tmpb_${AIDE_VERSION} || true
 git checkout tags/${AIDE_VERSION} -b tmpb_${AIDE_VERSION}
 
+# untag images with latest tag
 sudo docker rmi aidev3_app:aide_${LATEST_TAG} || true
 
+# docker build image
 # AIDE_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
 AIDE_VERSION=${AIDE_VERSION} \
   AIDE_ENV=${AIDE_ENV} \
