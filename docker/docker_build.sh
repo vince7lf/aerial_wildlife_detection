@@ -2,6 +2,7 @@
 set -ex
 
 git pull origin v3.0-for-ivado-multienv
+git checkout -f v3.0-for-ivado-multienv
 
 # aide_env=lefoai
 # tag=v3.0.0b20230615T1610EST
@@ -15,6 +16,8 @@ proxy=$3
 git fetch --all --tags
 git branch --delete tmpb_${tag} || true
 git checkout tags/${tag} -b tmpb_${tag}
+
+sudo docker rmi aidev3_app:aide_latest
 
 # AIDE_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
 AIDE_VERSION=${tag} \
@@ -30,4 +33,5 @@ AIDE_VERSION=${tag} \
   ..
 
 git pull origin v3.0-for-ivado-multienv
+git checkout -f v3.0-for-ivado-multienv
 git branch --delete tmpb_${tag} || true
