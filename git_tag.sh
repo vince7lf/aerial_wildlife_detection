@@ -3,7 +3,6 @@ set -ex
 
 # read versions.txt
 source versions.txt
-
 echo ${AIDE_VERSION}
 echo ${DOCKER_VOLUME_VERSION}
 
@@ -13,9 +12,9 @@ git tag -d ${AIDE_VERSION} || true
 git tag -d latest || true
 
 # remove tag remote
-git tag push --delete origin ${AIDE_VERSION}
+git push --delete origin ${AIDE_VERSION} || true
 # remove tag latest remote
-git tag push --delete origin latest
+git push --delete origin latest || true
 
 # create tag
 git tag ${AIDE_VERSION}
