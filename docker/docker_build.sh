@@ -14,7 +14,7 @@ tag=$2
 proxy=$3
 
 git fetch --all --tags
-git branch --delete tmpb_${tag}
+git branch --delete tmpb_${tag} || true
 git checkout ${tag} -b tmpb_${tag}
 
 # AIDE_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
