@@ -22,7 +22,7 @@ git checkout ${tag} -b tmpb_${tag}
 AIDE_VERSION=${tag} \
   AIDE_ENV=${aide_env} \
   sudo -E docker build \
-  --tag=aidev3_app:${tag} \
+  --tag=aidev3_app:aide_${tag} \
   --rm \
   --no-cache \
   --build-arg HTTP_PROXY=${proxy} \
