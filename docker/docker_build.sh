@@ -7,7 +7,6 @@ git pull
 # aide_env=lefoai
 # tag=v3.0.0b20230615T1610EST
 # tag=v3.0-for-ivado-multienv
-# tag=latest
 # volume=aidev3
 # proxy=http://mandataire.ti.umontreal.ca:80/
 aide_env=$1
@@ -23,6 +22,7 @@ AIDE_VERSION=${tag} \
   AIDE_ENV=${aide_env} \
   sudo -E docker build \
   --tag=aidev3_app:aide_${tag} \
+  --tag=aidev3_app:aide_latest \
   --rm \
   --no-cache \
   --build-arg HTTP_PROXY=${proxy} \
