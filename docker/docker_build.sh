@@ -16,7 +16,7 @@ git checkout -f ${DEFAULT_BRANCH}
 git fetch --all --tags
 
 # checkout latest tag
-git branch --delete tmpb_${LATEST_TAG} || true
+git branch -D tmpb_${LATEST_TAG} || true
 git checkout tags/${LATEST_TAG} -b tmpb_${LATEST_TAG}
 
 # read versions.txt
@@ -25,7 +25,7 @@ echo ${AIDE_VERSION}
 echo ${DOCKER_VOLUME_VERSION}
 
 # delete and checkout version
-git branch --delete tmpb_${AIDE_VERSION} || true
+git branch -D tmpb_${AIDE_VERSION} || true
 git checkout tags/${AIDE_VERSION} -b tmpb_${AIDE_VERSION}
 
 # untag images with latest tag
@@ -48,5 +48,5 @@ AIDE_VERSION=${AIDE_VERSION} \
 # reset and clean
 git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
-git branch --delete tmpb_${AIDE_VERSION} || true
-git branch --delete tmpb_${LATEST_TAG} || true
+git branch -D tmpb_${AIDE_VERSION} || true
+git branch -D tmpb_${LATEST_TAG} || true
