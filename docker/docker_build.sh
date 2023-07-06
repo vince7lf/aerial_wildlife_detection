@@ -14,13 +14,14 @@ tag=$2
 proxy=$3
 
 git fetch --all --tags
+git branch --delete tmpb_${tag}
 git checkout ${tag} -b tmpb_${tag}
 
 # AIDE_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
 AIDE_VERSION=${tag} \
   AIDE_ENV=${aide_env} \
   sudo -E docker build \
-  --tag=aidev3_app:${tag}
+  --tag=aidev3_app:${tag} \
   --rm \
   --no-cache \
   --build-arg HTTP_PROXY=${proxy} \
