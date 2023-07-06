@@ -14,7 +14,7 @@ tag=$2
 proxy=$3
 
 git fetch --all --tags
-git checkout ${tag} -b latest
+git checkout ${tag} -b tmpb_${tag}
 git pull
 
 # AIDE_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
@@ -28,3 +28,5 @@ AIDE_VERSION=${tag} \
   --build-arg HTTPS_PROXY=${proxy} \
   --file Dockerfile@${aide_env} \
   ..
+
+git branch --delete tmpb_${tag}
