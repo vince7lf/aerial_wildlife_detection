@@ -1,0 +1,8 @@
+# Release notes
+
+## Releases
+
+v3.0.20230706 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-06
+- versions.txt: new file containing AIDE_VERSION and respective DOCKER_VOLUME_VERSION
+- new TAG v3.0.20230706 (& latest)
+
