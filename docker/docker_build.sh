@@ -1,8 +1,7 @@
 #!/bin/bash
 set -ex
 
-git checkout -f v3.0-for-ivado-multienv
-git pull
+git pull origin v3.0-for-ivado-multienv
 
 # aide_env=lefoai
 # tag=v3.0.0b20230615T1610EST
@@ -30,6 +29,5 @@ AIDE_VERSION=${tag} \
   --file Dockerfile@${aide_env} \
   ..
 
-git checkout -f v3.0-for-ivado-multienv
-git pull
+git pull origin v3.0-for-ivado-multienv
 git branch --delete tmpb_${tag} || true
