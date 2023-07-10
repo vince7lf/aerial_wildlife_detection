@@ -10,7 +10,7 @@ echo ${DOCKER_VOLUME_VERSION}
 docker volume ls | grep -q ${DOCKER_VOLUME_VERSION}_images || docker volume create ${DOCKER_VOLUME_VERSION}_images
 docker volume ls | grep -q ${DOCKER_VOLUME_VERSION}_db_data || docker volume create ${DOCKER_VOLUME_VERSION}_db_data
 
-docker run --name aidev3_cnt_${AIDE_VERSION} \
+docker run --name aidev3_cnt \
  --gpus device=0 \
  --rm \
  -v `pwd`:/home/aide/app \
@@ -18,7 +18,7 @@ docker run --name aidev3_cnt_${AIDE_VERSION} \
  -v ${DOCKER_VOLUME_VERSION}_images:/home/aide/images \
  -p 8080:8080 \
  -p 17685:17685 \
- -h "aidev3_host_${AIDE_VERSION}" \
+ -h "aidev3_host" \
  -e AIDE_ENV=${AIDE_ENV} \
  -e AIDE_VERSION=${AIDE_VERSION} \
  -e AIDE_VOLUME_VERSION=${DOCKER_VOLUME_VERSION} \

@@ -13,7 +13,6 @@ landscape-sysinfo
 echo PYTHONPATH=${PYTHONPATH}
 echo AIDE_CONFIG_PATH=${AIDE_CONFIG_PATH}
 echo AIDE_MODULES=${AIDE_MODULES}
-echo AIDE_VERSION=latest
 
 host=$(python util/configDef.py --section=Server --parameter=static_host)
 
@@ -52,7 +51,9 @@ sudo service postgresql start
 
 # setup the cronjob to backup the database
 mkdir -p /home/aide/app/backup
-(sudo crontab -u root -l 2>/dev/null; echo "* 2 * * * sudo /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-`date +%Y%m%dT%H%M%S`.log") | sudo crontab -u root -
+echo AIDE_ENV=${AIDE_ENV} > /home/aide/app/aide_env.sh
+echo AIDE_VERSION=${AIDE_VERSION} >> /home/aide/app/aide_env.sh
+(sudo crontab -u root -l 2>/dev/null; echo "* 2 * * * root /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-\$(date +\%Y\%m\%dT\%H\%M\%S).log") | sudo crontab -u root -
 
 echo "=============================="
 echo "Setup of database IS COMPLETED"
