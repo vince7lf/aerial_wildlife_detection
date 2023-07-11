@@ -2,6 +2,11 @@
 
 ## Releases
 
+v3.0.1 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-11
+- (docker/container_init.sh) add useful aliases
+- (docker/docker_build.sh) build docker with or without cache
+- (aide_backup_data.sh) load AIDE_ENV and AIDE_VERSION
+
 v3.0.20230706 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-06
 - versions.txt: new file containing AIDE_VERSION and respective DOCKER_VOLUME_VERSION
 - new TAG v3.0.20230706 (& latest)
