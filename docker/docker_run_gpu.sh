@@ -3,7 +3,7 @@
 set -ex
 
 # read versions.txt
-source ../versions.txt
+source versions.txt
 echo ${AIDE_VERSION}
 echo ${DOCKER_VOLUME_VERSION}
 
@@ -17,7 +17,7 @@ docker run --name aidev3_cnt \
  -v ${DOCKER_VOLUME_VERSION}_db_data:/var/lib/postgresql/10/main \
  -v ${DOCKER_VOLUME_VERSION}_images:/home/aide/images \
  -p 8080:8080 \
- -p 17685:17685 \
+ -p 17586:17685 \
  -h "aidev3_host" \
  -e AIDE_ENV=${AIDE_ENV} \
  -e AIDE_VERSION=${AIDE_VERSION} \
