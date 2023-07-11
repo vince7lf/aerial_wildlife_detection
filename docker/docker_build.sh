@@ -4,6 +4,9 @@ set -ex
 DEFAULT_BRANCH=v3.0-for-ivado-multienv
 LATEST_TAG=latest
 
+# rebuild all or use the cache
+nocache=$1
+
 git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
 git pull
@@ -40,7 +43,7 @@ AIDE_VERSION=${AIDE_VERSION} \
   --tag=aidev3_app:aide_${AIDE_VERSION} \
   --tag=aidev3_app:aide_${LATEST_TAG} \
   --rm \
-  --no-cache \
+  ${nocache} \
   --build-arg HTTP_PROXY=${HTTP_PROXY} \
   --build-arg HTTPS_PROXY=${HTTPS_PROXY} \
   --file Dockerfile@${AIDE_ENV} \

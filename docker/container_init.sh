@@ -6,6 +6,10 @@
 #
 set -x
 
+echo "alias Hg='history | grep '" > /root/.bash_aliases
+echo "alias H='history'" >> /root/.bash_aliases
+echo "alias lh='ls -altrh'" >> /root/.bash_aliases
+
 lsb_release -a
 uname -a
 landscape-sysinfo
@@ -53,7 +57,7 @@ sudo service postgresql start
 mkdir -p /home/aide/app/backup
 echo AIDE_ENV=${AIDE_ENV} > /home/aide/app/aide_env.sh
 echo AIDE_VERSION=${AIDE_VERSION} >> /home/aide/app/aide_env.sh
-(sudo crontab -u root -l 2>/dev/null; echo "* 2 * * * root /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-\$(date +\%Y\%m\%dT\%H\%M\%S).log") | sudo crontab -u root -
+(sudo crontab -u root -l 2>/dev/null; echo "0 2 * * * /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-\$(date +\%Y\%m\%dT\%H\%M\%S).log") | sudo crontab -u root -
 
 echo "=============================="
 echo "Setup of database IS COMPLETED"
