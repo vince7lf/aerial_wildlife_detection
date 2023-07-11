@@ -4,7 +4,7 @@ set -ex
 
 # read versions.txt
 source versions.txt
-echo ${AIDE_VERSION}
+echo ${DOCKER_AIDE_APP_VERSION}
 echo ${DOCKER_VOLUME_VERSION}
 
 docker volume ls | grep -q ${DOCKER_VOLUME_VERSION}_images || docker volume create ${DOCKER_VOLUME_VERSION}_images
@@ -19,9 +19,9 @@ docker run --name aidev3_cnt \
  -p 17586:17685 \
  -h "aidev3_host" \
  -e AIDE_ENV=${AIDE_ENV} \
- -e AIDE_VERSION=${AIDE_VERSION} \
+ -e DOCKER_AIDE_APP_VERSION=${DOCKER_AIDE_APP_VERSION} \
  -e AIDE_VOLUME_VERSION=${DOCKER_VOLUME_VERSION} \
- aidev3_app:aide_${AIDE_VERSION}
+ aidev3_app:aide_${DOCKER_AIDE_APP_VERSION}
 
 
  # Options:

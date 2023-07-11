@@ -25,22 +25,22 @@ git checkout tags/${LATEST_TAG} -b tmpb_${LATEST_TAG}
 
 # read versions.txt
 source ../versions.txt
-echo ${AIDE_VERSION}
+echo ${DOCKER_AIDE_APP_VERSION}
 echo ${DOCKER_VOLUME_VERSION}
 
 # delete and checkout version
-git branch -D tmpb_${AIDE_VERSION} || true
-git checkout tags/${AIDE_VERSION} -b tmpb_${AIDE_VERSION}
+git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true
+git checkout tags/${DOCKER_AIDE_APP_VERSION} -b tmpb_${DOCKER_AIDE_APP_VERSION}
 
 # untag images with latest tag
 sudo docker rmi aidev3_app:aide_${LATEST_TAG} || true
 
 # docker build image
-# AIDE_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
-AIDE_VERSION=${AIDE_VERSION} \
+# DOCKER_AIDE_APP_VERSION=${tag} AIDE_ENV=${aide_env} VOLUME_VERSION=${volume} sudo -E docker compose -f docker-compose.yml build
+DOCKER_AIDE_APP_VERSION=${DOCKER_AIDE_APP_VERSION} \
   AIDE_ENV=${AIDE_ENV} \
   sudo -E docker build \
-  --tag=aidev3_app:aide_${AIDE_VERSION} \
+  --tag=aidev3_app:aide_${DOCKER_AIDE_APP_VERSION} \
   --tag=aidev3_app:aide_${LATEST_TAG} \
   --rm \
   ${nocache} \
@@ -55,5 +55,5 @@ sudo docker image prune --force
 git pull origin ${DEFAULT_BRANCH}
 git checkout -f ${DEFAULT_BRANCH}
 git pull
-git branch -D tmpb_${AIDE_VERSION} || true
+git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true
 git branch -D tmpb_${LATEST_TAG} || true
