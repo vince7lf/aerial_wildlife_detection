@@ -4,7 +4,7 @@ set -ex
 # read versions.txt
 source versions.txt
 echo ${DOCKER_AIDE_APP_VERSION}
-echo ${DOCKER_VOLUME_VERSION}
+echo ${DOCKER_AIDE_VOLUME_VERSION}
 
 # remove tag local
 git tag -d ${DOCKER_AIDE_APP_VERSION} || true

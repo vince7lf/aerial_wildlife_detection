@@ -26,7 +26,7 @@ git checkout tags/${LATEST_TAG} -b tmpb_${LATEST_TAG}
 # read versions.txt
 source ../versions.txt
 echo ${DOCKER_AIDE_APP_VERSION}
-echo ${DOCKER_VOLUME_VERSION}
+echo ${DOCKER_AIDE_VOLUME_VERSION}
 
 # delete and checkout version
 git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true

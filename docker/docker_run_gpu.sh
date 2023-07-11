@@ -5,23 +5,23 @@ set -ex
 # read versions.txt
 source versions.txt
 echo ${DOCKER_AIDE_APP_VERSION}
-echo ${DOCKER_VOLUME_VERSION}
+echo ${DOCKER_AIDE_VOLUME_VERSION}
 
-docker volume ls | grep -q ${DOCKER_VOLUME_VERSION}_images || docker volume create ${DOCKER_VOLUME_VERSION}_images
-docker volume ls | grep -q ${DOCKER_VOLUME_VERSION}_db_data || docker volume create ${DOCKER_VOLUME_VERSION}_db_data
+docker volume ls | grep -q ${DOCKER_AIDE_VOLUME_VERSION}_images || docker volume create ${DOCKER_AIDE_VOLUME_VERSION}_images
+docker volume ls | grep -q ${DOCKER_AIDE_VOLUME_VERSION}_db_data || docker volume create ${DOCKER_AIDE_VOLUME_VERSION}_db_data
 
 docker run --name aidev3_cnt \
  --gpus device=0 \
  --rm \
  -v `pwd`:/home/aide/app \
- -v ${DOCKER_VOLUME_VERSION}_db_data:/var/lib/postgresql/10/main \
- -v ${DOCKER_VOLUME_VERSION}_images:/home/aide/images \
+ -v ${DOCKER_AIDE_VOLUME_VERSION}_db_data:/var/lib/postgresql/10/main \
+ -v ${DOCKER_AIDE_VOLUME_VERSION}_images:/home/aide/images \
  -p 8080:8080 \
  -p 17586:17685 \
  -h "aidev3_host" \
  -e AIDE_ENV=${AIDE_ENV} \
  -e DOCKER_AIDE_APP_VERSION=${DOCKER_AIDE_APP_VERSION} \
- -e AIDE_VOLUME_VERSION=${DOCKER_VOLUME_VERSION} \
+ -e DOCKER_AIDE_VOLUME_VERSION=${DOCKER_AIDE_VOLUME_VERSION} \
  aidev3_app:aide_${DOCKER_AIDE_APP_VERSION}
 
 
