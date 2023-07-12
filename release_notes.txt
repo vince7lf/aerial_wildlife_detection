@@ -2,6 +2,9 @@
 
 ## Releases
 
+v3.0.0 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-12
+- rename versions.txt to docker_versions.sh and move it into the docker folder
+
 v3.0.1 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-11
 - (docker/container_init.sh) add useful aliases
 - (docker/docker_build.sh) build docker with or without cache
