@@ -23,8 +23,8 @@ git fetch --all --tags --force
 git branch -D tmpb_${LATEST_TAG} || true
 git checkout tags/${LATEST_TAG} -b tmpb_${LATEST_TAG}
 
-# read versions.txt
-source ../versions.txt
+# read docker_versions.sh
+source docker_versions.sh
 echo ${DOCKER_AIDE_APP_VERSION}
 echo ${DOCKER_AIDE_VOLUME_VERSION}
 
@@ -57,3 +57,10 @@ git checkout -f ${DEFAULT_BRANCH}
 git pull
 git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true
 git branch -D tmpb_${LATEST_TAG} || true
+
+# to build docker on vbox-udem
+# cd /app/aerial_wildlife_detection/docker; AIDE_ENV=vbox-udem sudo -E /bin/bash /app/aerial_wildlife_detection/docker/docker_build.sh 2>&1 | sudo tee /var/log/docker_build.sh-`date +%Y%m%dT%H%M%S`.log
+
+# to run docker on vbox-udem
+# ! make sure to have sudo password already set; commande just return without any error / feedback otherwise
+# cd /app/aerial_wildlife_detection; AIDE_ENV=vbox-udem sudo -E /bin/bash docker/docker_run_cpu.sh &

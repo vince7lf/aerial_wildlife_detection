@@ -1,7 +1,7 @@
 #!/bin/bash
 set -ex
 
-source /home/aide/app/versions.txt
+source /home/aide/app/docker/docker_versions.sh
 source /home/aide/app/aide_env.sh
 
 echo ${AIDE_ENV}

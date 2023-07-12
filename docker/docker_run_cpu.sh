@@ -2,8 +2,8 @@
 
 set -ex
 
-# read versions.txt
-source versions.txt
+# read docker_versions.sh
+source docker/docker_versions.sh
 echo ${DOCKER_AIDE_APP_VERSION}
 echo ${DOCKER_AIDE_VOLUME_VERSION}
 
