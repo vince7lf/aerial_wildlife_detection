@@ -59,8 +59,29 @@ git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true
 git branch -D tmpb_${LATEST_TAG} || true
 
 # to build docker on vbox-udem
-# cd /app/aerial_wildlife_detection/docker; AIDE_ENV=vbox-udem sudo -E /bin/bash /app/aerial_wildlife_detection/docker/docker_build.sh 2>&1 | sudo tee /var/log/docker_build.sh-`date +%Y%m%dT%H%M%S`.log
+# cd /app/aerial_wildlife_detection/docker; \
+#   AIDE_ENV=vbox-udem \
+#   sudo -E \
+#   /bin/bash /app/aerial_wildlife_detection/docker/docker_build.sh 2>&1 | \
+#   sudo tee /var/log/docker_build.sh-`date +%Y%m%dT%H%M%S`.log
 
 # to run docker on vbox-udem
 # ! make sure to have sudo password already set; commande just return without any error / feedback otherwise
-# cd /app/aerial_wildlife_detection; AIDE_ENV=vbox-udem sudo -E /bin/bash docker/docker_run_cpu.sh &
+# cd /app/aerial_wildlife_detection; \
+#   AIDE_ENV=vbox-udem \
+#   sudo -E \
+#   /bin/bash docker/docker_run_cpu.sh &
+
+# to build docker on lefoai with proxy
+# cd /app/aerial_wildlife_detection/docker; \
+#   AIDE_ENV=lefoai \
+#   HTTP_PROXY=http://mandataire.ti.umontreal.ca:80/ \
+#   HTTPS_PROXY=http://mandataire.ti.umontreal.ca:80/ \
+#   sudo -E \
+#   /bin/bash /app/aerial_wildlife_detection/docker/docker_build.sh 2>&1 | \
+#   sudo tee /var/log/docker_build.sh-`date +%Y%m%dT%H%M%S`.log
+
+# to run docker on lefoai
+
+# to build docker on aidev4-vgpu
+# cd /mnt/app/aerial_wildlife_detection/docker; AIDE_ENV=aidev3-vgpu sudo -E /bin/bash /mnt/app/aerial_wildlife_detection/docker/docker_build.sh 2>&1 | sudo tee /var/log/docker_build.sh-`date +%Y%m%dT%H%M%S`.log
