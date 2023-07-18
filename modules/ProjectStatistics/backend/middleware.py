@@ -334,17 +334,19 @@ class ProjectStatisticsMiddleware:
                         print(f'TODO: error in segmentation mask statistics calculation ("{str(e)}").')
 
                 else:
+                    # classification
+                    correct = b['label_correct']
+                    # ignore None
+                    if correct is True:
+                        response[entity]['correct'] += 1
+                        response[entity]['num_matches'] += 1
+                    elif correct is False:
+                        response[entity]['incorrect'] += 1
+                        response[entity]['num_matches'] += 1
+
                     for key in tokens.keys():
                         if key == 'correct' or key == 'incorrect':
-                            # classification
-                            correct = b['label_correct']
-                            # ignore None
-                            if correct is True:
-                                response[entity]['correct'] += 1
-                                response[entity]['num_matches'] += 1
-                            elif correct is False:
-                                response[entity]['incorrect'] += 1
-                                response[entity]['num_matches'] += 1
+                            continue
                         elif key in b and b[key] is not None:
                             response[entity][key] += b[key]
 
