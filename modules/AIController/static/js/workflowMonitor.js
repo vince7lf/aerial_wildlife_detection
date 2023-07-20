@@ -217,7 +217,7 @@ class Task {
                     this.statusIcon.append($('<img src="/static/general/img/error.svg" />'));
                 }
 
-                this.deleteTaskButton.show();
+                if(this.isRootTask && this.showAdminFunctionalities && this.deleteTaskButton !== undefined ) this.deleteTaskButton.show();
             }
         }
 

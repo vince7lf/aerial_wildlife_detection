@@ -218,7 +218,8 @@ class ProjectConfigurator:
         @self.app.get('/<project>/getConfig')
         @self.app.post('/<project>/getConfig')
         def get_project_configuration(project):
-            if not self.loginCheck(project=project, admin=True):
+            # if not self.loginCheck(project=project, admin=True):
+            if not self.loginCheck(project=project, admin=False):
                 abort(401, 'forbidden')
             try:
                 # parse subset of configuration parameters (if provided)

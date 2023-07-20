@@ -2,6 +2,9 @@
 
 ## Releases
 
+v3.0.4 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
+- (#241) (app.py, workflowMonitor.js) fix issue with non-admin user forbidden to see images
+
 v3.0.3 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
 - Dockerfile Dockerfile@aidev3-vgpu Dockerfile@lefoai Dockerfile@vbox-udem: install cron service as cron job does not start
 
