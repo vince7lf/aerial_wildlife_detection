@@ -1433,18 +1433,25 @@ class DataWorker:
         else:
             ignoreImportedStr = ''
 
+        if annoType == 'labels':
+            excludeNullLabelsStr = '{} label IS NOT NULL'.format('WHERE' if not any([len(authorStr), len(dateStr), len(ignoreImportedStr)]) else ' AND')
+        else:
+            excludeNullLabelsStr = ''
+
         # query database
         queryStr = sql.SQL('''
             SELECT {queryFields} FROM {id_main} AS m
             {authorStr}
             {dateStr}
             {ignoreImportedStr}
+            {excludeNullLabelsStr}
         ''').format(
             queryFields=sql.SQL(queryFields),
             id_main=sql.Identifier(project, dataType),
             authorStr=sql.SQL(authorStr),
             dateStr=sql.SQL(dateStr),
-            ignoreImportedStr=sql.SQL(ignoreImportedStr)
+            ignoreImportedStr=sql.SQL(ignoreImportedStr),
+            excludeNullLabelsStr=sql.SQL(excludeNullLabelsStr)
         )
         query = self.dbConnector.execute(
             queryStr,
@@ -1495,6 +1502,8 @@ class DataWorker:
             parser = parserClass(self.config, self.dbConnector, project, self.tempDir, username, annoType)
             parser.export_annotations(annotations, mainFile, **parserKwargs)
             return filename
+        except Exception as e:
+            message = str(e)
         finally:
             mainFile.close()
 

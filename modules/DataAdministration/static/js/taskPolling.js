@@ -68,6 +68,6 @@ function poll_status(taskID, successHandle, errorHandle, progressHandle, timeout
     if(timeout === undefined || timeout === null) {
         __do_poll();
     } else {
-        tHandle = setInterval(__do_poll, 1000);
+        tHandle = setInterval(__do_poll, 30 * 1000);
     }
 }

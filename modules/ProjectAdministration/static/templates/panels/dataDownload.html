@@ -178,6 +178,7 @@
 <script type="text/javascript">
 
     window.save = undefined;
+    debugger;
 
     $(document).ready(function() {
         if(typeof(ProgressBar) === 'undefined') {
@@ -530,8 +531,11 @@
         function setSelectedParser() {
             let dataType = $('#data-type').val();
             let parserKey = $('#export-format').val();
-            $('#export-format-info').html(window.formats[dataType][parserKey]['info']);
-            let parserOptions = window.formats[dataType][parserKey]['options'];
+            let parserOptions = undefined
+            if (parserKey !== undefined && parserKey !== null) {
+                $('#export-format-info').html(window.formats[dataType][parserKey]['info']);
+                parserOptions = window.formats[dataType][parserKey]['options'];
+            }
             if(parserOptions !== undefined && parserOptions !== null && parserOptions.length > 0) {
                 $('#custom-parser-options').append($(parserOptions));
                 $('#custom-parser-options-container').show();

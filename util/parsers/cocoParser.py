@@ -494,7 +494,7 @@ class COCOparser(AbstractAnnotationParser):
         
         # export annotations
         for anno in annotations['annotations']:
-            annoID = len(annotations) + 1
+            annoID = len(annotations_out) + 1
             annoInfo = {
                 'id': annoID,
                 'image_id': imgIDLookup[anno['image']],

@@ -17,7 +17,10 @@ __all__ = (
 
 # organize by annotation type and annotation format
 PARSERS = {
-    'labels': {},
+    'labels': {
+        'mscoco': COCOparser,
+        'yolo': YOLOparser
+    },
     'points': {},
     'boundingBoxes': {
         'mscoco': COCOparser,
