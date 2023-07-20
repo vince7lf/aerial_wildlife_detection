@@ -2,6 +2,9 @@
 
 ## Releases
 
+v3.0.3 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
+- Dockerfile Dockerfile@aidev3-vgpu Dockerfile@lefoai Dockerfile@vbox-udem: install cron service as cron job does not start
+
 v3.0.2 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
 - docker_versions.sh: add AIDE_APP_VERSION number, attached to the container as information; add AUTODEPLOY property to relaunch container automatically after the build
 - docker_build.sh: restart container if property AUTODEPLOY is true
