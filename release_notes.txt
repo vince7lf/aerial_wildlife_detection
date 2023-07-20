@@ -2,6 +2,11 @@
 
 ## Releases
 
+v3.0.5 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
+- (#240) fix issue to download annotations
+- task pooling is now 30 sec (previously 1 sec)
+- comment debugger keyword everywhere
+
 v3.0.4 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
 - (#241) (app.py, workflowMonitor.js) fix issue with non-admin user forbidden to see images
 
