@@ -2,6 +2,11 @@
 
 ## Releases
 
+v3.0.2 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-20
+- docker_versions.sh: add AIDE_APP_VERSION number, attached to the container as information; add AUTODEPLOY property to relaunch container automatically after the build
+- docker_build.sh: restart container if property AUTODEPLOY is true
+- docker_run_cpu/docker_run_gpu: stop container before running it; attach AIDE_APP_VERSION to container
+
 v3.0.1 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-18
 - (#337) ProjectStatistics/backend/middleware.py: fix model stats No. matches; tested with label annotation project on local vbox VM.
 

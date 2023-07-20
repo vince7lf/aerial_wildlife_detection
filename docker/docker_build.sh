@@ -25,8 +25,10 @@ git checkout tags/${LATEST_TAG} -b tmpb_${LATEST_TAG}
 
 # read docker_versions.sh
 source docker_versions.sh
-echo ${DOCKER_AIDE_APP_VERSION}
-echo ${DOCKER_AIDE_VOLUME_VERSION}
+echo AIDE_APP_VERSION=${AIDE_APP_VERSION}
+echo DOCKER_AIDE_APP_VERSION=${DOCKER_AIDE_APP_VERSION}
+echo DOCKER_AIDE_VOLUME_VERSION=${DOCKER_AIDE_VOLUME_VERSION}
+echo AUTODEPLOY=${AUTODEPLOY}
 
 # delete and checkout version
 git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true
@@ -57,6 +59,16 @@ git checkout -f ${DEFAULT_BRANCH}
 git pull
 git branch -D tmpb_${DOCKER_AIDE_APP_VERSION} || true
 git branch -D tmpb_${LATEST_TAG} || true
+
+if [ ${AUTODEPLOY} = "true" ]; then
+  pushd ..
+  AIDE_ENV=${AIDE_ENV} \
+  sudo -E \
+  /bin/bash docker/docker_run_gpu.sh &
+  popd
+fi
+# if autodeploy==true
+# restart container with tag name
 
 # to build docker on vbox-udem
 # cd /app/aerial_wildlife_detection/docker; \
