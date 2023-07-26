@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ex
+set -e
 
 # stop currently running container, if running
 docker container stop aidev3_cnt
