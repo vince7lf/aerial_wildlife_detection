@@ -2,6 +2,9 @@
 
 ## Releases
 
+v3.0.7 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-08-01
+- (docker_run_gpu.sh, docker_run_cpu.sh, container_init.sh) mount new backup volume; change backup folder otherwise backups are parts of the docker image
+
 v3.0.6 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-07-26
 - (aide_backup_data.sh) change backup folder otherwise backups are parts of the docker image
 - (docker_run_gpu.sh, docker_run_cpu.sh) removes the exit flag to avoid script to stop if docker container is already stopped

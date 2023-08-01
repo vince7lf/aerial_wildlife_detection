@@ -54,7 +54,7 @@ sudo systemctl enable postgresql.service
 sudo service postgresql start
 
 # setup the cronjob to backup the database
-mkdir -p /home/aide/app/backup
+mkdir -p /home/aide/backup
 echo AIDE_ENV=${AIDE_ENV} > /home/aide/app/aide_env.sh
 (sudo crontab -u root -l 2>/dev/null; echo "0 2 * * * /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-\$(date +\%Y\%m\%dT\%H\%M\%S).log") | sudo crontab -u root -
 
