@@ -18,7 +18,7 @@ docker volume ls | grep -q ${DOCKER_AIDE_VOLUME_VERSION}_db_data || docker volum
 docker run --name aidev3_cnt \
  --rm \
  -v `pwd`:/home/aide/app \
- -v `cd ../ && pwd`:/home/aide/backup \
+ -v `cd ../ && pwd`/backup/aide:/home/aide/backup \
  -v ${DOCKER_AIDE_VOLUME_VERSION}_db_data:/var/lib/postgresql/10/main \
  -v ${DOCKER_AIDE_VOLUME_VERSION}_images:/home/aide/images \
  -p 8080:8080 \
