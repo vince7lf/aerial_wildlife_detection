@@ -4,6 +4,7 @@ set -x
 
 # stop currently running container, if running
 docker container stop aidev3_cnt
+sleep 10s
 
 # read docker_versions.sh
 source docker/docker_versions.sh
