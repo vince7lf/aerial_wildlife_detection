@@ -2,6 +2,9 @@
 
 ## Releases
 
+v3.0.9 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-08-15
+- (container_init.sh, aide_backup_data.sh) backup folder is /home/aide/backup/aidev3
+
 v3.0.8 v3.0-for-ivado-multienv vincent.le.falher@umontreal.ca 2023-08-03
 - (docker_run_gpu.sh, docker_run_cpu.sh) adding a sleep 10sec to give time to container to stop and maybe to avoid error with docker run.
 
