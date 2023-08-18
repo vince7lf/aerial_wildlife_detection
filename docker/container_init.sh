@@ -59,6 +59,8 @@ echo AIDE_ENV=${AIDE_ENV} > /home/aide/app/aide_env.sh
 (sudo crontab -u root -l 2>/dev/null; echo "0 2 * * * /bin/bash /usr/local/sbin/aide_backup_data.sh 2>&1 | tee /var/log/aide_backup_data.sh-\$(date +\%Y\%m\%dT\%H\%M\%S).log") | sudo crontab -u root -
 (sudo crontab -u root -l 2>/dev/null; echo "30 0 * * * find /var/log/aide_backup_data.sh-*.log -type f -mtime +15 -exec rm -f {} +") | sudo crontab -u root -
 
+sudo service cron restart
+
 echo "=============================="
 echo "Setup of database IS COMPLETED"
 echo "=============================="
