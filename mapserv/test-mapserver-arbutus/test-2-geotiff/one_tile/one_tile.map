@@ -1,0 +1,31 @@
+LAYER
+  DEBUG ON
+
+  NAME "layer-one_tile"
+  TYPE POINT
+  STATUS ON
+
+  CONNECTIONTYPE OGR
+  CONNECTION "test-mapserver-arbutus/test-2-geotiff/one_tile/one_tile.ms.geojson"
+  DATA "one_tile.ms"
+  METADATA
+    "wfs_title" "one_tile"
+    "wfs_srs"           "EPSG:4326" ## REQUIRED
+    "gml_include_items" "all" ## Optional (serves all attributes for layer)
+    "gml_featureid"     "fid" ## REQUIRED
+    "ows_enable_request" "*"
+    "wfs_enable_request" "*"
+
+    "wfs_extent" "-77.1356416416588502 44.8246057661527431 -67.1366446378126511 49.4040720519291412"
+  END
+  PROJECTION
+    "init=epsg:4326"
+  END
+  CLASS
+    NAME "Photo"
+    SYMBOL "round"
+    SIZE 120
+    COLOR 214 150 150
+  END
+
+END

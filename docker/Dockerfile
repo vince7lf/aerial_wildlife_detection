@@ -22,8 +22,17 @@ ARG USER_GID=$USER_UID
 # `pkill -9 gpg-agent` or `killall gpg-agent || true` or `gpgconf --kill gpg-agent` or `gpg-connect-agent reloadagent /bye`
 # do not restart gpg-agent
 # source <(gpg-agent --daemon)
-RUN apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
-    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN pkill -9 gpg-agent || true
+RUN gpgconf --kill gpg-agent || true
+RUN killall gpg-agent || true
+RUN gpg-connect-agent reloadagent /bye || true
+#RUN wget https://linux-clients.seafile.com/seafile.asc -O /usr/share/keyrings/seafile-keyring.asc
+#RUN apt-get -y install wget && apt-key del 7fa2af80 && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb && dpkg -i cuda-keyring_1.0-1_all.deb
+
+#RUN apt-get update && gpg-agent --daemon && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub \
+#    && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+RUN apt-key del 7fa2af0 && apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/3bf863cc.pub
+
 
 # Setup basic packages, environment and user
 RUN apt-get update \
@@ -54,6 +63,7 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+
 
 # AIDE installation starts here
 # specify the root folder where you wish to install AIDE
