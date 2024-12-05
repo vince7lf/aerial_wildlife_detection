@@ -1,0 +1,21 @@
+name,vascan_id,coleo_vernacular_fr,coleo_vernacular_en,vascan_port,vascan_statut_repartition,occ,Identification,Effort,tous,tous_over3,obs_species_taxa_name
+Calamagrostis canadensis,7487,calamagrostide du Canada,bluejoint reedgrass,vasculaire,indigene,9,Moyen,,67,27,Calamagrostis canadensis
+Carex,,carex,carex,vasculaire,indigene,25,Facile,,294,107,Carex oligosperma
+Carex,,carex,carex,vasculaire,indigene,14,Facile,,294,107,Carex pauciflora
+Carex,,carex,carex,vasculaire,indigene,12,Facile,,294,107,Eriophorum vaginatum
+Maianthemum trifolium,2741,smilacine trifoliée,three-leaved false Solomon's seal,vasculaire,indigene,22,Moyen,,69,19,Maianthemum trifolium
+Polytrichum strictum,NA,NA,NA,bryophyte,NA,14,Possible?,,78,19,Polytrichum strictum
+Sarracenia purpurea,9223,sarracénie pourpre,northern pitcher plant,vasculaire,indigene,10,Facile,,46,1,Sarracenia purpurea
+Sphagnum,NA,NA,NA,bryophyte,NA,7,Oui,,NA,NA,Sphagnum
+Sphagnum angustifolium.fallax,NA,NA,NA,bryophyte,NA,38,Moyen,,160,100,Sphagnum angustifolium
+Sphagnum angustifolium.fallax,NA,NA,NA,bryophyte,NA,25,Moyen,,160,100,Sphagnum fallax
+Sphagnum fuscum,NA,NA,NA,bryophyte,NA,50,Facile,,79,62,Sphagnum fuscum
+Sphagnum medium.divinum.papillosum,NA,NA,NA,bryophyte,NA,32,Moyen,,119,49,Sphagnum medium
+Sphagnum medium.divinum.papillosum,NA,NA,NA,bryophyte,NA,9,Moyen,,119,49,Sphagnum papillosum
+Sphagnum rubellum,NA,NA,NA,bryophyte,NA,32,Facile,,78,61,Sphagnum rubellum
+Sphagnum russowii,NA,NA,NA,bryophyte,NA,12,Possible?,,42,14,Sphagnum russowii
+Vaccinium oxycoccos,5577,canneberge commune,small cranberry,vasculaire,indigene,11,Moyen,,126,1,Vaccinium oxycoccos
+Comarum palustre,8643,comaret des marais,marsh cinquefoil,vasculaire,indigene,NA,peu quadrats,,18,4,Comarum palustre
+Glyceria canadensis,7695,glycérie du Canada,Canada mannagrass,vasculaire,indigene,NA,peu quadrats,,33,9,Glyceria canadensis
+Acer rubrum,9212,Érable rouge,red maple,vasculaire,indigene,NA,peu quadrats,,10,NA,Acer rubrum
+Pinus strobus,7195,pin blanc,eastern white pine,vasculaire,indigene,NA,peu quadrats,,5,NA,Pinus strobus

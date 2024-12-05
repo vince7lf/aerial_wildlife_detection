@@ -1,0 +1,202 @@
+{
+   "Espèce":[
+      {
+         "name":"Chamaedaphne calyculata",
+         "color":"#095797",
+         "vascan_id":"5504",
+         "coleo_vernacular_fr":"cassandre caliculé",
+         "coleo_vernacular_en":"leatherleaf",
+         "vascan_port":"Arbuste",
+         "vascan_statut_repartition":"Indigène"
+      },
+      {
+         "name":"Kalmia angustifolia",
+         "color":"#095797",
+         "vascan_id":"5529",
+         "coleo_vernacular_fr":"kalmia à feuilles étroites",
+         "coleo_vernacular_en":"sheep laurel",
+         "vascan_port":"Arbuste",
+         "vascan_statut_repartition":"Indigène"
+      },
+      {
+         "name":"Andromeda polifolia",
+         "color":"#095797",
+         "vascan_id":"5487",
+         "coleo_vernacular_fr":"andromède à feuilles de polium",
+         "coleo_vernacular_en":"bog rosemary",
+         "vascan_port":"Arbuste",
+         "vascan_statut_repartition":"Indigène"
+      },
+      {
+         "name":"Rhododendron groenlandicum",
+         "color":"#095797",
+         "vascan_id":"5557",
+         "coleo_vernacular_fr":"thé du Labrador",
+         "coleo_vernacular_en":"common Labrador tea",
+         "vascan_port":"Arbuste",
+         "vascan_statut_repartition":"Indigène"
+      },
+      {
+         "name":"Larix laricina",
+         "color":"#095797",
+         "vascan_id":"7166",
+         "coleo_vernacular_fr":"mélèze laricin",
+         "coleo_vernacular_en":"tamarack",
+         "vascan_port":"Arbre",
+         "vascan_statut_repartition":"Indigène"
+      },
+      {
+         "name":"Calamagrostis canadensis",
+         "color":"#095797",
+         "vascan_id":"7487",
+         "coleo_vernacular_fr":"calamagrostide du Canada",
+         "coleo_vernacular_en":"bluejoint reedgrass",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Maianthemum trifolium",
+         "color":"#095797",
+         "vascan_id":"2741",
+         "coleo_vernacular_fr":"smilacine trifoliée",
+         "coleo_vernacular_en":"three-leaved false Solomon's seal",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Polytrichum strictum",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sarracenia purpurea",
+         "color":"#095797",
+         "vascan_id":"9223",
+         "coleo_vernacular_fr":"sarracénie pourpre",
+         "coleo_vernacular_en":"northern pitcher plant",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Sphagnum",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum angustifolium.fallax",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum angustifolium.fallax",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum fuscum",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum medium.divinum.papillosum",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum medium.divinum.papillosum",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum rubellum",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Sphagnum russowii",
+         "color":"#095797",
+         "vascan_id":"NA",
+         "coleo_vernacular_fr":"NA",
+         "coleo_vernacular_en":"NA",
+         "vascan_port":"bryophyte",
+         "vascan_statut_repartition":"NA"
+      },
+      {
+         "name":"Vaccinium oxycoccos",
+         "color":"#095797",
+         "vascan_id":"5577",
+         "coleo_vernacular_fr":"canneberge commune",
+         "coleo_vernacular_en":"small cranberry",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Comarum palustre",
+         "color":"#095797",
+         "vascan_id":"8643",
+         "coleo_vernacular_fr":"comaret des marais",
+         "coleo_vernacular_en":"marsh cinquefoil",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Glyceria canadensis",
+         "color":"#095797",
+         "vascan_id":"7695",
+         "coleo_vernacular_fr":"glycérie du Canada",
+         "coleo_vernacular_en":"Canada mannagrass",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Acer rubrum",
+         "color":"#095797",
+         "vascan_id":"9212",
+         "coleo_vernacular_fr":"Érable rouge",
+         "coleo_vernacular_en":"red maple",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      },
+      {
+         "name":"Pinus strobus",
+         "color":"#095797",
+         "vascan_id":"7195",
+         "coleo_vernacular_fr":"pin blanc",
+         "coleo_vernacular_en":"eastern white pine",
+         "vascan_port":"vasculaire",
+         "vascan_statut_repartition":"indigene"
+      }
+   ]
+}
