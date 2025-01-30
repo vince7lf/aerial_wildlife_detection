@@ -11,7 +11,11 @@ It's possible to generate the hash manually in a Python console and update the h
 ## setup the Python virtual environment with the bcrypt module
 
 ```
+
+cd /tmp
+python3 -m venv .venv
 source ./.venv/bin/activate
+python3 -m pip install --upgrade pip
 python -m pip install bcrypt
 ```
 
