@@ -41,6 +41,8 @@ destDir="${srcDir}/${filename}"
 shpFilename="${filename}.ms.shp"
 geojsonTemplateFilename="${filename}.ms.template.geojson"
 geojsonFilename="${filename}.ms.geojson"
+tile_width=128
+tile_height=128
 
 # clean
 _clean() {
@@ -119,6 +121,20 @@ _convertTIFFToJPEG() {
   cp -rap ${srcDir}/${wldFilename} ${destDir}
 }
 
+_extract_tiling_size() {
+  local size_pattern=".*_([0-9]+)x([0-9]+)_tile\."
+
+  if [[ ${imgFilename} =~ ${size_pattern} ]]; then
+    local width="${BASH_REMATCH[1]}"
+    local height="${BASH_REMATCH[2]}"
+
+    if (( ${width} >= 128 && ${height} >= 128 )); then
+      tile_width=${width}
+      tile_height=${height}
+    fi
+  fi
+}
+
 # clean all before processing
 #_cleanAll
 
@@ -130,6 +146,8 @@ cp -rap ${srcDir}/${imgFilename} ${destDir}
 [[ "${extension,,}" =~ "jpeg"|"jpg" ]] && _convertJPEGToTIFF || true
 [[ "${extension,,}" =~ "tif"|"tiff" ]] && _convertTIFFToJPEG || true
 
+_extract_tiling_size
+
 # create tile as shapefile
 # output and error piped to /dev/null
 # -r bilinear: use bilinear interpolation when building the lower resolution levels. This is key to get good image quality without asking GeoServer to perform expensive interpolations in memory
@@ -137,7 +155,7 @@ cp -rap ${srcDir}/${imgFilename} ${destDir}
 # -ps 128 128: each tile in the pyramid will be a 128x128 GeoTIFF
 # -co “TILED=YES”: each GeoTIFF tile in the pyramid will be inner tiled
 # -co “COMPRESS=JPEG”: each GeoTIFF tile in the pyramid will be JPEG compressed (trades small size for higher performance, try out it without this parameter too)
-gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilename} || true >/dev/null 2>&1
+gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps ${tile_width} ${tile_height} -targetDir ${destDir} ${srcDir}/${imgFilename} || true >/dev/null 2>&1
 
 # create .geojson and generate .tiff tiles
 # output and error piped to /dev/null

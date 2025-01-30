@@ -2,8 +2,9 @@ import csv
 import json
 
 # Specify the input CSV file and the output JSON file
-csv_file_path = '/mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/etiquettes_annotation_selection_CPK_CLG_serie1_vascan.csv'  # Update this to the name of your CSV file
-json_file_path = '/mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/MELCC-Res-Suivi-BdQc-Volet-4-labels.json'
+# csv_file_path = '/mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/etiquettes_annotation_selection_CPK_CLG_serie1_vascan.csv'  # Update this to the name of your CSV file
+csv_file_path = '/mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/backup/CoveyHill_139_87_H03_labelclass_20250127_50.csv'  # Update this to the name of your CSV file
+json_file_path = '/mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/MELCC-Res-Suivi-BdQc-Volet-4-labels_v20250121.json'
 
 # Define a list to hold the processed data
 species_list = []
