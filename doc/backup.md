@@ -534,3 +534,29 @@ sudo -u postgres pg_restore -d ailabeltooldb ./backup/lefocalcul-ailabeltooldb-2
 sudo -u postgres psql -d ailabeltooldb -c 'DROP SCHEMA "CHAPP_SainteHelene_140_107_H01" CASCADE;'; echo; 
 sudo -u postgres pg_restore -d ailabeltooldb ./backup/tes2-arbutus-ailabeltooldb-CHAPP_SainteHelene_140_107_H01-20250129T155236.dump; echo; 
 ```
+
+# Schedule a backup of the complete  database inside the container
+
+Move inside the container 
+```
+ubuntu@tes2:~$ sudo docker exec -it docker_aide_app_1 /bin/bash
+```
+
+```
+crontab -e
+```
+
+Add both lines : 
+
+```
+0 3 * * * pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-arbutus-ailabeltooldb-$(date +\%Y\%m\%dT\%H\%M\%S).dump
+0 4 * * * find /home/aide/app/backup/ -type f -name "tes2-arbutus-ailabeltooldb-*.dump" -mtime +15 -delete
+```
+
+Start the cron job service in the container
+```
+service cron start
+```
+
+Check next day
+Check in 16 days
