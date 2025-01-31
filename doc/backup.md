@@ -475,9 +475,23 @@ Connect to the docker container
 ubuntu@tes2:~$ sudo docker exec -it docker_aide_app_1 /bin/bash
 ```
 
-Dump the database
+### Dump the database
 ```
 root@aide_app_host:/home/aide/app# sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-arbutus-ailabeltooldb-`date +%Y%m%dT%H%M%S`.dump
+```
+
+### Dump schema
+
+Dump schema of the january 23rd: 
+```
+sudo -u postgres pg_dump -Fc -d ailabeltooldb --schema='"CoveyHill_139_87_H01"' > /home/aide/app/backup/lefocalcul-ailabeltooldb-23janv-CoveyHill_139_87_H01.dump; echo; 
+sudo -u postgres pg_dump -Fc -d ailabeltooldb --schema='"CHAPP_SainteHelene_140_107_H01"' > /home/aide/app/backup/lefocalcul-ailabeltooldb-23janv-CHAPP_SainteHelene_140_107_H01.dump; echo; 
+```
+
+Dump schema of the january 29rd 
+```
+sudo -u postgres pg_dump -Fc -d ailabeltooldb --schema='"CoveyHill_139_87_H01"' > /home/aide/app/backup/lefocalcul-ailabeltooldb-29janv-CoveyHill_139_87_H01.dump; echo; 
+sudo -u postgres pg_dump -Fc -d ailabeltooldb --schema='"CHAPP_SainteHelene_140_107_H01"' > /home/aide/app/backup/lefocalcul-ailabeltooldb-29janv-CHAPP_SainteHelene_140_107_H01.dump; echo; 
 ```
 
 Download the dump file using MobaXTerm on the laptop
