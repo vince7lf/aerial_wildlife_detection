@@ -213,7 +213,7 @@ sudo tar -cvf /app/aerial_wildlife_detection/backup/tes2-graham-aide_images-Sain
 cd /app/var/lib/docker/volumes/aide_images/_data/
 sudo find . -maxdepth 1 -type d -name "*_H0*" -exec tar -cvf /app/aerial_wildlife_detection/backup/tes2-arbutus-aide_images-H0-`date +%Y%m%dT%H%M%S`.tar {} +
 
-TO BE TESTED : 
+WORKS: 
 sudo find /app/var/lib/docker/volumes/aide_images/_data/ -maxdepth 1 -type d -name "*_H0*" -exec tar -cvf /app/aerial_wildlife_detection/backup/tes2-arbutus-aide_images-H0-`date +%Y%m%dT%H%M%S`.tar -C /app/var/lib/docker/volumes/aide_images/_data/ {} +
 ```
 
@@ -541,16 +541,22 @@ Move inside the container
 ```
 ubuntu@tes2:~$ sudo docker exec -it docker_aide_app_1 /bin/bash
 ```
+Add the postgres user to the aide group
 
 ```
-crontab -e
+sudo usermod -aG aide postgres
+```
+Using the postgres user cron (otherwise the `pg_dump` will not work using `sudo -u postgres` inside the root cron)
+
+```
+crontab -u postgres -e
 ```
 
-Add both lines : 
+Add line : 
 
 ```
-0 3 * * * pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-arbutus-ailabeltooldb-$(date +\%Y\%m\%dT\%H\%M\%S).dump
-0 4 * * * find /home/aide/app/backup/ -type f -name "tes2-arbutus-ailabeltooldb-*.dump" -mtime +15 -delete
+# sudo -u postgres pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-arbutus-ailabeltooldb-`date +%Y%m%dT%H%M%S`.dump
+0 3 * * * /usr/bin/pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-arbutus-ailabeltooldb-$(date +\%Y\%m\%dT\%H\%M\%S).dump
 ```
 
 Start the cron job service in the container
@@ -559,4 +565,16 @@ service cron start
 ```
 
 Check next day
+
+Using the root user cron, add the command to clean dump older than 15 days.
+```
+0 4 * * * find /home/aide/app/backup/ -type f -name "tes2-arbutus-ailabeltooldb-*.dump" -mtime +15 -delete
+```
+
+Start the cron job service in the container
+```
+service cron start
+```
+
 Check in 16 days
+
