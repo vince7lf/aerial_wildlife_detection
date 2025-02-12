@@ -12,6 +12,9 @@ echo AIDE_CONFIG_PATH=${AIDE_CONFIG_PATH}
 echo AIDE_MODULES=${AIDE_MODULES}
 echo AIDE_ENV=${AIDE_ENV}
 
+# start cron
+service cron start
+
 sudo cp -fap /home/aide/app/docker/settings@${AIDE_ENV}.ini ${AIDE_CONFIG_PATH}
 
 host=$(python util/configDef.py --section=Server --parameter=static_host)
