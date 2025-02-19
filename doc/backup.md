@@ -575,7 +575,7 @@ Add line :
 0 3 * * * /usr/bin/pg_dump -Fc -d ailabeltooldb > /home/aide/app/backup/tes2-arbutus-ailabeltooldb-$(date +\%Y\%m\%dT\%H\%M\%S).dump
 
 # dump schemas
-0 6 * * * /bin/bash /app/aerial_wildlife_detection/scripts/sh/dump_schemas.sh > /var/log/dump_schemas_$(date +\%Y\%m\%dT\%H\%M).log 2>&1
+0 4 * * * /bin/bash /home/aide/app/scripts/sh/dump_schemas.sh > /var/log/dump_schemas_$(date +\%Y\%m\%dT\%H\%M).log 2>&1
 ```
 
 Start the cron job service in the container
