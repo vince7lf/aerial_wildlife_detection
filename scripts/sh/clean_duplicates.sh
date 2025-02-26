@@ -10,45 +10,12 @@ date
 # Base directory where the subfolders are located
 BASE_DIR="/app/aerial_wildlife_detection/backup"
 
-# List of subfolders to process
-SUBFOLDERS=(
-    "ABT_ParcAiguebelle-100_92_H01"
-    "ABT_Temiscamingue_103_85_H01"
-    "AT_ParcOpemican_A_104_81_H01_2023"
-    "BSL_ParcBic_140_126_H02"
-    "BSL_RiviereDuLoup_142_120_H01"
-    "CHAPP_Bellechasse_141_108_H01"
-    "CHAPP_Bellechasse_141_108_H03"
-    "CHAPP_Bellechasse_141_108_H04"
-    "CHAPP_SainteHelene_140_107_H01"
-    "CHAPP_SainteHelene_140_107_H03"
-    "CHAPP_SainteHelene_140_107_H04"
-    "CN_Portneuf_133_106_H01_2023"
-    "CN_StSimeon_138_120_H01_2023"
-    "CoveyHill_139_87_H01"
-    "CoveyHill_139_87_H03"
-    "CoveyHill_139_87_H05"
-    "ESTR_LeGranit_148_101_H01"
-    "GIM_BaieAuChene_149_133_H01"
-    "GIM_HauteGaspesie_145_141_H01_2023"
-    "LANLAU_ParcMontTremblantOuest_129_93_H01"
-    "LAUR_ValleedelaGatineau_desIles_123_89_H01_2023"
-    "LAU_Tapini_AntoineLabelle_122_94_H01"
-    "LargeTeaField_137_87_H01"
-    "LargeTeaField_137_87_H03"
-    "LargeTeaField_137_87_H04"
-    "MAUR_LacALaTortue_135_101_H03"
-    "MAUR_LacALaTortue_135_101_H04"
-    "MAUR_RedMill_137_101_H03"
-    "NQC_Obatogamau_113_113_H01"
-    "NUNA_Kangiqsualujjuaq_90_189_H03_2023"
-    "NUNA_Kangiqsualujjuaq_90_189_T01_2023"
-    "OUTA_ParcdelaGatineau_127_83_H01_2023"
-    "OUTA_ValleedelaGatineau_Kazabazua_124_86_H02_2023"
-    "OUT_Dumont_Pontiac_122_84_H01"
-    "SLSJ_LaDore_122_111_H01"
-    "SLSJ_LacSimoncouche_132_116_H03"
-)
+# Find all immediate subdirectories in the BASE_DIR
+echo "Discovering subfolders in $BASE_DIR..."
+SUBFOLDERS=()
+while IFS= read -r folder; do
+  SUBFOLDERS+=("$(basename "$folder")")
+done < <(find "$BASE_DIR" -mindepth 1 -maxdepth 1 -type d)
 
 # Iterate through each subfolder
 for folder in "${SUBFOLDERS[@]}"; do
