@@ -1,3 +1,14 @@
+# known issues
+- difficulté de créer un projet pour Élia / Chloé. Cela créé des doublons / projet zombie à supprimer 
+- suppression projet nécessite un redémarage de la plateforme
+- log de RabbitMQ / message Queue à supprimer; il grossit et prends de la ressource et disque
+- clique sur project/configuration/general bloque; loop infinie
+- timeout du login; devrait permettre 4-12-24h selon la config sans ête délogué
+- multi-user : logout lorsqu'un autre usager utilise la plateforme 
+
+# TODO
+- ajout d'étiquettes sans passer par du SQL
+
 # Release notes
 
 ## ZenHub board 
