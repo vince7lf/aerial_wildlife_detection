@@ -4,7 +4,8 @@
 - log de RabbitMQ / message Queue à supprimer; il grossit et prends de la ressource et disque
 - clique sur project/configuration/general bloque; loop infinie
 - timeout du login; devrait permettre 4-12-24h selon la config sans ête délogué
-- multi-user : logout lorsqu'un autre usager utilise la plateforme 
+- multi-user : logout lorsqu'un autre usager utilise la plateforme
+- export annotations with same header order
 
 # TODO
 - ajout d'étiquettes sans passer par du SQL
