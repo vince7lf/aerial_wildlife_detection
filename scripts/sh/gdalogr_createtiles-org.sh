@@ -41,8 +41,6 @@ imgFilenameNotGeo="${filename}.jpg"
 destDir="${srcDir}/${filename}"
 shpFilename="${filename}.shp"
 geojsonFilename="${filename}.geojson"
-tile_width=128
-tile_height=128
 
 # clean
 _clean() {
@@ -124,20 +122,6 @@ _testGeoTiffExif() {
   echo 1
 }
 
-_extract_tiling_size() {
-  local size_pattern=".*_([0-9]+)x([0-9]+)_tile\."
-
-  if [[ ${imgFilename} =~ ${size_pattern} ]]; then
-    local width="${BASH_REMATCH[1]}"
-    local height="${BASH_REMATCH[2]}"
-
-    if (( ${width} >= 128 && ${height} >= 128 )); then
-      tile_width=${width}
-      tile_height=${height}
-    fi
-  fi
-}
-
 # clean all before processing
 _cleanAll
 
@@ -148,14 +132,12 @@ mkdir -p "${destDir}"
 cp -rap ${srcDir}/${imgFilename} ${destDir}
 [[ "${extension,,}" =~ "tif"|"tiff" ]] && _convertTIFFToJPEG || true
 
-_extract_tiling_size
-
 # create tile as shapefile
 # output and error piped to /dev/null
 # The command can return the following errors if JPEG is not georeferenced (no jwg/wld file)
 # ERROR 1: The transformation is already "north up" or a transformation between pixel/line and georeferenced coordinates cannot be computed for TEMP. There is no affine transformation and no GCPs. Specify transformation option SRC_METHOD=NO_GEOTRANSFORM to bypass this check.
 # Reprojection failed for /tmp/test-jpg-2/test-jpg/2019-Boucherville-13225474-13410695_tile/1/2019-Boucherville-13225474-13410695_tile_1_1.tif, error 3
-gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps ${tile_width} ${tile_height} -targetDir ${destDir} ${srcDir}/${imgFilenameNotGeo} || true >${devnull} 2>&1
+gdal_retile.py -co "TILED=YES" -co "COMPRESS=JPEG" -r bilinear -levels 1 -tileIndex ${shpFilename} -tileIndexField Location -ps 128 128 -targetDir ${destDir} ${srcDir}/${imgFilenameNotGeo} || true >${devnull} 2>&1
 
 # create .geojson and generate .tiff tiles
 # output and error piped to /dev/null
