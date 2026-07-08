@@ -1,3 +1,21 @@
+# The AIDE docker image cannot be rebuilt, it's too old (dependencies conflict & obsolescence)
+# To copy the docker image on the server
+scp -i ~/.ssh/key2 /mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/backup/aide+melcc-20210928T033938.img ubuntu@134.87.8.181:/mnt/backup/docker_img/
+
+vincelf@DESKTOP-5N9VHFK:~$ ssh -i ~/.ssh/key2 ubuntu@134.87.8.181
+
+# Load the docker image on the server
+ubuntu@tes2:/mnt/backup$ sudo docker load -i /mnt/backup/docker_img/aide+melcc-20210928T033938.img
+
+# create the backup and log folder on the host 
+ubuntu@tes2:/app/aerial_wildlife_detection$ mkdir backup log
+
+# start the container
+ubuntu@tes2:/app/aerial_wildlife_detection/docker$ AIDE_ENV=arbutus sudo -E docker compose up -d
+
+# Copy the database dump
+scp -i ~/.ssh/key2 /mnt/c/Users/vincent.le.falher/Downloads/AIDE+MELCC/MELCC-Res-Suivi-BdQc-Volet-4/backup/tes2-arbutus-ailabeltooldb-20250529T030002.dump ubuntu@134.87.8.181:/mnt/backup/db/
+
 # Backup and restore of AIDE : database and images
 
 ## Database
